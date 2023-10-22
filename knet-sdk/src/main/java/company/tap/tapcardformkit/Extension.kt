@@ -163,7 +163,7 @@ fun getScreenHeight(): Int {
     return Resources.getSystem().getDisplayMetrics().heightPixels
 }
 fun Context.twoThirdHeightView(): Double {
-    return getDeviceSpecs().first.times(2.15) / 3
+    return getDeviceSpecs().first.toDouble()
 }
 fun Context.getDeviceSpecs(): Pair<Int, Int> {
     val displayMetrics = DisplayMetrics()

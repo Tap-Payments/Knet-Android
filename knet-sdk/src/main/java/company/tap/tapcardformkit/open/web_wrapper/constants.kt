@@ -7,7 +7,7 @@ const val beneiftPayCheckoutUrl = "https://benefit-checkout"
 const val beneiftPayIntentUrl = "intent://tbenefituser.page.link"
 
 const val authDataPayerKey = "authDataPayer"
-const val waitDelaytime = 4000L
+const val waitDelaytime = 6000L
 
 //const val urlWebStarter = "https://demo.dev.tap.company/v2/sdk/checkout?type=card-iframe&configurations="
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/knet?configurations="

@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val publicKey = intent.getStringExtra("publicKey")
         val hashStringKey = intent.getStringExtra("hashStringKey")
         val operator = HashMap<String,Any>()
-        operator.put("publicKey",publicKey.toString())
+        operator.put("publicKey","pk_live_I8aWfZkiGtw9HYsRCcAgQzS6")
         operator.put("hashString",hashStringKey.toString())
         Log.e("orderData","pbulc" + publicKey.toString() + " \nhash" + hashStringKey.toString())
 
@@ -177,6 +177,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     }
 
     override fun onError(error: String) {
+        Log.e("error",error.toString())
         Toast.makeText(this, "onError $error ", Toast.LENGTH_SHORT).show()
 
     }

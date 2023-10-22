@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Benefit-Pay Button</string>
+    <string name="app_name">Knet Button</string>
     <string name="tokenize">Tokenize</string>
     <string name="title_activity_settings">SettingsActivity</string>
 

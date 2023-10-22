@@ -14,9 +14,12 @@ import android.widget.LinearLayout
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapcardformkit.R
 import company.tap.tapcardformkit.doAfterSpecificTime
+import company.tap.tapcardformkit.getDeviceSpecs
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
 import company.tap.tapcardformkit.twoThirdHeightView
@@ -36,7 +39,7 @@ class ThreeDsBottomSheetFragment : BottomSheetDialogFragment() {
         @Nullable savedInstanceState: Bundle?
     ): View? {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_dialog, null)
-
+        Log.e("onCreate","onCrate")
 
         return view
     }
@@ -58,14 +61,18 @@ class ThreeDsBottomSheetFragment : BottomSheetDialogFragment() {
 
         val webView = view.findViewById<WebView>(R.id.webview3ds)
 
-        webView.layoutParams = context?.twoThirdHeightView()?.roundToInt()?.let {
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                it
-            )
-        }
+//        webView.layoutParams = context?.twoThirdHeightView()?.roundToInt()?.let {
+//            LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                it
+//            )
+//        }
+//        ( this.dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        ( this.dialog as BottomSheetDialog).behavior.isFitToContents = false
+
+        ( this.dialog as BottomSheetDialog).behavior.peekHeight = context?.getDeviceSpecs()?.first!! - 150
+
         webView.settings.javaScriptEnabled = true
-        webView.settings.domStorageEnabled = true
         webView.webViewClient = threeDsWebViewClient()
         Log.e("3dsurl", tapKnet.threeDsResponse.url)
         webView.loadUrl(tapKnet.threeDsResponse.url)
@@ -73,7 +80,6 @@ class ThreeDsBottomSheetFragment : BottomSheetDialogFragment() {
         tapBrandView.backButtonLinearLayout.setOnClickListener {
             this.dismiss()
             TapKnetPay.cancel()
-            requireActivity().finish()
            // tapKnet.init(TapKnetPay.cardConfiguraton)
             DataConfiguration.getTapCardStatusListener()?.onError("User canceled ")
 
@@ -103,11 +109,9 @@ class ThreeDsBottomSheetFragment : BottomSheetDialogFragment() {
         ): Boolean {
             Log.e("url3ds", request?.url.toString())
             webView?.loadUrl(request?.url.toString())
-            when (request?.url?.toString()?.contains("onTapKnetRedirect://")) {
+            when (request?.url?.toString()?.contains("ontapknetredirect://")) {
                 true -> {
                   this@ThreeDsBottomSheetFragment.dialog?.dismiss()
-                    requireActivity().finish()
-                  //  TapCardKit.generateTapAuthenticate(request.url?.toString().toString())
                 }
                 false -> {}
                 else -> {}

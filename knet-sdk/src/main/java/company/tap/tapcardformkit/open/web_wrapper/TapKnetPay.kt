@@ -6,16 +6,14 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Picture
 import android.net.http.SslError
 import android.os.Build
 import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.*
@@ -33,7 +31,6 @@ import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsBottomS
 import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
 import company.tap.tapuilibrary.themekit.ThemeManager
 import company.tap.tapuilibrary.uikit.atoms.*
-import java.net.URISyntaxException
 import java.util.*
 
 
@@ -54,6 +51,8 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
     companion object{
         var alreadyEvaluated = false
+        var loaded = false
+
         lateinit var cardWebview: WebView
         lateinit var cardConfiguraton: CardConfiguraton
         var card:Card?=null
@@ -93,6 +92,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
          hideableWebView = findViewById(R.id.hideableWebView)
          hideableWebView.settings.javaScriptEnabled = true
          hideableWebView.webViewClient = HideableWebViewClient()
+         hideableWebView.setPictureListener(MyPictureListener())
 
          with(cardWebview.settings){
              javaScriptEnabled=true
@@ -106,6 +106,14 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
      }
+    class MyPictureListener : WebView.PictureListener {
+        override fun onNewPicture(view: WebView?, arg1: Picture?) {
+            Log.e("done","newPic newPic")
+
+            // put code here that needs to run when the page has finished loading and
+            // a new "picture" is on the webview.
+        }
+    }
 
 
      fun init(configuraton: CardConfiguraton) {
@@ -193,9 +201,10 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
                     Log.e("threeDs",threeDsResponse.toString())
                     hideableWebView.loadUrl(threeDsResponse.url)
-
+                    doAfterSpecificTime {
+                   //     navigateTo3dsActivity()
+                    }
                     DataConfiguration.getTapCardStatusListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
-                   // navigateTo3dsActivity()
                 }
 
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onOrderCreated.name)) {
@@ -218,7 +227,9 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onError.name)) {
                     pair = Pair(request?.url?.getQueryParameterFromUri(keyValueName).toString(),true)
-                    closePayment()
+                    DataConfiguration.getTapCardStatusListener()?.onError(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+
+                    //closePayment()
 
                 }
 
@@ -343,16 +354,28 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
             return false
         }
 
-        override fun onPageFinished(view: WebView, url: String) {
-            if (!alreadyEvaluated) {
-                alreadyEvaluated = true;
-                Handler().postDelayed({
-                    navigateTo3dsActivity()
-                }, waitDelaytime)
-            } else {
-                alreadyEvaluated = false;
-            }
 
+        override fun onPageFinished(view: WebView, url: String) {
+//            if (!alreadyEvaluated) {
+//                Log.e("onPagefinsihed", alreadyEvaluated.toString())
+//                alreadyEvaluated = true;
+//                Handler().postDelayed({
+//                //    navigateTo3dsActivity()
+//                }, waitDelaytime)
+//            } else {
+//                alreadyEvaluated = false;
+//            }
+
+            if (loaded){
+                return
+            }
+            else{
+                Log.e("onPagefinsihed", loaded.toString())
+                Handler().postDelayed({
+                        navigateTo3dsActivity()
+                }, waitDelaytime)
+            }
+            loaded = true
 
         }
 

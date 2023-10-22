@@ -76,7 +76,7 @@ class TapKnetConfiguration {
             val headers = Headers(
                 application = NetworkApp.getApplicationInfo(),
                 mdn = CryptoUtil.encryptJsonString(
-                    context.packageName.toString(),
+                    "tap.KnetExample".toString(),
                     encodedeky,
                 )
             )
