@@ -21,10 +21,14 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.view.*
 import cards.pay.paycardsrecognizer.sdk.Card
+import com.google.gson.Gson
 import company.tap.tapcardformkit.*
 import company.tap.tapcardformkit.open.ApplicationLifecycle
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.enums.BenefitPayStatusDelegate
+import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
+import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsBottomSheetFragment
+import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
 import company.tap.tapuilibrary.themekit.ThemeManager
 import company.tap.tapuilibrary.uikit.atoms.*
 import java.net.URISyntaxException
@@ -35,6 +39,8 @@ import java.util.*
 class TapKnetPay : LinearLayout,ApplicationLifecycle {
     lateinit var webViewFrame: FrameLayout
     private var isBenefitPayUrlIntercepted =false
+    lateinit var threeDsResponse: ThreeDsResponse
+
     lateinit var dialog: Dialog
      var pair =  Pair("",false)
     lateinit var linearLayout: LinearLayout
@@ -45,6 +51,11 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
         lateinit var cardWebview: WebView
         lateinit var cardConfiguraton: CardConfiguraton
         var card:Card?=null
+
+        fun cancel() {
+            cardWebview.loadUrl("javascript:onCancel")
+        }
+
     }
 
     /**
@@ -167,7 +178,12 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                     DataConfiguration.getTapCardStatusListener()?.onReady()
                 }
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onChargeCreated.name)) {
+                    val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                    val gson = Gson()
+                    threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
+                    Log.e("threeDs",threeDsResponse.toString())
                     DataConfiguration.getTapCardStatusListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                    navigateTo3dsActivity()
                 }
 
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onOrderCreated.name)) {
@@ -210,31 +226,6 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                 return true
 
             }
-//            if (request?.url.toString().startsWith("intent://")) {
-//                try {
-//                    val context: Context = context
-//                    val intent: Intent = Intent.parseUri(request?.url.toString(), Intent.URI_INTENT_SCHEME)
-//                    if (intent != null) {
-////                            view.stopLoading()
-//                        val packageManager: PackageManager = context.packageManager
-//                        val info: ResolveInfo? = packageManager.resolveActivity(
-//                            intent,
-//                            PackageManager.MATCH_DEFAULT_ONLY
-//                        )
-//                        if (info != null) {
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            context.startActivity(intent)
-//                        } else {
-//                            return false
-//                        }
-//                        return true
-//                    }
-//                } catch (e: URISyntaxException) {
-//                    Log.e("error", "Can't resolve intent://", e)
-//
-//                }
-//            }
-
 
             return false
 
@@ -245,6 +236,19 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
         }
 
+        fun navigateTo3dsActivity() {
+            // on below line we are creating a new bottom sheet dialog.
+            /**
+             * put buttomsheet in separate class
+             */
+
+            ThreeDsBottomSheetFragment.tapKnet = this@TapKnetPay
+            val intent = Intent(context, ThreeDsWebViewActivity::class.java)
+            (context).startActivity(intent)
+
+
+        }
+
 
 
         override fun shouldInterceptRequest(
@@ -252,49 +256,49 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
             request: WebResourceRequest?
         ): WebResourceResponse? {
             Log.e("intercepted",request?.url.toString())
-//            when(request?.url?.toString()?.contains(beneiftPayCheckoutUrl)?.and((!isBenefitPayUrlIntercepted))) {
-//                true ->{
-//
-//                    view?.post{
-//                        (webViewFrame as ViewGroup).removeView(cardWebview)
-//
-//
-//                        dialog= Dialog(context,android.R.style.Theme_Translucent_NoTitleBar)
-//                        //Create LinearLayout Dynamically
-//                        linearLayout = LinearLayout(context)
-//                        //Setup Layout Attributes
-//                        val params = LayoutParams(
-//                            ViewGroup.LayoutParams.MATCH_PARENT,
-//                            ViewGroup.LayoutParams.MATCH_PARENT
-//                        )
-//                        linearLayout.layoutParams = params
-//                        linearLayout.orientation = VERTICAL
-//
-//                        /**
-//                         * onBackPressed in Dialog
-//                         */
-//                        dialog.setOnKeyListener { view, keyCode, keyEvent ->
-//                            if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
-//                                dismissDialog()
-//                                init(cardConfiguraton)
-//                                return@setOnKeyListener  true
-//                            }
-//                            return@setOnKeyListener false
-//                        }
-//
-//
-//                        if (cardWebview.parent == null){
-//                            linearLayout.addView(cardWebview)
-//                        }
-//
-//                        dialog.setContentView(linearLayout)
-//                        dialog.show()
-//                    }
-//
-//                    isBenefitPayUrlIntercepted = true
-//                }
-//                else -> {}
-//            }
+            when(request?.url?.toString()?.contains(beneiftPayCheckoutUrl)?.and((!isBenefitPayUrlIntercepted))) {
+                true ->{
+
+                    view?.post{
+                        (webViewFrame as ViewGroup).removeView(cardWebview)
+
+
+                        dialog= Dialog(context,android.R.style.Theme_Translucent_NoTitleBar)
+                        //Create LinearLayout Dynamically
+                        linearLayout = LinearLayout(context)
+                        //Setup Layout Attributes
+                        val params = LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                        linearLayout.layoutParams = params
+                        linearLayout.orientation = VERTICAL
+
+                        /**
+                         * onBackPressed in Dialog
+                         */
+                        dialog.setOnKeyListener { view, keyCode, keyEvent ->
+                            if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                                dismissDialog()
+                                init(cardConfiguraton)
+                                return@setOnKeyListener  true
+                            }
+                            return@setOnKeyListener false
+                        }
+
+
+                        if (cardWebview.parent == null){
+                            linearLayout.addView(cardWebview)
+                        }
+
+                        dialog.setContentView(linearLayout)
+                        dialog.show()
+                    }
+
+                    isBenefitPayUrlIntercepted = true
+                }
+                else -> {}
+            }
 
             return super.shouldInterceptRequest(view, request)
         }

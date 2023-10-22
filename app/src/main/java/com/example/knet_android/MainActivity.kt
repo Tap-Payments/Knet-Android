@@ -3,6 +3,7 @@ package com.example.knet_android
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import com.example.benefitpay_android.R
 import company.tap.tapcardformkit.open.KnetPayStatusDelegate
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetConfiguration
@@ -151,26 +152,30 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     }
 
     override fun onReady() {
-        super.onReady()
+        Toast.makeText(this, "onReady", Toast.LENGTH_SHORT).show()
     }
 
     override fun onClick() {
-        super.onClick()
+        Toast.makeText(this, "onClick", Toast.LENGTH_SHORT).show()
     }
 
     override fun onChargeCreated(data: String) {
-        super.onChargeCreated(data)
+        Log.e("data",data.toString())
+        Toast.makeText(this, "onChargeCreated $data", Toast.LENGTH_SHORT).show()
+
     }
 
     override fun onOrderCreated(data: String) {
-        super.onOrderCreated(data)
+        Toast.makeText(this, "onOrderCreated $data", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCancel() {
-        super.onCancel()
+        Toast.makeText(this, "onCancel ", Toast.LENGTH_SHORT).show()
     }
 
     override fun onError(error: String) {
+        Toast.makeText(this, "onError $error ", Toast.LENGTH_SHORT).show()
+
     }
 
 }

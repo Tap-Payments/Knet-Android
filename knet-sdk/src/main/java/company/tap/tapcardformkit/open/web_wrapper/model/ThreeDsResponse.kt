@@ -4,5 +4,5 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ThreeDsResponse(var threeDsUrl: String, var redirectUrl: String, var keyword: String,var powered:Boolean) :
+data class ThreeDsResponse(var id: String, var url: String,var powered:Boolean) :
     Parcelable
