@@ -116,12 +116,15 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         interfacee.put("colorStyle",selectedColorStylee ?:"colored")
         interfacee.put("loader",loader)
 
+        val posturl =  intent.getStringExtra("posturlKey")
+        val redirectUrl =  intent.getStringExtra("redirectUrlKey")
+
 
         val post = HashMap<String,Any>()
-        post.put("url","")
+        post.put("url",posturl?: "")
 
         val redirect = HashMap<String,Any>()
-        redirect.put("url","onTapKnetRedirect://")
+        redirect.put("url",redirectUrl ?: "onTapKnetRedirect://")
         val configuration = LinkedHashMap<String,Any>()
 
         configuration.put("operator",operator)

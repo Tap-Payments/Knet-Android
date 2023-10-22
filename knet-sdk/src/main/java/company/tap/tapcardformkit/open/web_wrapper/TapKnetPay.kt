@@ -8,9 +8,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.http.SslError
 import android.os.Build
+import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.KeyEvent
@@ -39,7 +41,10 @@ import java.util.*
 class TapKnetPay : LinearLayout,ApplicationLifecycle {
     lateinit var webViewFrame: FrameLayout
     private var isBenefitPayUrlIntercepted =false
+    private var isRedirected = false
+
     lateinit var threeDsResponse: ThreeDsResponse
+    lateinit var hideableWebView: WebView
 
     lateinit var dialog: Dialog
      var pair =  Pair("",false)
@@ -48,6 +53,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
     companion object{
+        var alreadyEvaluated = false
         lateinit var cardWebview: WebView
         lateinit var cardConfiguraton: CardConfiguraton
         var card:Card?=null
@@ -84,6 +90,10 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
      private fun initWebView() {
         cardWebview = findViewById(R.id.webview)
         webViewFrame = findViewById(R.id.webViewFrame)
+         hideableWebView = findViewById(R.id.hideableWebView)
+         hideableWebView.settings.javaScriptEnabled = true
+         hideableWebView.webViewClient = HideableWebViewClient()
+
          with(cardWebview.settings){
              javaScriptEnabled=true
              domStorageEnabled=true
@@ -182,8 +192,10 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                     val gson = Gson()
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
                     Log.e("threeDs",threeDsResponse.toString())
+                    hideableWebView.loadUrl(threeDsResponse.url)
+
                     DataConfiguration.getTapCardStatusListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
-                    navigateTo3dsActivity()
+                   // navigateTo3dsActivity()
                 }
 
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onOrderCreated.name)) {
@@ -255,50 +267,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
             view: WebView?,
             request: WebResourceRequest?
         ): WebResourceResponse? {
-            Log.e("intercepted",request?.url.toString())
-            when(request?.url?.toString()?.contains(beneiftPayCheckoutUrl)?.and((!isBenefitPayUrlIntercepted))) {
-                true ->{
-
-                    view?.post{
-                        (webViewFrame as ViewGroup).removeView(cardWebview)
-
-
-                        dialog= Dialog(context,android.R.style.Theme_Translucent_NoTitleBar)
-                        //Create LinearLayout Dynamically
-                        linearLayout = LinearLayout(context)
-                        //Setup Layout Attributes
-                        val params = LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                        linearLayout.layoutParams = params
-                        linearLayout.orientation = VERTICAL
-
-                        /**
-                         * onBackPressed in Dialog
-                         */
-                        dialog.setOnKeyListener { view, keyCode, keyEvent ->
-                            if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
-                                dismissDialog()
-                                init(cardConfiguraton)
-                                return@setOnKeyListener  true
-                            }
-                            return@setOnKeyListener false
-                        }
-
-
-                        if (cardWebview.parent == null){
-                            linearLayout.addView(cardWebview)
-                        }
-
-                        dialog.setContentView(linearLayout)
-                        dialog.show()
-                    }
-
-                    isBenefitPayUrlIntercepted = true
-                }
-                else -> {}
-            }
+            Log.e("intercepted mainwebview",request?.url.toString())
 
             return super.shouldInterceptRequest(view, request)
         }
@@ -364,7 +333,69 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
     }
 
 
+    inner class HideableWebViewClient : WebViewClient() {
+        @RequiresApi(Build.VERSION_CODES.O)
+        override fun shouldOverrideUrlLoading(
+            webView: WebView?,
+            request: WebResourceRequest?
+        ): Boolean {
+            isRedirected = true;
+            return false
+        }
+
+        override fun onPageFinished(view: WebView, url: String) {
+            if (!alreadyEvaluated) {
+                alreadyEvaluated = true;
+                Handler().postDelayed({
+                    navigateTo3dsActivity()
+                }, waitDelaytime)
+            } else {
+                alreadyEvaluated = false;
+            }
+
+
+        }
+
+        override fun shouldInterceptRequest(
+            view: WebView?,
+            request: WebResourceRequest?
+        ): WebResourceResponse? {
+            Log.e("hidden webview",request?.url.toString())
+
+            return super.shouldInterceptRequest(view, request)
+        }
+
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            isRedirected = false;
+
+        }
+
+        fun navigateTo3dsActivity() {
+            // on below line we are creating a new bottom sheet dialog.
+            /**
+             * put buttomsheet in separate class
+             */
+
+
+            val intent = Intent(context, ThreeDsWebViewActivity::class.java)
+            (context).startActivity(intent)
+            ThreeDsBottomSheetFragment.tapKnet = this@TapKnetPay
+
+        }
+
+        override fun onReceivedError(
+            view: WebView,
+            request: WebResourceRequest,
+            error: WebResourceError
+        ) {
+            super.onReceivedError(view, request, error)
+        }
+    }
+
+
 }
+
+
 
 
 

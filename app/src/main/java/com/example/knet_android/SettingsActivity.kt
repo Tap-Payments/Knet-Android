@@ -72,6 +72,7 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
 
 
         intent.putExtra("posturlKey", getPrefStringValue("posturlKey",""))
+        intent.putExtra("redirectUrlKey", getPrefStringValue("redirectUrlKey",""))
 
         finish()
         startActivity(intent)

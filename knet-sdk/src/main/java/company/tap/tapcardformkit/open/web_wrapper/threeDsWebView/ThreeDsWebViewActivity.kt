@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapcardformkit.R
 import company.tap.tapcardformkit.open.DataConfiguration
+import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
 
@@ -18,7 +19,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three_ds_web_view)
         LocalizationManager.setLocale(this, Locale(DataConfiguration.lanuage.toString()))
-       // TapCardKit.alreadyEvaluated = false
+        TapKnetPay.alreadyEvaluated = false
 
         threeDsBottomsheet = ThreeDsBottomSheetFragment()
         threeDsBottomsheet.show(supportFragmentManager,"")

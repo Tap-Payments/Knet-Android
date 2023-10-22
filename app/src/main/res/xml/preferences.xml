@@ -141,10 +141,22 @@
             app:useSimpleSummaryProvider="true"/>
 
 
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:title="@string/redirect">
+
+        <EditTextPreference
+            app:key="redirectUrlKey"
+            app:defaultValue="onTapKnetRedirect://"
+
+            app:title="@string/post_url"
+            app:useSimpleSummaryProvider="true"/>
+
 
 
     </PreferenceCategory>
-
     <Preference
         app:key="dialog_preference"
         android:title="Done"
