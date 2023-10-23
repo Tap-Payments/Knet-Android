@@ -62,9 +62,6 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             when (request?.url?.toString()?.contains("ontapknetredirect://")) {
                 true -> {
                     threeDsBottomsheet.dialog?.dismiss()
-                    doAfterSpecificTime {
-                        finish()
-                    }
                     DataConfiguration.getTapCardStatusListener()?.retrieveCharge(request.url?.getQueryParameter(
                         keyValueNameTapId
                     ).toString())

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapcardformkit.R
+import company.tap.tapcardformkit.doAfterSpecificTime
 import company.tap.tapcardformkit.getDeviceSpecs
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
@@ -51,9 +52,16 @@ class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragme
 
 
 
+        this.dialog?.setOnDismissListener {
+            if (isAdded){
+                doAfterSpecificTime {
+                    requireActivity().finish()
+                }
+            }
 
+        }
         tapBrandView.backButtonLinearLayout.setOnClickListener {
-            this.dismiss()
+            this.dialog?.dismiss()
             TapKnetPay.cancel()
             DataConfiguration.getTapCardStatusListener()?.onError("User canceled ")
 
