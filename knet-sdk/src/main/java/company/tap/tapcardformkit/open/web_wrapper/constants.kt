@@ -3,11 +3,13 @@ package company.tap.tapcardformkit.open.web_wrapper
 const val rawFolderRefrence = "raw"
 const val CardWebUrlPrefix = "tapknetwebsdk://"
 const val keyValueName = "data"
+const val keyValueNameTapId = "tap_id"
+
 const val beneiftPayCheckoutUrl = "https://benefit-checkout"
 const val beneiftPayIntentUrl = "intent://tbenefituser.page.link"
 
 const val authDataPayerKey = "authDataPayer"
-const val waitDelaytime = 6000L
+const val waitDelaytime = 3000L
 
 //const val urlWebStarter = "https://demo.dev.tap.company/v2/sdk/checkout?type=card-iframe&configurations="
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/knet?configurations="

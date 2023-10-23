@@ -150,12 +150,16 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     }
 
 
-
-    override fun onSuccess(data: String) {
+    override fun retrieveCharge(data: String) {
+        Toast.makeText(this, "retrieveCharge id $data", Toast.LENGTH_SHORT).show()
     }
-
     override fun onReady() {
         Toast.makeText(this, "onReady", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onSuccess(data: String) {
+        Toast.makeText(this, "onSuccess $data", Toast.LENGTH_SHORT).show()
+
     }
 
     override fun onClick() {

@@ -27,7 +27,6 @@ import company.tap.tapcardformkit.open.ApplicationLifecycle
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.enums.BenefitPayStatusDelegate
 import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
-import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsBottomSheetFragment
 import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
 import company.tap.tapuilibrary.themekit.ThemeManager
 import company.tap.tapuilibrary.uikit.atoms.*
@@ -37,21 +36,8 @@ import java.util.*
 @SuppressLint("ViewConstructor")
 class TapKnetPay : LinearLayout,ApplicationLifecycle {
     lateinit var webViewFrame: FrameLayout
-    private var isBenefitPayUrlIntercepted =false
-    private var isRedirected = false
-
-    lateinit var threeDsResponse: ThreeDsResponse
-    lateinit var hideableWebView: WebView
-
-    lateinit var dialog: Dialog
-     var pair =  Pair("",false)
-    lateinit var linearLayout: LinearLayout
-     var iSAppInForeground = true
-
-
     companion object{
-        var alreadyEvaluated = false
-        var loaded = false
+         lateinit var threeDsResponse: ThreeDsResponse
 
         lateinit var cardWebview: WebView
         lateinit var cardConfiguraton: CardConfiguraton
@@ -60,6 +46,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
         fun cancel() {
             cardWebview.loadUrl("javascript:onCancel")
         }
+
 
     }
 
@@ -89,10 +76,6 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
      private fun initWebView() {
         cardWebview = findViewById(R.id.webview)
         webViewFrame = findViewById(R.id.webViewFrame)
-         hideableWebView = findViewById(R.id.hideableWebView)
-         hideableWebView.settings.javaScriptEnabled = true
-         hideableWebView.webViewClient = HideableWebViewClient()
-         hideableWebView.setPictureListener(MyPictureListener())
 
          with(cardWebview.settings){
              javaScriptEnabled=true
@@ -106,16 +89,6 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
      }
-    class MyPictureListener : WebView.PictureListener {
-        override fun onNewPicture(view: WebView?, arg1: Picture?) {
-            Log.e("done","newPic newPic")
-
-            // put code here that needs to run when the page has finished loading and
-            // a new "picture" is on the webview.
-        }
-    }
-
-
      fun init(configuraton: CardConfiguraton) {
          cardConfiguraton = configuraton
          DataConfiguration.addAppLifeCycle(this)
@@ -185,7 +158,6 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
             /**
              * main checker if url start with "tapCardWebSDK://"
              */
-            Log.e("url",request?.url.toString())
 
             if (request?.url.toString().startsWith(CardWebUrlPrefix, ignoreCase = true)) {
                 Log.e("url",request?.url.toString())
@@ -195,15 +167,15 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onReady.name)) {
                     DataConfiguration.getTapCardStatusListener()?.onReady()
                 }
+
+                if (request?.url.toString().contains(BenefitPayStatusDelegate.onSuccess.name)) {
+                    DataConfiguration.getTapCardStatusListener()?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                }
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onChargeCreated.name)) {
                     val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
                     val gson = Gson()
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
-                    Log.e("threeDs",threeDsResponse.toString())
-                    hideableWebView.loadUrl(threeDsResponse.url)
-                    doAfterSpecificTime {
-                   //     navigateTo3dsActivity()
-                    }
+                    navigateTo3dsActivity()
                     DataConfiguration.getTapCardStatusListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
 
@@ -211,39 +183,15 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                     DataConfiguration.getTapCardStatusListener()?.onOrderCreated(request?.url?.getQueryParameter(keyValueName).toString())
                 }
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onClick.name)) {
-                    isBenefitPayUrlIntercepted=false
-                    pair = Pair("",false)
                     DataConfiguration.getTapCardStatusListener()?.onClick()
 
                 }
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onCancel.name)) {
                     DataConfiguration.getTapCardStatusListener()?.onCancel()
-                    if (!(pair.first.isNotEmpty() and pair.second)) {
-                        dismissDialog()
-                    }
-
-
                 }
 
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onError.name)) {
-                    pair = Pair(request?.url?.getQueryParameterFromUri(keyValueName).toString(),true)
                     DataConfiguration.getTapCardStatusListener()?.onError(request?.url?.getQueryParameterFromUri(keyValueName).toString())
-
-                    //closePayment()
-
-                }
-
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onSuccess.name)) {
-                    pair = Pair(request?.url?.getQueryParameterFromUri(keyValueName).toString(),true)
-                    when(iSAppInForeground) {
-
-                        true ->{closePayment()
-                            Log.e("app","one")
-                        }
-                        false ->{}
-                    }
-
-
                 }
 
                 return true
@@ -265,7 +213,6 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
              * put buttomsheet in separate class
              */
 
-            ThreeDsBottomSheetFragment.tapKnet = this@TapKnetPay
             val intent = Intent(context, ThreeDsWebViewActivity::class.java)
             (context).startActivity(intent)
 
@@ -307,112 +254,14 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
         }
     }
 
-    private fun dismissDialog() {
-        if (::dialog.isInitialized) {
-            linearLayout.removeView(cardWebview)
-            dialog.dismiss()
-            if (cardWebview.parent == null){
-                (webViewFrame as ViewGroup).addView(cardWebview)
-            }
-        }
-    }
-
     override fun onEnterForeground() {
-        iSAppInForeground = true
-        Log.e("applifeCycle","onEnterForeground")
-        closePayment()
-
-
-
-
 
     }
 
-    private fun closePayment() {
-        if (pair.second) {
-            Log.e("app","one")
-            dismissDialog()
-            init(cardConfiguraton)
-            DataConfiguration.getTapCardStatusListener()?.onSuccess(pair.first)
-        }
-    }
 
     override fun onEnterBackground() {
-        iSAppInForeground = false
         Log.e("applifeCycle","onEnterBackground")
 
-    }
-
-
-    inner class HideableWebViewClient : WebViewClient() {
-        @RequiresApi(Build.VERSION_CODES.O)
-        override fun shouldOverrideUrlLoading(
-            webView: WebView?,
-            request: WebResourceRequest?
-        ): Boolean {
-            isRedirected = true;
-            return false
-        }
-
-
-        override fun onPageFinished(view: WebView, url: String) {
-//            if (!alreadyEvaluated) {
-//                Log.e("onPagefinsihed", alreadyEvaluated.toString())
-//                alreadyEvaluated = true;
-//                Handler().postDelayed({
-//                //    navigateTo3dsActivity()
-//                }, waitDelaytime)
-//            } else {
-//                alreadyEvaluated = false;
-//            }
-
-            if (loaded){
-                return
-            }
-            else{
-                Log.e("onPagefinsihed", loaded.toString())
-                Handler().postDelayed({
-                        navigateTo3dsActivity()
-                }, waitDelaytime)
-            }
-            loaded = true
-
-        }
-
-        override fun shouldInterceptRequest(
-            view: WebView?,
-            request: WebResourceRequest?
-        ): WebResourceResponse? {
-            Log.e("hidden webview",request?.url.toString())
-
-            return super.shouldInterceptRequest(view, request)
-        }
-
-        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-            isRedirected = false;
-
-        }
-
-        fun navigateTo3dsActivity() {
-            // on below line we are creating a new bottom sheet dialog.
-            /**
-             * put buttomsheet in separate class
-             */
-
-
-            val intent = Intent(context, ThreeDsWebViewActivity::class.java)
-            (context).startActivity(intent)
-            ThreeDsBottomSheetFragment.tapKnet = this@TapKnetPay
-
-        }
-
-        override fun onReceivedError(
-            view: WebView,
-            request: WebResourceRequest,
-            error: WebResourceError
-        ) {
-            super.onReceivedError(view, request, error)
-        }
     }
 
 
