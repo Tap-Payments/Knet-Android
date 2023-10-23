@@ -13,7 +13,6 @@ import androidx.annotation.Nullable
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapcardformkit.R
-import company.tap.tapcardformkit.doAfterSpecificTime
 import company.tap.tapcardformkit.getDeviceSpecs
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
@@ -47,6 +46,9 @@ class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragme
         }catch (e:java.lang.Exception){
             Log.e("excption",e.toString())
         }
+        ( dialog as BottomSheetDialog).behavior.isFitToContents = false
+        ( dialog as BottomSheetDialog).behavior.peekHeight = (context?.getDeviceSpecs()?.first?: 950) - 250
+
 
 
 
@@ -59,14 +61,6 @@ class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragme
 
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        ( dialog as BottomSheetDialog).behavior.isFitToContents = false
-        ( dialog as BottomSheetDialog).behavior.peekHeight = (context?.getDeviceSpecs()?.first?: 950) - 150
-
-        return dialog
-
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.dialog?.window?.attributes?.windowAnimations = R.style.DialogAnimations

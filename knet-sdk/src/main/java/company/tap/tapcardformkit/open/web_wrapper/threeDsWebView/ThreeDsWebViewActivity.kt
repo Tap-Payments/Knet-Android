@@ -14,13 +14,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapcardformkit.R
 import company.tap.tapcardformkit.doAfterSpecificTime
+import company.tap.tapcardformkit.getDeviceSpecs
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
 import company.tap.tapcardformkit.open.web_wrapper.keyValueName
 import company.tap.tapcardformkit.open.web_wrapper.keyValueNameTapId
 import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
+import company.tap.tapcardformkit.twoThirdHeightView
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
+import kotlin.math.roundToInt
 
 const val chunkSize = 2048
 const val keyValueForAuthPayer = "auth_payer"
@@ -34,20 +37,17 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_three_ds_web_view)
         LocalizationManager.setLocale(this, Locale(DataConfiguration.lanuage.toString()))
         val webView  = WebView(this)
-        webView.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
+        webView.layoutParams = this.getDeviceSpecs().first.let {
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                it
+            )
+        }
 
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = threeDsWebViewClient()
         webView.loadUrl(TapKnetPay.threeDsResponse.url)
         threeDsBottomsheet = ThreeDsBottomSheetFragment(webView)
-//        threeDsBottomsheet.dialog?.setOnDismissListener {
-//            doAfterSpecificTime {
-//                finish()
-//            }
-//        }
 
     }
 
@@ -81,7 +81,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             if (loadedBottomSheet){
                 return
             }else{
-                doAfterSpecificTime {
+                doAfterSpecificTime(time = 3000) {
                     threeDsBottomsheet.show(supportFragmentManager,"")
                 }
             }
