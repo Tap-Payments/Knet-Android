@@ -9,7 +9,6 @@ import com.chillibits.simplesettings.core.SimpleSettings
 import com.chillibits.simplesettings.core.SimpleSettingsConfig
 import com.chillibits.simplesettings.tool.getPrefBooleanValue
 import com.chillibits.simplesettings.tool.getPrefStringValue
-import com.example.benefitpay_android.R
 
 class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCallback  {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +72,16 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
 
         intent.putExtra("posturlKey", getPrefStringValue("posturlKey",""))
         intent.putExtra("redirectUrlKey", getPrefStringValue("redirectUrlKey",""))
+
+
+        /**
+         * scope && transaction
+         */
+
+        intent.putExtra("scopeKey", getPrefStringValue("scopeKey","Token"))
+        intent.putExtra("paymentAgreementID", getPrefStringValue("paymentAgreementID","Token"))
+        intent.putExtra("paymentAgreementContract", getPrefStringValue("paymentAgreementContract","Token"))
+
 
         finish()
         startActivity(intent)

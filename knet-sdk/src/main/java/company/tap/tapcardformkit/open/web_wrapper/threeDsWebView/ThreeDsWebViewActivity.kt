@@ -82,7 +82,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             if (loadedBottomSheet){
                 return
             }else{
-                doAfterSpecificTime(time = 3500) {
+                doAfterSpecificTime(time = 5000) {
                     threeDsBottomsheet.show(supportFragmentManager,"")
                 }
             }

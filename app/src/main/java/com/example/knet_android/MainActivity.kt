@@ -4,7 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.example.benefitpay_android.R
+import com.chillibits.simplesettings.tool.getPrefStringValue
+import com.example.knet_android.R
 import company.tap.tapcardformkit.open.KnetPayStatusDelegate
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
@@ -133,6 +134,23 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val redirect = HashMap<String,Any>()
         redirect.put("url","onTapKnetRedirect://")
         val configuration = LinkedHashMap<String,Any>()
+
+
+        /**
+         * transaction
+         */
+
+        val transaction = HashMap<String,Any>()
+        val scopeKey = intent.getStringExtra("scopeKey")
+        val paymentAgreementID = intent.getStringExtra("paymentAgreementID")
+        val paymentAgreementContract = intent.getStringExtra("paymentAgreementContract")
+        Log.e("scope",scopeKey.toString() + "paymentAgree mentID" + paymentAgreementID.toString() + "paymentAgreementContract " + paymentAgreementContract.toString())
+//
+//        transaction.put("paymentAgreement","test")
+//        transaction.put("metadata",metada)
+//        configuration.put("scope",scopeKey.toString())
+//        configuration.put("transaction",transaction)
+
 
         configuration.put("operator",operator)
         configuration.put("order",order)

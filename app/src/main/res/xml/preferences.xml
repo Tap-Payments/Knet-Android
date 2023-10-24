@@ -24,6 +24,35 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory  app:title="@string/scope_title">
+
+
+        <DropDownPreference
+            app:key="scopeKey"
+            app:entries="@array/ScopeList"
+            app:entryValues="@array/ScopeList"
+            app:defaultValue="1"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/transaction">
+
+        <EditTextPreference
+            app:key="paymentAgreementID"
+            app:defaultValue=""
+            app:title="Payment agreement id"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            app:key="paymentAgreementContract"
+            app:defaultValue=""
+            app:title="Payment agreement contract"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
 
 
 

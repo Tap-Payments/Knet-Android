@@ -68,7 +68,7 @@ class TapKnetConfiguration {
                 publicKey ?: "",
                 context.packageName,
                 ApiService.BASE_URL,
-                "android-benefitpay",
+                "android-knet",
                 true,
                 encodedeky,
                 null
