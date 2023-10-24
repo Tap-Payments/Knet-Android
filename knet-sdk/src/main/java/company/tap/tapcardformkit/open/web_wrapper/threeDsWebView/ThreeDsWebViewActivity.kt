@@ -80,6 +80,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
 
         override fun onPageFinished(view: WebView, url: String) {
             if (loadedBottomSheet){
+
                 return
             }else{
                 doAfterSpecificTime(time = 5000) {
