@@ -63,15 +63,13 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             when (request?.url?.toString()?.contains(redirect.toString(),ignoreCase = true)) {
                 true -> {
                     threeDsBottomsheet.dialog?.dismiss()
-                    val string = request.url.toString().split(redirect.toString().toLowerCase()+"?")
-                    Log.e("splitted",string.toString())
+                    val splittiedString = request.url.toString().split(redirect.toString()+"?", ignoreCase = true)
+                    Log.e("splitted",splittiedString.toString())
                     try {
-                        TapKnetPay.retrieve(string.get(1))
+                        TapKnetPay.retrieve(splittiedString.get(1))
                     }catch (e:Exception){
                         DataConfiguration.getTapKnetListener()?.onError(e.message.toString())
                     }
-                   // TapKnetPay.cancel()
-
                 }
                 false -> {}
                 else -> {}
