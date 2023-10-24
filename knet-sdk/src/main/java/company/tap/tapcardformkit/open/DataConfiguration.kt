@@ -138,7 +138,7 @@ object DataConfiguration {
     fun getAppLifeCycle(): ApplicationLifecycle? {
         return this.applicationLifecycle
     }
-    fun getTapCardStatusListener(): KnetPayStatusDelegate? {
+    fun getTapKnetListener(): KnetPayStatusDelegate? {
         return knetPayStatusDelegate
     }
 
@@ -158,8 +158,6 @@ interface KnetPayStatusDelegate {
     fun onReady(){}
     fun onClick(){}
     fun onOrderCreated(data: String){}
-    fun retrieve(data: String)
-
     fun onChargeCreated(data:String){}
     fun onError(error: String)
     fun cancel(){}

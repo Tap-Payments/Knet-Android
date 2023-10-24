@@ -20,7 +20,7 @@ import com.google.gson.Gson
 import company.tap.tapcardformkit.*
 import company.tap.tapcardformkit.open.ApplicationLifecycle
 import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.enums.BenefitPayStatusDelegate
+import company.tap.tapcardformkit.open.web_wrapper.enums.KnetStatusDelegate
 import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
 import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
 import company.tap.tapuilibrary.themekit.ThemeManager
@@ -34,13 +34,18 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
     companion object{
          lateinit var threeDsResponse: ThreeDsResponse
 
-        lateinit var cardWebview: WebView
-        lateinit var cardConfiguraton: CardConfiguraton
+        lateinit var knetWebView: WebView
+        lateinit var knetConfiguration: KnetConfiguration
         var card:Card?=null
 
         fun cancel() {
-            cardWebview.loadUrl("javascript:cancel()")
+            knetWebView.loadUrl("javascript:window.cancel()")
         }
+
+        fun retrieve(value:String) {
+            knetWebView.loadUrl("javascript:window.retrieve('$value')")
+        }
+
 
 
     }
@@ -69,30 +74,30 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
      private fun initWebView() {
-        cardWebview = findViewById(R.id.webview)
+        knetWebView = findViewById(R.id.webview)
         webViewFrame = findViewById(R.id.webViewFrame)
 
-         with(cardWebview.settings){
+         with(knetWebView.settings){
              javaScriptEnabled=true
              domStorageEnabled=true
              cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
 
          }
-         cardWebview.setBackgroundColor(Color.TRANSPARENT)
-         cardWebview.setLayerType(LAYER_TYPE_SOFTWARE, null)
-         cardWebview.webViewClient = MyWebViewClient()
+         knetWebView.setBackgroundColor(Color.TRANSPARENT)
+         knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
+         knetWebView.webViewClient = MyWebViewClient()
 
 
      }
-     fun init(configuraton: CardConfiguraton) {
-         cardConfiguraton = configuraton
+     fun init(configuraton: KnetConfiguration) {
+         knetConfiguration = configuraton
          DataConfiguration.addAppLifeCycle(this)
         applyTheme()
         when (configuraton) {
-            CardConfiguraton.MapConfigruation -> {
+            KnetConfiguration.MapConfigruation -> {
                 val url  = "${urlWebStarter}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
              Log.e("url",url.toString())
-                cardWebview.loadUrl(url)
+                knetWebView.loadUrl(url)
 
             }
             else -> {}
@@ -104,8 +109,8 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
         /**
          * need to be refactored : mulitple copies of same code
          */
-        when(cardConfiguraton){
-            CardConfiguraton.MapConfigruation ->{
+        when(knetConfiguration){
+            KnetConfiguration.MapConfigruation ->{
                 val tapInterface = DataConfiguration.configurationsAsHashMap?.get("interface") as? Map<*, *>
               setTapThemeAndLanguage(
                     this.context,
@@ -154,39 +159,39 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
              * main checker if url start with "tapCardWebSDK://"
              */
 
-            if (request?.url.toString().startsWith(CardWebUrlPrefix, ignoreCase = true)) {
+            if (request?.url.toString().startsWith(knetWebPrefix, ignoreCase = true)) {
                 Log.e("url",request?.url.toString())
                 /**
                  * listen for states of cardWebStatus of onReady , onValidInput .. etc
                  */
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onReady.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.onReady()
+                if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
+                    DataConfiguration.getTapKnetListener()?.onReady()
                 }
 
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onSuccess.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
+                    DataConfiguration.getTapKnetListener()?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onChargeCreated.name)) {
+                if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
                     val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
                     val gson = Gson()
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
                     navigateTo3dsActivity()
-                    DataConfiguration.getTapCardStatusListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                    DataConfiguration.getTapKnetListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
 
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onOrderCreated.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.onOrderCreated(request?.url?.getQueryParameter(keyValueName).toString())
+                if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
+                    DataConfiguration.getTapKnetListener()?.onOrderCreated(request?.url?.getQueryParameter(keyValueName).toString())
                 }
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onClick.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.onClick()
+                if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
+                    DataConfiguration.getTapKnetListener()?.onClick()
 
                 }
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.cancel.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.cancel()
+                if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
+                    DataConfiguration.getTapKnetListener()?.cancel()
                 }
 
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onError.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.onError(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
+                    DataConfiguration.getTapKnetListener()?.onError(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
 
                 return true
@@ -266,7 +271,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
 
-enum class CardConfiguraton() {
+enum class KnetConfiguration() {
     MapConfigruation
 }
 

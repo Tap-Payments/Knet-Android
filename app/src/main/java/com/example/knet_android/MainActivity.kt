@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         post.put("url",posturl?: "")
 
         val redirect = HashMap<String,Any>()
-        redirect.put("url",redirectUrl ?: "onTapKnetRedirect://")
+        redirect.put("url","onTapKnetRedirect://")
         val configuration = LinkedHashMap<String,Any>()
 
         configuration.put("operator",operator)
@@ -156,15 +156,12 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     }
 
-
-    override fun retrieve(data: String) {
-        Toast.makeText(this, "retrieveCharge id $data", Toast.LENGTH_SHORT).show()
-    }
     override fun onReady() {
         Toast.makeText(this, "onReady", Toast.LENGTH_SHORT).show()
     }
 
     override fun onSuccess(data: String) {
+        Log.i("onSuccess",data)
         Toast.makeText(this, "onSuccess $data", Toast.LENGTH_SHORT).show()
 
     }
@@ -184,7 +181,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     }
 
     override fun cancel() {
-        Toast.makeText(this, "onCancel ", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Cancel ", Toast.LENGTH_SHORT).show()
     }
 
     override fun onError(error: String) {

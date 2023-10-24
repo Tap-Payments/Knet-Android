@@ -1,6 +1,5 @@
 package company.tap.tapcardformkit.open.web_wrapper.threeDsWebView
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -63,7 +62,7 @@ class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragme
         tapBrandView.backButtonLinearLayout.setOnClickListener {
             this.dialog?.dismiss()
             TapKnetPay.cancel()
-            DataConfiguration.getTapCardStatusListener()?.onError("User canceled ")
+            DataConfiguration.getTapKnetListener()?.cancel()
 
         }
 

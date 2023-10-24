@@ -145,6 +145,7 @@
 
 
     <PreferenceCategory
+        app:isPreferenceVisible="false"
         app:title="@string/redirect">
 
         <EditTextPreference

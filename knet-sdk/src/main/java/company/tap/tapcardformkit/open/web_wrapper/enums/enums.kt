@@ -2,6 +2,6 @@ package company.tap.tapcardformkit.open.web_wrapper.enums
 
 
 
-enum class BenefitPayStatusDelegate {
+enum class KnetStatusDelegate {
     onReady, onClick, onOrderCreated,onChargeCreated, onError, onSuccess,cancel
 }

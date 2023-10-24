@@ -55,7 +55,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             request: WebResourceRequest?
         ): Boolean {
             webView?.loadUrl(request?.url.toString())
-            Log.e("urls",request?.url.toString())
+            Log.e("3dsurl",request?.url.toString())
             val Redirect = DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
             val redirect = Redirect.get(urlKey)
             Log.e("redirect",redirect.toString())
@@ -63,10 +63,14 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             when (request?.url?.toString()?.contains(redirect.toString(),ignoreCase = true)) {
                 true -> {
                     threeDsBottomsheet.dialog?.dismiss()
-                    DataConfiguration.getTapCardStatusListener()?.retrieve(request.url?.getQueryParameter(
-                        keyValueNameTapId
-                    ).toString())
-                    TapKnetPay.cancel()
+                    val string = request.url.toString().split(redirect.toString().toLowerCase()+"?")
+                    Log.e("splitted",string.toString())
+                    try {
+                        TapKnetPay.retrieve(string.get(1))
+                    }catch (e:Exception){
+                        DataConfiguration.getTapKnetListener()?.onError(e.message.toString())
+                    }
+                   // TapKnetPay.cancel()
 
                 }
                 false -> {}

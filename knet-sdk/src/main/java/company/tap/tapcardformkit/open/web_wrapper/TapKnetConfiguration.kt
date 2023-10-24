@@ -36,12 +36,12 @@ class TapKnetConfiguration {
                 addOperatorHeaderField(
                     tapCardInputViewWeb,
                     context,
-                    CardConfiguraton.MapConfigruation,
+                    KnetConfiguration.MapConfigruation,
                     publickKey.toString()
                 )
 
                 DataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
-                tapCardInputViewWeb?.init(CardConfiguraton.MapConfigruation)
+                tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation)
 
             }
         }
@@ -49,7 +49,7 @@ class TapKnetConfiguration {
         fun addOperatorHeaderField(
             tapCardInputViewWeb: TapKnetPay?,
             context: Context,
-            modelConfiguration: CardConfiguraton,
+            modelConfiguration: KnetConfiguration,
             publicKey: String?
         ) {
          val encodedeky = when(publicKey.toString().contains("test")){
@@ -76,13 +76,13 @@ class TapKnetConfiguration {
             val headers = Headers(
                 application = NetworkApp.getApplicationInfo(),
                 mdn = CryptoUtil.encryptJsonString(
-                    "tap.KnetExample".toString(),
+                    context.packageName.toString(),
                     encodedeky,
                 )
             )
 
             when (modelConfiguration) {
-                CardConfiguraton.MapConfigruation -> {
+                KnetConfiguration.MapConfigruation -> {
                     val hashMapHeader = HashMap<String, Any>()
                     hashMapHeader[HeadersMdn] = headers.mdn.toString()
                     hashMapHeader[HeadersApplication] = headers.application.toString()
