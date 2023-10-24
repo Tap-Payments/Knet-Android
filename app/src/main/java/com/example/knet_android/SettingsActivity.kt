@@ -79,8 +79,9 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
          */
 
         intent.putExtra("scopeKey", getPrefStringValue("scopeKey","Token"))
-        intent.putExtra("paymentAgreementID", getPrefStringValue("paymentAgreementID","Token"))
-        intent.putExtra("paymentAgreementContract", getPrefStringValue("paymentAgreementContract","Token"))
+        intent.putExtra("transactionRefrenceKey", getPrefStringValue("transactionRefrenceKey",""))
+        intent.putExtra("transactionAuthroizeTypeKey", getPrefStringValue("transactionAuthroizeTypeKey",""))
+        intent.putExtra("transactionAuthroizeTimeKey", getPrefStringValue("transactionAuthroizeTimeKey",""))
 
 
         finish()

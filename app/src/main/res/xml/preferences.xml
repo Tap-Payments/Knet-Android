@@ -40,15 +40,23 @@
         app:title="@string/transaction">
 
         <EditTextPreference
-            app:key="paymentAgreementID"
-            app:defaultValue=""
-            app:title="Payment agreement id"
+            app:key="transactionRefrenceKey"
+            app:defaultValue="trx"
+            app:title="Trx ref"
+            app:useSimpleSummaryProvider="true"/>
+
+        <DropDownPreference
+            app:key="transactionAuthroizeTypeKey"
+            app:title="transaction.authorizetype"
+            app:entries="@array/AuthorizeList"
+            app:entryValues="@array/AuthorizeList"
+            app:defaultValue="1"
             app:useSimpleSummaryProvider="true"/>
 
         <EditTextPreference
-            app:key="paymentAgreementContract"
-            app:defaultValue=""
-            app:title="Payment agreement contract"
+            app:key="transactionAuthroizeTimeKey"
+            app:defaultValue="12"
+            app:title="transaction.authorizetime"
             app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.chillibits.simplesettings.tool.getPrefStringValue
-import com.example.knet_android.R
 import company.tap.tapcardformkit.open.KnetPayStatusDelegate
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
@@ -137,30 +136,42 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
 
         /**
-         * transaction
+         * transaction && scope
          */
+
+        intent.putExtra("scopeKey", getPrefStringValue("scopeKey","Token"))
+        intent.putExtra("transactionRefrenceKey", getPrefStringValue("transactionRefrenceKey",""))
+        intent.putExtra("transactionAuthroizeTypeKey", getPrefStringValue("transactionAuthroizeTypeKey",""))
+        intent.putExtra("transactionAuthroizeTimeKey", getPrefStringValue("transactionAuthroizeTimeKey",""))
 
         val transaction = HashMap<String,Any>()
         val scopeKey = intent.getStringExtra("scopeKey")
-        val paymentAgreementID = intent.getStringExtra("paymentAgreementID")
-        val paymentAgreementContract = intent.getStringExtra("paymentAgreementContract")
-        Log.e("scope",scopeKey.toString() + "paymentAgree mentID" + paymentAgreementID.toString() + "paymentAgreementContract " + paymentAgreementContract.toString())
-//
-//        transaction.put("paymentAgreement","test")
-//        transaction.put("metadata",metada)
-//        configuration.put("scope",scopeKey.toString())
-//        configuration.put("transaction",transaction)
+        val transactionRefrenceKey = intent.getStringExtra("transactionRefrenceKey")
+        val transactionAuthroizeTypeKey = intent.getStringExtra("transactionAuthroizeTypeKey")
+        val transactionAuthroizeTimeKey = intent.getStringExtra("transactionAuthroizeTimeKey")
 
+        Log.e("scope","scope is : " + scopeKey.toString() + " transactionRefrenceKey : " +  " " + transactionRefrenceKey.toString() +  " transactionAuthroizeTypeKey : " + transactionAuthroizeTypeKey.toString() + " transactionAuthroizeTimeKey : " + transactionAuthroizeTimeKey.toString())
+        val authorize = HashMap<String,Any>()
+        authorize.put("type",transactionAuthroizeTypeKey ?:"")
+        authorize.put("time",transactionAuthroizeTimeKey ?:"")
+
+        transaction.put("reference",transactionRefrenceKey?: "")
+        transaction.put("authorize",authorize?: "")
+
+        /**
+         * configuration
+         */
 
         configuration.put("operator",operator)
         configuration.put("order",order)
         configuration.put("customer",customer)
-
         configuration.put("merchant",merchant)
         configuration.put("invoice",invoice)
         configuration.put("interface",interfacee)
         configuration.put("post",post)
         configuration.put("redirect",redirect)
+        configuration.put("scope",scopeKey.toString())
+        configuration.put("transaction",transaction)
 
 
 

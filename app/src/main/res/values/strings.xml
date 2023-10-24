@@ -96,10 +96,13 @@
     <string name="payment_agreement_contract">Payment agreement contract </string>
 
     <string-array name="ScopeList">
-        <item>Token</item>
-        <item>AuthenticatedToken</item>
-        <item>SaveToken</item>
-        <item>SaveAuthenticatedToken</item>
+        <item>charge</item>
+        <item>authorize</item>
+    </string-array>
+
+    <string-array name="AuthorizeList">
+        <item>VOID</item>
+        <item>CAPTURE</item>
     </string-array>
 
     <string-array name="ScopeList_default_values">
