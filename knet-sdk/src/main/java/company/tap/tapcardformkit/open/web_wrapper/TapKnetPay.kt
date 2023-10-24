@@ -3,19 +3,14 @@ package company.tap.tapcardformkit.open.web_wrapper
 import TapLocal
 import TapTheme
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Picture
 import android.net.http.SslError
 import android.os.Build
-import android.os.Handler
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.webkit.*
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -44,7 +39,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
         var card:Card?=null
 
         fun cancel() {
-            cardWebview.loadUrl("javascript:onCancel")
+            cardWebview.loadUrl("javascript:cancel()")
         }
 
 
@@ -186,8 +181,8 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                     DataConfiguration.getTapCardStatusListener()?.onClick()
 
                 }
-                if (request?.url.toString().contains(BenefitPayStatusDelegate.onCancel.name)) {
-                    DataConfiguration.getTapCardStatusListener()?.onCancel()
+                if (request?.url.toString().contains(BenefitPayStatusDelegate.cancel.name)) {
+                    DataConfiguration.getTapCardStatusListener()?.cancel()
                 }
 
                 if (request?.url.toString().contains(BenefitPayStatusDelegate.onError.name)) {

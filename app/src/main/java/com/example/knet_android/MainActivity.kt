@@ -15,6 +15,12 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         configureSdk()
+
+//        Bundle ID	tap.KnetExample
+//        Prod - Public Key	pk_live_I8aWfZkiGtw9HYsRCcAgQzS6
+//        Test - Public Key	pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp
+//        Prod - Secret Key	sk_live_462YewyxHlPsUGvSWOjckQAi
+//        Test - Secret Key	sk_test_bNgRpokWMylX3CBJ6FOresTq
     }
 
     fun configureSdk(){
@@ -26,7 +32,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val publicKey = intent.getStringExtra("publicKey")
         val hashStringKey = intent.getStringExtra("hashStringKey")
         val operator = HashMap<String,Any>()
-        operator.put("publicKey","pk_live_I8aWfZkiGtw9HYsRCcAgQzS6")
+
+        operator.put("publicKey","pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp")
         operator.put("hashString",hashStringKey.toString())
         Log.e("orderData","pbulc" + publicKey.toString() + " \nhash" + hashStringKey.toString())
 
@@ -150,7 +157,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     }
 
 
-    override fun retrieveCharge(data: String) {
+    override fun retrieve(data: String) {
         Toast.makeText(this, "retrieveCharge id $data", Toast.LENGTH_SHORT).show()
     }
     override fun onReady() {
@@ -176,7 +183,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         Toast.makeText(this, "onOrderCreated $data", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCancel() {
+    override fun cancel() {
         Toast.makeText(this, "onCancel ", Toast.LENGTH_SHORT).show()
     }
 

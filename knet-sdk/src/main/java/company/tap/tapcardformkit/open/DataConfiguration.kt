@@ -158,11 +158,11 @@ interface KnetPayStatusDelegate {
     fun onReady(){}
     fun onClick(){}
     fun onOrderCreated(data: String){}
-    fun retrieveCharge(data: String)
+    fun retrieve(data: String)
 
     fun onChargeCreated(data:String){}
     fun onError(error: String)
-    fun onCancel(){}
+    fun cancel(){}
 }
 
 interface ApplicationLifecycle {

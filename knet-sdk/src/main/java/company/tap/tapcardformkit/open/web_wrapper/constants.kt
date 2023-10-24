@@ -25,4 +25,7 @@ const val HeadersApplication ="application"
 const val HeadersMdn ="mdn"
 const val operatorKey ="operator"
 const val headersKey ="headers"
+const val redirectKey ="redirect"
+const val urlKey ="url"
+
 

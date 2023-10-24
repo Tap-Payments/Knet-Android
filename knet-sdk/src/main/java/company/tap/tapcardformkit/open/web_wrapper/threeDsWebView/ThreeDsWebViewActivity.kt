@@ -1,6 +1,5 @@
 package company.tap.tapcardformkit.open.web_wrapper.threeDsWebView
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -16,14 +15,9 @@ import company.tap.tapcardformkit.R
 import company.tap.tapcardformkit.doAfterSpecificTime
 import company.tap.tapcardformkit.getDeviceSpecs
 import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
-import company.tap.tapcardformkit.open.web_wrapper.keyValueName
-import company.tap.tapcardformkit.open.web_wrapper.keyValueNameTapId
-import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
-import company.tap.tapcardformkit.twoThirdHeightView
+import company.tap.tapcardformkit.open.web_wrapper.*
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
-import kotlin.math.roundToInt
 
 const val chunkSize = 2048
 const val keyValueForAuthPayer = "auth_payer"
@@ -45,6 +39,9 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
         }
 
         webView.settings.javaScriptEnabled = true
+        webView.isVerticalScrollBarEnabled = true
+        webView.requestFocus();
+
         webView.webViewClient = threeDsWebViewClient()
         webView.loadUrl(TapKnetPay.threeDsResponse.url)
         threeDsBottomsheet = ThreeDsBottomSheetFragment(webView)
@@ -59,12 +56,17 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
         ): Boolean {
             webView?.loadUrl(request?.url.toString())
             Log.e("urls",request?.url.toString())
-            when (request?.url?.toString()?.contains("ontapknetredirect://")) {
+            val Redirect = DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+            val redirect = Redirect.get(urlKey)
+            Log.e("redirect",redirect.toString())
+
+            when (request?.url?.toString()?.contains(redirect.toString(),ignoreCase = true)) {
                 true -> {
                     threeDsBottomsheet.dialog?.dismiss()
-                    DataConfiguration.getTapCardStatusListener()?.retrieveCharge(request.url?.getQueryParameter(
+                    DataConfiguration.getTapCardStatusListener()?.retrieve(request.url?.getQueryParameter(
                         keyValueNameTapId
                     ).toString())
+                    TapKnetPay.cancel()
 
                 }
                 false -> {}
@@ -78,7 +80,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             if (loadedBottomSheet){
                 return
             }else{
-                doAfterSpecificTime(time = 3000) {
+                doAfterSpecificTime(time = 3500) {
                     threeDsBottomsheet.show(supportFragmentManager,"")
                 }
             }
