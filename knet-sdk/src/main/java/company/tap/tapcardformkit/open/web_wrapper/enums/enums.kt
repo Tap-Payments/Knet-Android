@@ -24,5 +24,5 @@ enum class SCHEMES(var value:Pair<String,String>){
 }
 
 enum class PayButtonTypes {
-    KNET,BENEFIT
+    KNET,BENEFIT,BENEFITPAY
 }
