@@ -9,6 +9,7 @@ import company.tap.tapcardformkit.open.AppLifecycleObserver
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.DataConfiguration.configurationsAsHashMap
 import company.tap.tapcardformkit.open.KnetPayStatusDelegate
+import company.tap.tapcardformkit.open.web_wrapper.enums.*
 import company.tap.tapnetworkkit.connection.NetworkApp
 import company.tap.tapnetworkkit.utils.CryptoUtil
 
@@ -22,7 +23,9 @@ class TapKnetConfiguration {
             context: Context,
             tapCardInputViewWeb: TapKnetPay?,
             tapMapConfiguration: java.util.HashMap<String, Any>,
-            knetPayStatusDelegate: KnetPayStatusDelegate? = null
+            knetPayStatusDelegate: KnetPayStatusDelegate? = null,
+            buttonType: PayButtonTypes? = null
+
         ) {
             with(tapMapConfiguration) {
                 Log.e("map", tapMapConfiguration.toString())
@@ -41,7 +44,7 @@ class TapKnetConfiguration {
                 )
 
                 DataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
-                tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation)
+                tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
 
             }
         }

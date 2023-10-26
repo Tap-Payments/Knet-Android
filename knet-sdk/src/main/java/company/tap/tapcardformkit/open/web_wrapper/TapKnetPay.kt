@@ -20,7 +20,7 @@ import com.google.gson.Gson
 import company.tap.tapcardformkit.*
 import company.tap.tapcardformkit.open.ApplicationLifecycle
 import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.enums.KnetStatusDelegate
+import company.tap.tapcardformkit.open.web_wrapper.enums.*
 import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
 import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
 import company.tap.tapuilibrary.themekit.ThemeManager
@@ -30,18 +30,16 @@ import java.util.*
 
 @SuppressLint("ViewConstructor")
 class TapKnetPay : LinearLayout,ApplicationLifecycle {
-    lateinit var webViewFrame: FrameLayout
+    lateinit var webviewStarterUrl:String
+    lateinit var webViewScheme:String
+
     companion object{
          lateinit var threeDsResponse: ThreeDsResponse
-
         lateinit var knetWebView: WebView
         lateinit var knetConfiguration: KnetConfiguration
-        var card:Card?=null
-
         fun cancel() {
             knetWebView.loadUrl("javascript:window.cancel()")
         }
-
         fun retrieve(value:String) {
             knetWebView.loadUrl("javascript:window.retrieve('$value')")
         }
@@ -75,7 +73,6 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
      private fun initWebView() {
         knetWebView = findViewById(R.id.webview)
-        webViewFrame = findViewById(R.id.webViewFrame)
 
          with(knetWebView.settings){
              javaScriptEnabled=true
@@ -89,16 +86,30 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
      }
-     fun init(configuraton: KnetConfiguration) {
+     fun init(configuraton: KnetConfiguration, buttonType: PayButtonTypes?) {
+         initializePaymentData(buttonType)
          knetConfiguration = configuraton
          DataConfiguration.addAppLifeCycle(this)
         applyTheme()
         when (configuraton) {
             KnetConfiguration.MapConfigruation -> {
-                val url  = "${urlWebStarter}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
-             Log.e("url",url.toString())
+                val url  = "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
                 knetWebView.loadUrl(url)
 
+            }
+            else -> {}
+        }
+    }
+
+    private fun initializePaymentData(buttonType: PayButtonTypes?) {
+        when(buttonType){
+            PayButtonTypes.KNET->{
+                webviewStarterUrl = SCHEMES.KNET.value.first
+                webViewScheme = SCHEMES.KNET.value.second
+            }
+            PayButtonTypes.BENEFIT ->{
+                webviewStarterUrl = SCHEMES.BENEFIT.value.first
+                webViewScheme = SCHEMES.BENEFIT.value.second
             }
             else -> {}
         }
@@ -159,7 +170,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
              * main checker if url start with "tapCardWebSDK://"
              */
 
-            if (request?.url.toString().startsWith(knetWebPrefix, ignoreCase = true)) {
+            if (request?.url.toString().startsWith(webViewScheme, ignoreCase = true)) {
                 Log.e("url",request?.url.toString())
                 /**
                  * listen for states of cardWebStatus of onReady , onValidInput .. etc

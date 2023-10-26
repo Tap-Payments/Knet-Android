@@ -8,6 +8,7 @@ import com.chillibits.simplesettings.tool.getPrefStringValue
 import company.tap.tapcardformkit.open.KnetPayStatusDelegate
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
+import company.tap.tapcardformkit.open.web_wrapper.enums.PayButtonTypes
 
 class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     lateinit var tapKnetPay: TapKnetPay
@@ -31,11 +32,14 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
          */
         val publicKey = intent.getStringExtra("publicKey")
         val hashStringKey = intent.getStringExtra("hashStringKey")
+        val buttonKey = intent.getStringExtra("buttonKey")
+
         val operator = HashMap<String,Any>()
 
         operator.put("publicKey","pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp")
         operator.put("hashString",hashStringKey.toString())
         Log.e("orderData","pbulc" + publicKey.toString() + " \nhash" + hashStringKey.toString())
+        Log.e("buttonKey","buttonKey" + buttonKey.toString())
 
         /**
          * metadata
@@ -53,7 +57,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val selectedCurrency: String = intent.getStringExtra("selectedCurrencyKey").toString()
 
         val order = HashMap<String,Any>()
-        order.put("id",ordrId ?: "")
+        order.put("id",ordrId.toString())
         order.put("amount",  if (orderAmount?.isEmpty() == true)"1" else orderAmount.toString() )
         order.put("currency",selectedCurrency)
         order.put("description",orderDescription ?: "")
@@ -181,7 +185,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
             this,
             findViewById(R.id.knet_pay),
             configuration,
-           this)
+           this,PayButtonTypes.valueOf(buttonKey.toString()))
 
 
     }

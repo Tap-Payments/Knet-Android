@@ -16,6 +16,8 @@ import company.tap.tapcardformkit.doAfterSpecificTime
 import company.tap.tapcardformkit.getDeviceSpecs
 import company.tap.tapcardformkit.open.DataConfiguration
 import company.tap.tapcardformkit.open.web_wrapper.*
+import company.tap.tapcardformkit.open.web_wrapper.enums.redirectKey
+import company.tap.tapcardformkit.open.web_wrapper.enums.urlKey
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
 
