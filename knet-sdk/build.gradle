@@ -22,7 +22,7 @@ def getVersionName = { ->
 android {
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
-    namespace 'company.tap.tapcardformkit'
+    namespace 'company.tap.tapWebForm'
 
     defaultConfig {
         minSdkVersion 24

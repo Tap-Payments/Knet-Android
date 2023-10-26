@@ -1,4 +1,4 @@
-package company.tap.tapcardformkit.open.web_wrapper.threeDsWebView
+package company.tap.tapWebForm.open.web_wrapper.threeDsWebView
 
 import android.os.Bundle
 import android.util.Log
@@ -11,12 +11,12 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import company.tap.tapcardformkit.R
-import company.tap.tapcardformkit.doAfterSpecificTime
-import company.tap.tapcardformkit.getDeviceSpecs
-import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
+import company.tap.tapWebForm.doAfterSpecificTime
+import company.tap.tapWebForm.getDeviceSpecs
+import company.tap.tapWebForm.open.DataConfiguration
+import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
 import company.tap.tapuilibrary.uikit.views.TapBrandView
+import company.tap.tapWebForm.R
 
 class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragment() {
 

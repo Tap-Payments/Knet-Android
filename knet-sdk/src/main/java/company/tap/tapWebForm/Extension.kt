@@ -1,4 +1,4 @@
-package company.tap.tapcardformkit
+package company.tap.tapWebForm
 
 import android.app.Activity
 import android.content.Context
@@ -22,8 +22,8 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.postDelayed
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
-import company.tap.tapcardformkit.open.web_wrapper.enums.rawFolderRefrence
-import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
+import company.tap.tapWebForm.open.web_wrapper.enums.rawFolderRefrence
+import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
 import company.tap.tapuilibrary.R
 import company.tap.tapuilibrary.themekit.ThemeManager
 import jp.wasabeef.blurry.Blurry
@@ -133,7 +133,7 @@ fun ViewGroup.addLoaderWithBlurryToView(showLoadingIcon: Boolean, invokeAfterLoa
                 "dark"
             )
         ) {
-            company.tap.tapcardformkit.R.drawable.output_black_loader_nobg
+            company.tap.tapWebForm.R.drawable.output_black_loader_nobg
         } else
             R.drawable.loader
 

@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.chillibits.simplesettings.tool.getPrefStringValue
-import company.tap.tapcardformkit.open.KnetPayStatusDelegate
-import company.tap.tapcardformkit.open.web_wrapper.TapKnetConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.TapKnetPay
-import company.tap.tapcardformkit.open.web_wrapper.enums.PayButtonTypes
+import company.tap.tapWebForm.open.KnetPayStatusDelegate
+import company.tap.tapWebForm.open.web_wrapper.TapKnetConfiguration
+import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
+import company.tap.tapWebForm.open.web_wrapper.enums.PayButtonTypes
 
 class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     lateinit var tapKnetPay: TapKnetPay

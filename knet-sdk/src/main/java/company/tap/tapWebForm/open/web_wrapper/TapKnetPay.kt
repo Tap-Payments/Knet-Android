@@ -1,4 +1,4 @@
-package company.tap.tapcardformkit.open.web_wrapper
+package company.tap.tapWebForm.open.web_wrapper
 
 import TapLocal
 import TapTheme
@@ -15,14 +15,13 @@ import android.webkit.*
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.view.*
-import cards.pay.paycardsrecognizer.sdk.Card
 import com.google.gson.Gson
-import company.tap.tapcardformkit.*
-import company.tap.tapcardformkit.open.ApplicationLifecycle
-import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.enums.*
-import company.tap.tapcardformkit.open.web_wrapper.model.ThreeDsResponse
-import company.tap.tapcardformkit.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
+import company.tap.tapWebForm.*
+import company.tap.tapWebForm.open.ApplicationLifecycle
+import company.tap.tapWebForm.open.DataConfiguration
+import company.tap.tapWebForm.open.web_wrapper.enums.*
+import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
+import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
 import company.tap.tapuilibrary.themekit.ThemeManager
 import company.tap.tapuilibrary.uikit.atoms.*
 import java.util.*

@@ -1,4 +1,4 @@
-package company.tap.tapcardformkit.open.web_wrapper.threeDsWebView
+package company.tap.tapWebForm.open.web_wrapper.threeDsWebView
 
 import android.os.Build
 import android.os.Bundle
@@ -11,13 +11,13 @@ import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import company.tap.tapcardformkit.R
-import company.tap.tapcardformkit.doAfterSpecificTime
-import company.tap.tapcardformkit.getDeviceSpecs
-import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.web_wrapper.*
-import company.tap.tapcardformkit.open.web_wrapper.enums.redirectKey
-import company.tap.tapcardformkit.open.web_wrapper.enums.urlKey
+import company.tap.tapWebForm.R
+import company.tap.tapWebForm.doAfterSpecificTime
+import company.tap.tapWebForm.getDeviceSpecs
+import company.tap.tapWebForm.open.DataConfiguration
+import company.tap.tapWebForm.open.web_wrapper.*
+import company.tap.tapWebForm.open.web_wrapper.enums.redirectKey
+import company.tap.tapWebForm.open.web_wrapper.enums.urlKey
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
 

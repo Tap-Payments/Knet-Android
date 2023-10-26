@@ -1,4 +1,4 @@
-package company.tap.tapcardformkit.open.web_wrapper
+package company.tap.tapWebForm.open.web_wrapper
 
 import androidx.annotation.RestrictTo
 

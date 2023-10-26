@@ -1,15 +1,15 @@
-package company.tap.tapcardformkit.open.web_wrapper
+package company.tap.tapWebForm.open.web_wrapper
 
 import Headers
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
-import company.tap.tapcardformkit.R
-import company.tap.tapcardformkit.open.AppLifecycleObserver
-import company.tap.tapcardformkit.open.DataConfiguration
-import company.tap.tapcardformkit.open.DataConfiguration.configurationsAsHashMap
-import company.tap.tapcardformkit.open.KnetPayStatusDelegate
-import company.tap.tapcardformkit.open.web_wrapper.enums.*
+import company.tap.tapWebForm.R
+import company.tap.tapWebForm.open.AppLifecycleObserver
+import company.tap.tapWebForm.open.DataConfiguration
+import company.tap.tapWebForm.open.DataConfiguration.configurationsAsHashMap
+import company.tap.tapWebForm.open.KnetPayStatusDelegate
+import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapnetworkkit.connection.NetworkApp
 import company.tap.tapnetworkkit.utils.CryptoUtil
 

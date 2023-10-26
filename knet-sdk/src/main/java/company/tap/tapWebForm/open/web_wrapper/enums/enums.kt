@@ -1,4 +1,4 @@
-package company.tap.tapcardformkit.open.web_wrapper.enums
+package company.tap.tapWebForm.open.web_wrapper.enums
 
 
 const val rawFolderRefrence = "raw"
