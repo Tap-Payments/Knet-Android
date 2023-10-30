@@ -110,6 +110,14 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                 webviewStarterUrl = SCHEMES.BENEFIT.value.first
                 webViewScheme = SCHEMES.BENEFIT.value.second
             }
+            ThreeDsPayButtonType.FAWRY ->{
+                webviewStarterUrl = SCHEMES.FAWRY.value.first
+                webViewScheme = SCHEMES.FAWRY.value.second
+            }
+            ThreeDsPayButtonType.PAYPAL ->{
+                webviewStarterUrl = SCHEMES.PAYPAL.value.first
+                webViewScheme = SCHEMES.PAYPAL.value.second
+            }
             else -> {}
         }
     }
@@ -185,7 +193,10 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                     val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
                     val gson = Gson()
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
-                    navigateTo3dsActivity()
+                    when(threeDsResponse.stopRedirection){
+                        false->navigateTo3dsActivity()
+                        else->{}
+                    }
                     DataConfiguration.getTapKnetListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
 

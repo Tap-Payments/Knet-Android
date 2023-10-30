@@ -4,6 +4,8 @@ package company.tap.tapWebForm.open.web_wrapper.enums
 const val rawFolderRefrence = "raw"
 const val knetWebPrefix = "tapknetwebsdk://"
 const val benefitWebPrefix = "tapbenefitwebsdk://"
+const val fawryWebPrefix = "tapfawrywebsdk://"
+const val paypalWebPrefix = "tappaypalwebsdk://"
 
 const val keyValueName = "data"
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/{url}?configurations="
@@ -21,9 +23,12 @@ enum class KnetStatusDelegate {
 }
 enum class SCHEMES(var value:Pair<String,String>){
     KNET(Pair(urlWebStarter.replace("{url}","knet"), knetWebPrefix)),
-    BENEFIT(Pair(urlWebStarter.replace("{url}","benefit"), benefitWebPrefix))
+    BENEFIT(Pair(urlWebStarter.replace("{url}","benefit"), benefitWebPrefix)),
+    FAWRY(Pair(urlWebStarter.replace("{url}","fawry"), fawryWebPrefix)),
+    PAYPAL(Pair(urlWebStarter.replace("{url}","paypal"), paypalWebPrefix))
+
 }
 
 enum class ThreeDsPayButtonType {
-    KNET,BENEFIT,BENEFITPAY
+    KNET,BENEFIT,BENEFITPAY,FAWRY,PAYPAL
 }
