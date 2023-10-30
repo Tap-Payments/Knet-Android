@@ -85,7 +85,7 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
 
 
      }
-     fun init(configuraton: KnetConfiguration, buttonType: PayButtonTypes?) {
+     fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
          initializePaymentData(buttonType)
          knetConfiguration = configuraton
          DataConfiguration.addAppLifeCycle(this)
@@ -100,13 +100,13 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
         }
     }
 
-    private fun initializePaymentData(buttonType: PayButtonTypes?) {
+    private fun initializePaymentData(buttonType: ThreeDsPayButtonType?) {
         when(buttonType){
-            PayButtonTypes.KNET->{
+            ThreeDsPayButtonType.KNET->{
                 webviewStarterUrl = SCHEMES.KNET.value.first
                 webViewScheme = SCHEMES.KNET.value.second
             }
-            PayButtonTypes.BENEFIT ->{
+            ThreeDsPayButtonType.BENEFIT ->{
                 webviewStarterUrl = SCHEMES.BENEFIT.value.first
                 webViewScheme = SCHEMES.BENEFIT.value.second
             }

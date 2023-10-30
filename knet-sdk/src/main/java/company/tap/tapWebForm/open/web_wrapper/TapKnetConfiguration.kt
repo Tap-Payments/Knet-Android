@@ -24,7 +24,7 @@ class TapKnetConfiguration {
             tapCardInputViewWeb: TapKnetPay?,
             tapMapConfiguration: java.util.HashMap<String, Any>,
             knetPayStatusDelegate: KnetPayStatusDelegate? = null,
-            buttonType: PayButtonTypes? = null
+            buttonType: ThreeDsPayButtonType? = null
 
         ) {
             with(tapMapConfiguration) {
@@ -89,7 +89,11 @@ class TapKnetConfiguration {
                     val hashMapHeader = HashMap<String, Any>()
                     hashMapHeader[HeadersMdn] = headers.mdn.toString()
                     hashMapHeader[HeadersApplication] = headers.application.toString()
+                    val redirect = HashMap<String,Any>()
+                    redirect.put("url","onTapRedirect://")
                     configurationsAsHashMap?.put(headersKey, hashMapHeader)
+                    configurationsAsHashMap?.put(redirectKey, redirect)
+
 
                 }
                 else -> {}

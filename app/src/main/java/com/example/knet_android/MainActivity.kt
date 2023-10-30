@@ -8,7 +8,7 @@ import com.chillibits.simplesettings.tool.getPrefStringValue
 import company.tap.tapWebForm.open.KnetPayStatusDelegate
 import company.tap.tapWebForm.open.web_wrapper.TapKnetConfiguration
 import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
-import company.tap.tapWebForm.open.web_wrapper.enums.PayButtonTypes
+import company.tap.tapWebForm.open.web_wrapper.enums.ThreeDsPayButtonType
 
 class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     lateinit var tapKnetPay: TapKnetPay
@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
             this,
             findViewById(R.id.knet_pay),
             configuration,
-           this,PayButtonTypes.valueOf(buttonKey.toString()))
+           this,ThreeDsPayButtonType.valueOf(buttonKey.toString()))
 
 
     }

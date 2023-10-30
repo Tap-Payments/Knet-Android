@@ -12,6 +12,7 @@ const val HeadersApplication ="application"
 const val HeadersMdn ="mdn"
 const val operatorKey ="operator"
 const val headersKey ="headers"
+
 const val redirectKey ="redirect"
 const val urlKey ="url"
 
@@ -23,6 +24,6 @@ enum class SCHEMES(var value:Pair<String,String>){
     BENEFIT(Pair(urlWebStarter.replace("{url}","benefit"), benefitWebPrefix))
 }
 
-enum class PayButtonTypes {
+enum class ThreeDsPayButtonType {
     KNET,BENEFIT,BENEFITPAY
 }
