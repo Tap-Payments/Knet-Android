@@ -59,6 +59,7 @@ class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragme
             }
 
         }
+        isCancelable = false
         tapBrandView.backButtonLinearLayout.setOnClickListener {
             this.dialog?.dismiss()
             TapKnetPay.cancel()
