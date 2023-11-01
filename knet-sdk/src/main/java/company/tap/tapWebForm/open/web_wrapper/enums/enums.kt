@@ -7,8 +7,8 @@ const val benefitWebPrefix = "tapbenefitwebsdk://"
 const val fawryWebPrefix = "tapfawrywebsdk://"
 const val paypalWebPrefix = "tappaypalwebsdk://"
 const val tabbyWebPrefix = "taptabbywebsdk://"
-const val googleWebPrefix = "tapgooglewebsdk://"
-
+const val googleWebPrefix = "tapgooglepaywebsdk://"
+const val googlePayUiUrl = "https://pay.google.com/gp/p/ui/pay?ng=true"
 const val keyValueName = "data"
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/{url}?configurations="
 const val publicKeyToGet ="publicKey"
@@ -29,7 +29,7 @@ enum class SCHEMES(var value:Pair<String,String>){
     FAWRY(Pair(urlWebStarter.replace("{url}","fawry"), fawryWebPrefix)),
     PAYPAL(Pair(urlWebStarter.replace("{url}","paypal"), paypalWebPrefix)),
     TABBY(Pair(urlWebStarter.replace("{url}","tabby"), tabbyWebPrefix)),
-    GOOGLE(Pair(urlWebStarter.replace("{url}","google"), googleWebPrefix))
+    GOOGLE(Pair(urlWebStarter.replace("{url}","googlepay"), googleWebPrefix))
 
 }
 

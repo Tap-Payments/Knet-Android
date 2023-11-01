@@ -99,6 +99,9 @@
     <string-array name="ScopeList">
         <item>charge</item>
         <item>authorize</item>
+        <item>taptoken</item>
+        <item>googletaptoken</item>
+
     </string-array>
     <string-array name="ButtonList">
         <item>KNET</item>
@@ -106,6 +109,9 @@
         <item>FAWRY</item>
         <item>PAYPAL</item>
         <item>TABBY</item>
+        <item>GOOGLE</item>
+
+
 
     </string-array>
 

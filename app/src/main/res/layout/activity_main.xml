@@ -10,7 +10,7 @@
 
     <company.tap.tapWebForm.open.web_wrapper.TapKnetPay
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:id="@+id/knet_pay"
         />
 
