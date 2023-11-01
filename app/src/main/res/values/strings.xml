@@ -105,6 +105,7 @@
         <item>BENEFIT</item>
         <item>FAWRY</item>
         <item>PAYPAL</item>
+        <item>TABBY</item>
 
     </string-array>
 
@@ -196,6 +197,7 @@
         <item>KWD</item>
         <item>AED</item>
         <item>SAR</item>
+        <item>USD</item>
 
     </string-array>
     <string-array name="PurposeList_default_values">

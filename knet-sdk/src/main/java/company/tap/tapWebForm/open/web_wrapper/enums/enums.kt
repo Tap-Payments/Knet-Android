@@ -6,6 +6,8 @@ const val knetWebPrefix = "tapknetwebsdk://"
 const val benefitWebPrefix = "tapbenefitwebsdk://"
 const val fawryWebPrefix = "tapfawrywebsdk://"
 const val paypalWebPrefix = "tappaypalwebsdk://"
+const val tabbyWebPrefix = "taptabbywebsdk://"
+const val googleWebPrefix = "tapgooglewebsdk://"
 
 const val keyValueName = "data"
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/{url}?configurations="
@@ -25,10 +27,12 @@ enum class SCHEMES(var value:Pair<String,String>){
     KNET(Pair(urlWebStarter.replace("{url}","knet"), knetWebPrefix)),
     BENEFIT(Pair(urlWebStarter.replace("{url}","benefit"), benefitWebPrefix)),
     FAWRY(Pair(urlWebStarter.replace("{url}","fawry"), fawryWebPrefix)),
-    PAYPAL(Pair(urlWebStarter.replace("{url}","paypal"), paypalWebPrefix))
+    PAYPAL(Pair(urlWebStarter.replace("{url}","paypal"), paypalWebPrefix)),
+    TABBY(Pair(urlWebStarter.replace("{url}","tabby"), tabbyWebPrefix)),
+    GOOGLE(Pair(urlWebStarter.replace("{url}","google"), googleWebPrefix))
 
 }
 
 enum class ThreeDsPayButtonType {
-    KNET,BENEFIT,BENEFITPAY,FAWRY,PAYPAL
+    KNET,BENEFIT,BENEFITPAY,FAWRY,PAYPAL,TABBY,GOOGLE
 }

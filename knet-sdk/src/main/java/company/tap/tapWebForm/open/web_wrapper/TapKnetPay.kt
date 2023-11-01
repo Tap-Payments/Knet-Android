@@ -118,6 +118,10 @@ class TapKnetPay : LinearLayout,ApplicationLifecycle {
                 webviewStarterUrl = SCHEMES.PAYPAL.value.first
                 webViewScheme = SCHEMES.PAYPAL.value.second
             }
+            ThreeDsPayButtonType.TABBY ->{
+                webviewStarterUrl = SCHEMES.TABBY.value.first
+                webViewScheme = SCHEMES.TABBY.value.second
+            }
             else -> {}
         }
     }
