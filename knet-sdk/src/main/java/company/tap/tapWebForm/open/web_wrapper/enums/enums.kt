@@ -2,12 +2,7 @@ package company.tap.tapWebForm.open.web_wrapper.enums
 
 
 const val rawFolderRefrence = "raw"
-const val knetWebPrefix = "tapknetwebsdk://"
-const val benefitWebPrefix = "tapbenefitwebsdk://"
-const val fawryWebPrefix = "tapfawrywebsdk://"
-const val paypalWebPrefix = "tappaypalwebsdk://"
-const val tabbyWebPrefix = "taptabbywebsdk://"
-const val googleWebPrefix = "tapgooglepaywebsdk://"
+const val webPrefix = "tap{buttonType}websdk://"
 const val googlePayUiUrl = "https://pay.google.com/gp/p/ui/pay?ng=true"
 const val keyValueName = "data"
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/{url}?configurations="
@@ -21,15 +16,15 @@ const val redirectKey ="redirect"
 const val urlKey ="url"
 
 enum class KnetStatusDelegate {
-    onReady, onClick, onOrderCreated,onChargeCreated, onError, onSuccess,cancel
+    onReady, onClick, onOrderCreated,onChargeCreated, onError, onSuccess,cancel,onClosePopup
 }
 enum class SCHEMES(var value:Pair<String,String>){
-    KNET(Pair(urlWebStarter.replace("{url}","knet"), knetWebPrefix)),
-    BENEFIT(Pair(urlWebStarter.replace("{url}","benefit"), benefitWebPrefix)),
-    FAWRY(Pair(urlWebStarter.replace("{url}","fawry"), fawryWebPrefix)),
-    PAYPAL(Pair(urlWebStarter.replace("{url}","paypal"), paypalWebPrefix)),
-    TABBY(Pair(urlWebStarter.replace("{url}","tabby"), tabbyWebPrefix)),
-    GOOGLE(Pair(urlWebStarter.replace("{url}","googlepay"), googleWebPrefix))
+    KNET(Pair(urlWebStarter.replace("{url}","knet"), webPrefix.replace("{buttonType}","knet"))),
+    BENEFIT(Pair(urlWebStarter.replace("{url}","benefit"), webPrefix.replace("{buttonType}","benefit"))),
+    FAWRY(Pair(urlWebStarter.replace("{url}","fawry"), webPrefix.replace("{buttonType}","fawry"))),
+    PAYPAL(Pair(urlWebStarter.replace("{url}","paypal"), webPrefix.replace("{buttonType}","paypal"))),
+    TABBY(Pair(urlWebStarter.replace("{url}","tabby"), webPrefix.replace("{buttonType}","tabby"))),
+    GOOGLE(Pair(urlWebStarter.replace("{url}","googlepay"), webPrefix.replace("{buttonType}","googlepay")))
 
 }
 
