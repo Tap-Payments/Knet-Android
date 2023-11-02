@@ -100,7 +100,7 @@
         <item>charge</item>
         <item>authorize</item>
         <item>taptoken</item>
-        <item>googletaptoken</item>
+        <item>googlepaytoken</item>
 
     </string-array>
     <string-array name="ButtonList">

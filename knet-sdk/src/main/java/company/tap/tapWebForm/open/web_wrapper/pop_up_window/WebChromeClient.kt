@@ -3,15 +3,20 @@ package company.tap.tapWebForm.open.web_wrapper.pop_up_window
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Message
 import android.util.Log
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.webkit.*
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 
 
-class WebChrome(var context : Context,var dismiss:()->Unit) :WebChromeClient(){
-     private lateinit var dialog: Dialog
+class WebChrome(var context : Context) :WebChromeClient(){
+     private  var dialog: Dialog?=null
 
      override fun onCreateWindow(
         view: WebView?,
@@ -41,9 +46,17 @@ class WebChrome(var context : Context,var dismiss:()->Unit) :WebChromeClient(){
         wrapper.addView(keyboardHack, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
          val alert = AlertDialog.Builder(view?.context)
         alert.setView(wrapper)
-         if (!::dialog.isInitialized){
+
+         if (dialog ==null){
              dialog = alert.create()
-             dialog.show()
+             dialog?.setCanceledOnTouchOutside(false)
+             dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+             dialog?.show()
+             dialog?.window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+
+         }
+         dialog?.setOnDismissListener {
+             dialog = null
          }
 
         val transports = resultMsg?.obj as WebView.WebViewTransport
@@ -75,6 +88,13 @@ class WebChrome(var context : Context,var dismiss:()->Unit) :WebChromeClient(){
         }
 
 
+         newWebView.webChromeClient = object : WebChromeClient() {
+             override fun onCloseWindow(window: WebView?) {
+                 super.onCloseWindow(window)
+             }
+         }
+
+
         return true
     }
 
@@ -93,7 +113,6 @@ class WebChrome(var context : Context,var dismiss:()->Unit) :WebChromeClient(){
         try {
             Log.e("closedWindow","closedWindow")
             window?.destroy()
-            dialog.dismiss()
         } catch (e: Exception) {
             Log.d("Destroyed with Error ", e.stackTrace.toString())
         }

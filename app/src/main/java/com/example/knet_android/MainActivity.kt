@@ -3,6 +3,7 @@ package com.example.knet_android
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import com.chillibits.simplesettings.tool.getPrefStringValue
 import company.tap.tapWebForm.open.KnetPayStatusDelegate
@@ -196,6 +197,9 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     override fun onSuccess(data: String) {
         Log.i("onSuccess",data)
+        findViewById<TextView>(R.id.text).text = ""
+        findViewById<TextView>(R.id.text).text = "onSuccess $data"
+
         Toast.makeText(this, "onSuccess $data", Toast.LENGTH_SHORT).show()
 
     }

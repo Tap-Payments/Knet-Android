@@ -92,9 +92,7 @@ class TapKnetPay : LinearLayout {
          }
          knetWebView.setBackgroundColor(Color.TRANSPARENT)
          knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
-         webChrome = WebChrome(context, dismiss = {
-             init(knetConfiguration, ThreeDsPayButtonType.GOOGLE)
-         })
+         webChrome = WebChrome(context)
          knetWebView.webChromeClient = webChrome
          knetWebView.webViewClient = MyWebViewClient()
 
@@ -233,7 +231,8 @@ class TapKnetPay : LinearLayout {
                  * for google button
                  */
                 if (request?.url.toString().contains(KnetStatusDelegate.onClosePopup.name)) {
-                    webChrome.getdialog().dismiss()
+                    webChrome.getdialog()?.dismiss()
+
                 }
 
                 if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
