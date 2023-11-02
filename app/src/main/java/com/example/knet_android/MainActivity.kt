@@ -171,6 +171,24 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         transaction.put("metadata",metada)
 
 
+
+        /**
+         * acceptance
+         */
+
+
+        val supportedFund =  intent.getSerializableExtra("supportedFundSourceKey") as HashSet<*>
+
+        val supportedPaymentAuthentications =  intent.getSerializableExtra("supportedPaymentAuthenticationsKey") as HashSet<*>
+        val supportedSchemes =  intent.getSerializableExtra("supportedSchemesKey") as HashSet<*>
+        Log.e("acceptance",
+            "suppored fund is : $supportedFund supportedPaymentAuthentications :  $supportedPaymentAuthentications supportedSchemes : $supportedSchemes"
+        )
+        val acceptance = HashMap<String,Any>()
+       acceptance.put("supportedFundSource",supportedFund)
+        acceptance.put("supportedPaymentAuthentications",supportedPaymentAuthentications)
+        acceptance.put("supportedSchemes",supportedSchemes)
+
         /**
          * configuration
          */
@@ -185,6 +203,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         configuration.put("redirect",redirect)
         configuration.put("scope",scopeKey.toString())
         configuration.put("transaction",transaction)
+        configuration.put("acceptance",acceptance)
 
 
 

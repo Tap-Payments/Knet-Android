@@ -120,6 +120,39 @@
     </PreferenceCategory>
 
 
+    <PreferenceCategory
+        app:title="@string/acceptance">
+
+        <MultiSelectListPreference
+            app:key="supportedFundSourceKey"
+            app:title="supportedFundSource"
+            android:entries="@array/SupportedFundSource"
+            android:entryValues="@array/SupportedFundSource"
+            app:useSimpleSummaryProvider="true"/>
+
+        <MultiSelectListPreference
+            app:key="supportedPaymentAuthenticationsKey"
+            app:title="supportedPaymentAuthentications"
+            android:entries="@array/SupportedPaymentAuthentication"
+            android:entryValues="@array/SupportedPaymentAuthentication"
+
+            app:useSimpleSummaryProvider="true"/>
+
+
+        <MultiSelectListPreference
+            app:key="supportedSchemesKey"
+            android:entries="@array/SupportedSchemes"
+            app:title="supportedSchemes"
+            android:entryValues="@array/SupportedSchemes"
+
+            app:useSimpleSummaryProvider="true"/>
+
+
+
+
+    </PreferenceCategory>
+
+
 
 
 

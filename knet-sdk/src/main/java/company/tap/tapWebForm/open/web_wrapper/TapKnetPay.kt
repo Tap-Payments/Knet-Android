@@ -130,7 +130,7 @@ class TapKnetPay : LinearLayout {
                 webviewStarterUrl = SCHEMES.TABBY.value.first
                 webViewScheme = SCHEMES.TABBY.value.second
             }
-            ThreeDsPayButtonType.GOOGLE_PAY ->{
+            ThreeDsPayButtonType.GOOGLEPAY ->{
                 webviewStarterUrl = SCHEMES.GOOGLE.value.first
                 webViewScheme = SCHEMES.GOOGLE.value.second
 

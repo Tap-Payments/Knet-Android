@@ -54,5 +54,5 @@ enum class SCHEMES(var value: Pair<String, String>) {
 }
 
 enum class ThreeDsPayButtonType {
-    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLE_PAY
+    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY
 }
