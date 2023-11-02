@@ -3,15 +3,10 @@ package company.tap.tapWebForm.open.web_wrapper
 import TapLocal
 import TapTheme
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
-import android.net.http.SslError
 import android.os.Build
-import android.os.Message
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,7 +16,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.*
 import com.google.gson.Gson
 import company.tap.tapWebForm.*
-import company.tap.tapWebForm.open.ApplicationLifecycle
 import company.tap.tapWebForm.open.DataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
@@ -108,6 +102,7 @@ class TapKnetPay : LinearLayout {
         when (configuraton) {
             KnetConfiguration.MapConfigruation -> {
                 val url  = "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
+                Log.e("url",url)
                 knetWebView.loadUrl(url)
             }
         }
@@ -135,7 +130,7 @@ class TapKnetPay : LinearLayout {
                 webviewStarterUrl = SCHEMES.TABBY.value.first
                 webViewScheme = SCHEMES.TABBY.value.second
             }
-            ThreeDsPayButtonType.GOOGLE ->{
+            ThreeDsPayButtonType.GOOGLE_PAY ->{
                 webviewStarterUrl = SCHEMES.GOOGLE.value.first
                 webViewScheme = SCHEMES.GOOGLE.value.second
 
