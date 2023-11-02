@@ -3,19 +3,16 @@ package company.tap.tapWebForm.open.web_wrapper.pop_up_window
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.DialogInterface
 import android.os.Message
 import android.util.Log
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 
 
-class WebChrome(var context : Context) :WebChromeClient(){
+class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClient(){
      private  var dialog: Dialog?=null
 
      override fun onCreateWindow(
@@ -46,6 +43,9 @@ class WebChrome(var context : Context) :WebChromeClient(){
         wrapper.addView(keyboardHack, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
          val alert = AlertDialog.Builder(view?.context)
         alert.setView(wrapper)
+         alert.setNegativeButton("Exit", DialogInterface.OnClickListener { dialogInterface, i ->
+             reinitialize.invoke()
+         })
 
          if (dialog ==null){
              dialog = alert.create()

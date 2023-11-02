@@ -92,7 +92,10 @@ class TapKnetPay : LinearLayout {
          }
          knetWebView.setBackgroundColor(Color.TRANSPARENT)
          knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
-         webChrome = WebChrome(context)
+         webChrome = WebChrome(context, reinitialize = {
+             webChrome.getdialog()?.dismiss()
+             knetWebView.reload()
+         })
          knetWebView.webChromeClient = webChrome
          knetWebView.webViewClient = MyWebViewClient()
 
