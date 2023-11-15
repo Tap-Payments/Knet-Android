@@ -86,6 +86,8 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
         intent.putExtra("transactionAuthroizeTimeKey", getPrefStringValue("transactionAuthroizeTimeKey",""))
         intent.putExtra("buttonKey", getPrefStringValue("buttonKey",""))
 
+        intent.putExtra("transactionSourceId", getPrefStringValue("transactionSourceId",""))
+        intent.putExtra("transactionAuthenticationId", getPrefStringValue("transactionAuthenticationId",""))
 
         /**
          * acceptance

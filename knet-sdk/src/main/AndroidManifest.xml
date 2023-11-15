@@ -6,7 +6,7 @@
 
         >
         <activity
-            android:name="company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity"
+            android:name="company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivityButton"
             android:exported="false"
             android:theme="@style/Theme.Transparent" />
 

@@ -21,10 +21,7 @@ import company.tap.tapWebForm.open.web_wrapper.enums.urlKey
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
 
-const val chunkSize = 2048
-const val keyValueForAuthPayer = "auth_payer"
-
-class ThreeDsWebViewActivity : AppCompatActivity() {
+class ThreeDsWebViewActivityButton : AppCompatActivity() {
     lateinit var threeDsBottomsheet: BottomSheetDialogFragment
     var loadedBottomSheet = false
 
@@ -32,7 +29,7 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three_ds_web_view)
         LocalizationManager.setLocale(this, Locale(DataConfiguration.lanuage.toString()))
-        val webView  = WebView(this)
+        val webView = WebView(this)
         webView.layoutParams = this.getDeviceSpecs().first.let {
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -42,11 +39,13 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
 
         webView.settings.javaScriptEnabled = true
         webView.isVerticalScrollBarEnabled = true
-        webView.requestFocus();
-
+        webView.requestFocus()
         webView.webViewClient = threeDsWebViewClient()
         webView.loadUrl(TapKnetPay.threeDsResponse.url)
-        threeDsBottomsheet = ThreeDsBottomSheetFragment(webView)
+        threeDsBottomsheet = ThreeDsBottomSheetFragmentButton(webView, onCancel = {
+            TapKnetPay.cancel()
+            DataConfiguration.getTapKnetListener()?.cancel()
+        })
 
     }
 
@@ -57,19 +56,20 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             request: WebResourceRequest?
         ): Boolean {
             webView?.loadUrl(request?.url.toString())
-            Log.e("3dsurl",request?.url.toString())
-            val Redirect = DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+            Log.e("3dsurl", request?.url.toString())
+            val Redirect =
+                DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
             val redirect = Redirect.get(urlKey)
-            Log.e("redirect",redirect.toString())
+            Log.e("redirect", redirect.toString())
 
-            when (request?.url?.toString()?.contains(redirect.toString(),ignoreCase = true)) {
+            when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
                 true -> {
                     threeDsBottomsheet.dialog?.dismiss()
-                    val splittiedString = request.url.toString().split(redirect.toString()+"?", ignoreCase = true)
-                    Log.e("splitted",splittiedString.toString())
+                    val splittiedString = request.url.toString().split(redirect.toString() + "?", ignoreCase = true)
+                    Log.e("splitted", splittiedString.toString())
                     try {
-                        TapKnetPay.retrieve(splittiedString.get(1))
-                    }catch (e:Exception){
+                        TapKnetPay.retrieve(splittiedString[1])
+                    } catch (e: Exception) {
                         DataConfiguration.getTapKnetListener()?.onError(e.message.toString())
                     }
                 }
@@ -81,12 +81,12 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
         }
 
         override fun onPageFinished(view: WebView, url: String) {
-            if (loadedBottomSheet){
+            if (loadedBottomSheet) {
 
                 return
-            }else{
+            } else {
                 doAfterSpecificTime(time = 5000) {
-                    threeDsBottomsheet.show(supportFragmentManager,"")
+                    threeDsBottomsheet.show(supportFragmentManager, "")
                 }
             }
             loadedBottomSheet = true
@@ -100,9 +100,6 @@ class ThreeDsWebViewActivity : AppCompatActivity() {
             super.onReceivedError(view, request, error)
         }
     }
-
-
-
 
 
 }

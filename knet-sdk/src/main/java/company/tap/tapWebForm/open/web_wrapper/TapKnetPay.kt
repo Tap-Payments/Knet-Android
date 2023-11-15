@@ -20,7 +20,7 @@ import company.tap.tapWebForm.open.DataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
 import company.tap.tapWebForm.open.web_wrapper.pop_up_window.WebChrome
-import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivity
+import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivityButton
 import company.tap.tapuilibrary.themekit.ThemeManager
 import company.tap.tapuilibrary.uikit.atoms.*
 import java.util.*
@@ -28,23 +28,23 @@ import java.util.*
 
 @SuppressLint("ViewConstructor")
 class TapKnetPay : LinearLayout {
-    lateinit var webviewStarterUrl:String
-    lateinit var webViewScheme:String
+    lateinit var webviewStarterUrl: String
+    lateinit var webViewScheme: String
     private lateinit var webChrome: WebChrome
 
     lateinit var webViewFrame: FrameLayout
 
-    companion object{
-          lateinit var threeDsResponse: ThreeDsResponse
-         lateinit var knetWebView: WebView
+    companion object {
+        lateinit var threeDsResponse: ThreeDsResponse
+        private lateinit var knetWebView: WebView
         private lateinit var knetConfiguration: KnetConfiguration
         fun cancel() {
             knetWebView.loadUrl("javascript:window.cancel()")
         }
-        fun retrieve(value:String) {
+
+        fun retrieve(value: String) {
             knetWebView.loadUrl("javascript:window.retrieve('$value')")
         }
-
 
 
     }
@@ -66,77 +66,72 @@ class TapKnetPay : LinearLayout {
 
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.activity_card_web_wrapper, this)
+        LayoutInflater.from(context).inflate(R.layout.activity_button_web_wrapper, this)
         initWebView()
 
     }
 
 
-     private fun initWebView() {
+    private fun initWebView() {
         knetWebView = findViewById(R.id.webview)
-         webViewFrame = findViewById(R.id.webViewFrame)
+        webViewFrame = findViewById(R.id.webViewFrame)
 
-         with(knetWebView.settings){
-             javaScriptEnabled=true
-             domStorageEnabled=true
-             cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-             domStorageEnabled = true
-             setSupportMultipleWindows(true)
-             javaScriptCanOpenWindowsAutomatically = true
-         }
-         knetWebView.setBackgroundColor(Color.TRANSPARENT)
-         knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
-         webChrome = WebChrome(context, reinitialize = {
-             webChrome.getdialog()?.dismiss()
-             knetWebView.reload()
-         })
-         knetWebView.webChromeClient = webChrome
-         knetWebView.webViewClient = MyWebViewClient()
+        with(knetWebView.settings) {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            domStorageEnabled = true
+            setSupportMultipleWindows(true)
+            javaScriptCanOpenWindowsAutomatically = true
+        }
+        knetWebView.setBackgroundColor(Color.TRANSPARENT)
+        knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
+        webChrome = WebChrome(context, reinitialize = {
+            webChrome.getdialog()?.dismiss()
+            knetWebView.reload()
+        })
+        knetWebView.webChromeClient = webChrome
+        knetWebView.webViewClient = MyWebViewClient()
 
 
-     }
-     fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
-         initializePaymentData(buttonType)
-         knetConfiguration = configuraton
+    }
+
+    fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
+        initializePaymentData(buttonType)
+        knetConfiguration = configuraton
         applyTheme()
         when (configuraton) {
             KnetConfiguration.MapConfigruation -> {
-                val url  = "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
-                Log.e("url",url)
+                val url =
+                    "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
+                Log.e("url", url)
                 knetWebView.loadUrl(url)
             }
         }
     }
 
     private fun initializePaymentData(buttonType: ThreeDsPayButtonType?) {
-        when(buttonType){
-            ThreeDsPayButtonType.KNET->{
-                webviewStarterUrl = SCHEMES.KNET.value.first
-                webViewScheme = SCHEMES.KNET.value.second
-            }
-            ThreeDsPayButtonType.BENEFIT ->{
-                webviewStarterUrl = SCHEMES.BENEFIT.value.first
-                webViewScheme = SCHEMES.BENEFIT.value.second
-            }
-            ThreeDsPayButtonType.FAWRY ->{
-                webviewStarterUrl = SCHEMES.FAWRY.value.first
-                webViewScheme = SCHEMES.FAWRY.value.second
-            }
-            ThreeDsPayButtonType.PAYPAL ->{
-                webviewStarterUrl = SCHEMES.PAYPAL.value.first
-                webViewScheme = SCHEMES.PAYPAL.value.second
-            }
-            ThreeDsPayButtonType.TABBY ->{
-                webviewStarterUrl = SCHEMES.TABBY.value.first
-                webViewScheme = SCHEMES.TABBY.value.second
-            }
-            ThreeDsPayButtonType.GOOGLEPAY ->{
-                webviewStarterUrl = SCHEMES.GOOGLE.value.first
-                webViewScheme = SCHEMES.GOOGLE.value.second
+        when (buttonType) {
+            ThreeDsPayButtonType.KNET -> applySchemes(SCHEMES.KNET)
+            ThreeDsPayButtonType.BENEFIT -> applySchemes(SCHEMES.BENEFIT)
+            ThreeDsPayButtonType.FAWRY -> applySchemes(SCHEMES.FAWRY)
+            ThreeDsPayButtonType.PAYPAL -> applySchemes(SCHEMES.PAYPAL)
+            ThreeDsPayButtonType.TABBY -> applySchemes(SCHEMES.TABBY)
+            ThreeDsPayButtonType.GOOGLEPAY -> applySchemes(SCHEMES.GOOGLE)
+            ThreeDsPayButtonType.CAREEMPAY -> applySchemes(SCHEMES.CAREEMPAY)
+            ThreeDsPayButtonType.VISA -> applySchemes(SCHEMES.VISA)
+            ThreeDsPayButtonType.AMERICANEXPRESS -> applySchemes(SCHEMES.AMERICANEXPRESS)
+            ThreeDsPayButtonType.MADA -> applySchemes(SCHEMES.MADA)
+            ThreeDsPayButtonType.MASTERCARD -> applySchemes(SCHEMES.MASTERCARD)
 
-            }
+
             else -> {}
         }
+    }
+
+    private fun applySchemes(scheme: SCHEMES) {
+        webviewStarterUrl = scheme.value.first
+        webViewScheme = scheme.value.second
     }
 
 
@@ -144,20 +139,26 @@ class TapKnetPay : LinearLayout {
         /**
          * need to be refactored : mulitple copies of same code
          */
-        when(knetConfiguration){
-            KnetConfiguration.MapConfigruation ->{
-                val tapInterface = DataConfiguration.configurationsAsHashMap?.get("interface") as? Map<*, *>
-              setTapThemeAndLanguage(
+        when (knetConfiguration) {
+            KnetConfiguration.MapConfigruation -> {
+                val tapInterface =
+                    DataConfiguration.configurationsAsHashMap?.get("interface") as? Map<*, *>
+                setTapThemeAndLanguage(
                     this.context,
                     TapLocal.valueOf(tapInterface?.get("locale")?.toString() ?: TapLocal.en.name),
-                  TapTheme.valueOf(tapInterface?.get("theme")?.toString() ?: TapTheme.light.name))
+                    TapTheme.valueOf(tapInterface?.get("theme")?.toString() ?: TapTheme.light.name)
+                )
             }
         }
 
 
     }
 
-    private fun setTapThemeAndLanguage(context: Context, language: TapLocal?, themeMode: TapTheme?) {
+    private fun setTapThemeAndLanguage(
+        context: Context,
+        language: TapLocal?,
+        themeMode: TapTheme?
+    ) {
         when (themeMode) {
             TapTheme.light -> {
                 DataConfiguration.setTheme(
@@ -175,7 +176,13 @@ class TapKnetPay : LinearLayout {
             }
             else -> {}
         }
-        DataConfiguration.setLocale(this.context, language?.name ?:"en", null, this@TapKnetPay.context.resources, R.raw.lang)
+        DataConfiguration.setLocale(
+            this.context,
+            language?.name ?: "en",
+            null,
+            this@TapKnetPay.context.resources,
+            R.raw.lang
+        )
 
     }
 
@@ -190,10 +197,10 @@ class TapKnetPay : LinearLayout {
             /**
              * main checker if url start with "tapCardWebSDK://"
              */
-            Log.e("url",request?.url.toString())
+            Log.e("url", request?.url.toString())
 
             if (request?.url.toString().startsWith(webViewScheme, ignoreCase = true)) {
-                Log.e("url",request?.url.toString())
+                Log.e("url", request?.url.toString())
                 /**
                  * listen for states of cardWebStatus of onReady , onValidInput .. etc
                  */
@@ -202,21 +209,25 @@ class TapKnetPay : LinearLayout {
                 }
 
                 if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
-                    DataConfiguration.getTapKnetListener()?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                    DataConfiguration.getTapKnetListener()
+                        ?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
                 if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
                     val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
                     val gson = Gson()
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
-                    when(threeDsResponse.stopRedirection){
-                        false->navigateTo3dsActivity()
-                        else->{}
+                    when (threeDsResponse.stopRedirection) {
+                        false -> navigateTo3dsActivity()
+                        else -> {}
                     }
-                    DataConfiguration.getTapKnetListener()?.onChargeCreated(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                    DataConfiguration.getTapKnetListener()?.onChargeCreated(
+                        request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                    )
                 }
 
                 if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
-                    DataConfiguration.getTapKnetListener()?.onOrderCreated(request?.url?.getQueryParameter(keyValueName).toString())
+                    DataConfiguration.getTapKnetListener()
+                        ?.onOrderCreated(request?.url?.getQueryParameter(keyValueName).toString())
                 }
                 if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
                     DataConfiguration.getTapKnetListener()?.onClick()
@@ -234,7 +245,8 @@ class TapKnetPay : LinearLayout {
                 }
 
                 if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
-                    DataConfiguration.getTapKnetListener()?.onError(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                    DataConfiguration.getTapKnetListener()
+                        ?.onError(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
 
                 return true
@@ -251,10 +263,9 @@ class TapKnetPay : LinearLayout {
         }
 
         fun navigateTo3dsActivity() {
-            val intent = Intent(context, ThreeDsWebViewActivity::class.java)
+            val intent = Intent(context, ThreeDsWebViewActivityButton()::class.java)
             (context).startActivity(intent)
         }
-
 
 
         override fun shouldInterceptRequest(
@@ -274,9 +285,6 @@ class TapKnetPay : LinearLayout {
     }
 
 }
-
-
-
 
 
 enum class KnetConfiguration() {

@@ -3,6 +3,8 @@ package company.tap.tapWebForm.open.web_wrapper.enums
 
 const val rawFolderRefrence = "raw"
 const val webPrefix = "tap{buttonType}websdk://"
+const val cardPrefix = "tapcardwebsdk://"
+
 const val keyValueName = "data"
 const val urlWebStarter = "https://button.dev.tap.company/wrapper/{url}?configurations="
 const val publicKeyToGet = "publicKey"
@@ -49,10 +51,40 @@ enum class SCHEMES(var value: Pair<String, String>) {
             urlWebStarter.replace("{url}", "googlepay"),
             webPrefix.replace("{buttonType}", "googlepay")
         )
+    ),
+    CAREEMPAY(
+        Pair(
+            urlWebStarter.replace("{url}", "careempay"),
+            webPrefix.replace("{buttonType}", "careempay")
+        )
+    ),
+    VISA(
+        Pair(
+            urlWebStarter.replace("{url}", "card/VISA"),
+            cardPrefix
+        )
+    ),
+    AMERICANEXPRESS(
+        Pair(
+            urlWebStarter.replace("{url}", "card/AMERICAN_EXPRESS"),
+            cardPrefix
+        )
+    ),
+    MADA(
+        Pair(
+            urlWebStarter.replace("{url}", "card/MADA"),
+            cardPrefix
+        )
+    ),
+    MASTERCARD(
+        Pair(
+            urlWebStarter.replace("{url}", "card/MASTERCARD"),
+            cardPrefix
+        )
     )
 
 }
 
 enum class ThreeDsPayButtonType {
-    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY
+    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY, CAREEMPAY, VISA, AMERICANEXPRESS, MADA, MASTERCARD
 }

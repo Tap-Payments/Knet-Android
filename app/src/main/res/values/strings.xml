@@ -95,6 +95,7 @@
     <string name="choose_theme">Choose Theme</string>
     <string name="payment_agreement_id">Payment agreement id </string>
     <string name="payment_agreement_contract">Payment agreement contract </string>
+    <string name="generate_authenticate_token">generate authenticate Token</string>
 
     <string-array name="ScopeList">
         <item>charge</item>
@@ -109,7 +110,12 @@
         <item>FAWRY</item>
         <item>PAYPAL</item>
         <item>TABBY</item>
-        <item>GOOGLE_PAY</item>
+        <item>GOOGLEPAY</item>
+        <item>CAREEMPAY</item>
+        <item>VISA</item>
+        <item>AMERICANEXPRESS</item>
+        <item>MADA</item>
+        <item>MASTERCARD</item>
 
 
 

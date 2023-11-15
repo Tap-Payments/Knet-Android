@@ -1,18 +1,26 @@
 package com.example.knet_android
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import com.chillibits.simplesettings.tool.getPrefStringValue
+import com.example.knet_android.cardSdk.model.CardResponse
+import com.google.gson.Gson
 import company.tap.tapWebForm.open.KnetPayStatusDelegate
 import company.tap.tapWebForm.open.web_wrapper.TapKnetConfiguration
 import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
 import company.tap.tapWebForm.open.web_wrapper.enums.ThreeDsPayButtonType
+import company.tap.tapcardformkit.open.TapCardStatusDelegate
+import company.tap.tapcardformkit.open.web_wrapper.TapCardConfiguration
+import company.tap.tapcardformkit.open.web_wrapper.TapCardKit
 
 class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     lateinit var tapKnetPay: TapKnetPay
+     var authenticatedToken:String?=""
+     var sourceId:String?=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,9 +31,113 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 //        Test - Public Key	pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp
 //        Prod - Secret Key	sk_live_462YewyxHlPsUGvSWOjckQAi
 //        Test - Secret Key	sk_test_bNgRpokWMylX3CBJ6FOresTq
+
+
+        findViewById<TextView>(R.id.auth_token).setOnClickListener {
+            createDialogAndConfigureCardSdk()
+        }
     }
 
-    fun configureSdk(){
+    private fun createDialogAndConfigureCardSdk() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.alert_card_sdk)
+        val tapCard = dialog.findViewById<TapCardKit>(R.id.tapCardForm)
+        dialog.show()
+
+        /**
+         * operator
+         */
+        val operator = HashMap<String, Any>()
+        operator.put("publicKey", "pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp")
+        /**
+         * order
+         */
+        val order = HashMap<String, Any>()
+        order.put("id", "")
+        order.put("amount", 1)
+        order.put("currency", "KWD")
+        order.put("description", "")
+        order.put("reference", "")
+
+
+        /**
+         * phone
+         */
+        val phone = HashMap<String, Any>()
+        phone.put("countryCode", "+20")
+        phone.put("number", "011")
+
+        /**
+         * contact
+         */
+        val contact = HashMap<String, Any>()
+        contact.put("email", "test@gmail.com")
+        contact.put("phone", phone)
+        /**
+         * name
+         */
+        val name = HashMap<String, Any>()
+        name.put("lang", "en")
+        name.put("first", "Tap")
+        name.put("middle", "")
+        name.put("last", "Payment")
+
+        /**
+         * customer
+         */
+        val customer = HashMap<String, Any>()
+        customer.put("nameOnCard", "")
+        customer.put("editable", true)
+        customer.put("contact", contact)
+        customer.put("name", listOf(name))
+        /**
+         * configuration
+         */
+        val configuration = LinkedHashMap<String, Any>()
+
+        configuration.put("operator", operator)
+        configuration.put("scope", "AuthenticatedToken")
+        configuration.put("order", order)
+        configuration.put("customer", customer)
+
+
+
+        TapCardConfiguration.configureWithTapCardDictionaryConfiguration(
+            context = this,
+            cardNumber = "4111111111111111",
+            cardExpiry = "10/24",
+            tapCardInputViewWeb = tapCard,
+            tapMapConfiguration = configuration,
+            tapCardStatusDelegate = object : TapCardStatusDelegate {
+                override fun onError(error: String) {
+                    Log.e("error", error.toString())
+                }
+
+                override fun onSuccess(data: String) {
+                   // authenticateID = data
+                    val gson = Gson()
+                    val neededData = gson.fromJson(data, CardResponse::class.java)
+                    Log.e("neededData", neededData.toString())
+                    authenticatedToken = neededData.id
+                    sourceId = neededData.source.id
+                    Log.e("authToken", neededData.id.toString())
+                    Log.e("sourceID", sourceId.toString())
+                    dialog.dismiss()
+                    configureSdk(authenticatedToken,sourceId)
+
+
+                }
+
+                override fun onValidInput(isValid: String) {
+                    Log.e("isValid", isValid.toString())
+                   tapCard.generateTapToken()
+
+                }
+
+            })
+    }
+
+    fun configureSdk(authenticatedToken: String?="", sourceId: String?="") {
 
 
         /**
@@ -154,6 +266,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val transactionRefrenceKey = intent.getStringExtra("transactionRefrenceKey")
         val transactionAuthroizeTypeKey = intent.getStringExtra("transactionAuthroizeTypeKey")
         val transactionAuthroizeTimeKey = intent.getStringExtra("transactionAuthroizeTimeKey")
+        val transactionSourceId = intent.getStringExtra("transactionSourceId")
+        val transactionAuthenticationId = intent.getStringExtra("transactionAuthenticationId")
 
         Log.e("scope","scope is : " + scopeKey.toString() + " transactionRefrenceKey : " +  " " + transactionRefrenceKey.toString() +  " transactionAuthroizeTypeKey : " + transactionAuthroizeTypeKey.toString() + " transactionAuthroizeTimeKey : " + transactionAuthroizeTimeKey.toString())
         val authorize = HashMap<String,Any>()
@@ -164,11 +278,26 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         contact.put("id","")
         paymentAgreement.put("id","")
         paymentAgreement.put("contract",contract)
+
+        /**
+         * authenticate for Card buttons
+         */
+        val authenticate = HashMap<String,Any>()
+        authenticate.put("id", this.authenticatedToken ?: "")
+        authenticate.put("required",true)
+        /**
+         * source for Card buttons
+         */
+        val source = HashMap<String,Any>()
+        source.put("id", this.sourceId ?: "")
+
         transaction.put("reference",transactionRefrenceKey?: "")
         transaction.put("authorize",authorize?: "")
         transaction.put("authentication",true)
-        transaction.put("paymentAgreement",paymentAgreement)
+       // transaction.put("paymentAgreement",paymentAgreement)
         transaction.put("metadata",metada)
+        transaction.put("authenticate",authenticate)
+        transaction.put("source",source)
 
 
 

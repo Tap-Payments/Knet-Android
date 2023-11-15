@@ -25,6 +25,17 @@
         android:id="@+id/knet_pay"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold|italic"
+        android:textColor="@color/black_color"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/generate_authenticate_token"
+        android:id="@+id/auth_token"
+        />
+
 
 
 

@@ -13,19 +13,18 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapWebForm.doAfterSpecificTime
 import company.tap.tapWebForm.getDeviceSpecs
-import company.tap.tapWebForm.open.DataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
 import company.tap.tapuilibrary.uikit.views.TapBrandView
 import company.tap.tapWebForm.R
 
-class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragment() {
+class ThreeDsBottomSheetFragmentButton(var webView: WebView?, var onCancel:()->Unit): BottomSheetDialogFragment() {
 
     @Nullable
     override fun onCreateView(
         @NonNull inflater: LayoutInflater, @Nullable container: ViewGroup?,
         @Nullable savedInstanceState: Bundle?
     ): View? {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_dialog, null)
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_dialog_button, null)
         val linearLayout= view.findViewById<LinearLayout>(R.id.webLinear)
         linearLayout.addView(webView)
         return view
@@ -62,8 +61,7 @@ class ThreeDsBottomSheetFragment(var webView: WebView?): BottomSheetDialogFragme
         isCancelable = false
         tapBrandView.backButtonLinearLayout.setOnClickListener {
             this.dialog?.dismiss()
-            TapKnetPay.cancel()
-            DataConfiguration.getTapKnetListener()?.cancel()
+            onCancel.invoke()
 
         }
 

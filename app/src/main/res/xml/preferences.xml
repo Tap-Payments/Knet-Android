@@ -71,6 +71,17 @@
             app:title="transaction.authorizetime"
             app:useSimpleSummaryProvider="true"/>
 
+        <EditTextPreference
+            app:key="transactionAuthenticationId"
+            app:defaultValue=""
+            app:title="transaction.authentication.id"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            app:key="transactionSourceId"
+            app:defaultValue=""
+            app:title="transaction.source.id"
+            app:useSimpleSummaryProvider="true"/>
     </PreferenceCategory>
 
 
