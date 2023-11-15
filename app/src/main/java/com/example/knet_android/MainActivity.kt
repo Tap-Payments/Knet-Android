@@ -1,11 +1,13 @@
 package com.example.knet_android
 
 import android.app.Dialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.chillibits.simplesettings.tool.getPrefStringValue
 import com.example.knet_android.cardSdk.model.CardResponse
 import com.google.gson.Gson
@@ -43,6 +45,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         dialog.setContentView(R.layout.alert_card_sdk)
         val tapCard = dialog.findViewById<TapCardKit>(R.id.tapCardForm)
         dialog.show()
+        val window: Window? = dialog.window
+        window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
         /**
          * operator
@@ -90,6 +94,13 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         customer.put("editable", true)
         customer.put("contact", contact)
         customer.put("name", listOf(name))
+
+        /**
+         * features
+         */
+        val features = HashMap<String,Any>()
+        features.put("acceptanceBadge",true)
+
         /**
          * configuration
          */
@@ -99,6 +110,9 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         configuration.put("scope", "AuthenticatedToken")
         configuration.put("order", order)
         configuration.put("customer", customer)
+        configuration.put("features",features)
+
+
 
 
 
@@ -117,7 +131,6 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
                    // authenticateID = data
                     val gson = Gson()
                     val neededData = gson.fromJson(data, CardResponse::class.java)
-                    Log.e("neededData", neededData.toString())
                     authenticatedToken = neededData.id
                     sourceId = neededData.source.id
                     Log.e("authToken", neededData.id.toString())
