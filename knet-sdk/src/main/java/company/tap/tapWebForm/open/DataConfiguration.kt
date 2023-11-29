@@ -28,12 +28,6 @@ object DataConfiguration {
     private var knetPayStatusDelegate: KnetPayStatusDelegate? = null
     private var applicationLifecycle: ApplicationLifecycle? = null
 
-    var configurations: TapCardConfigurations? = null
-        get() = field
-        set(value) {
-            field = value
-        }
-
     var customerExample: Customer? = null
         get() = field
         set(value) {
@@ -45,11 +39,7 @@ object DataConfiguration {
         set(value) {
             field = value
         }
-    var configurationsAsJson: String? = null
-        get() = field
-        set(value) {
-            field = value
-        }
+
 
     var configurationsAsHashMap: HashMap<String,Any>? = null
         get() = field
@@ -147,10 +137,6 @@ object DataConfiguration {
     }
 
 
-
-
-
-
 }
 
 interface KnetPayStatusDelegate {
@@ -161,6 +147,8 @@ interface KnetPayStatusDelegate {
     fun onChargeCreated(data:String){}
     fun onError(error: String)
     fun cancel(){}
+    fun onHeightChange(heightChange:String){}
+
 }
 
 interface ApplicationLifecycle {

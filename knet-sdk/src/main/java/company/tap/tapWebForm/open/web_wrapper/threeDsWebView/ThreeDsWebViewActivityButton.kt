@@ -1,5 +1,6 @@
 package company.tap.tapWebForm.open.web_wrapper.threeDsWebView
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,10 +22,18 @@ import company.tap.tapWebForm.open.web_wrapper.enums.urlKey
 import company.tap.taplocalizationkit.LocalizationManager
 import java.util.*
 
+const val delayTime=5000L
 class ThreeDsWebViewActivityButton : AppCompatActivity() {
     lateinit var threeDsBottomsheet: BottomSheetDialogFragment
+    lateinit var paymentFlow: String
     var loadedBottomSheet = false
 
+    companion object{
+        @SuppressLint("StaticFieldLeak")
+        lateinit var tapKnetPay: TapKnetPay
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three_ds_web_view)
@@ -41,9 +50,30 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
         webView.isVerticalScrollBarEnabled = true
         webView.requestFocus()
         webView.webViewClient = threeDsWebViewClient()
-        webView.loadUrl(TapKnetPay.threeDsResponse.url)
+        val data = intent.extras
+        paymentFlow = data?.getString("flow") ?: PaymentFlow.PAYMENTBUTTON.name
+        when(paymentFlow){
+            PaymentFlow.PAYMENTBUTTON.name->{
+                webView.loadUrl(TapKnetPay.threeDsResponse.url)
+            }
+            PaymentFlow.CARDPAY.name ->{
+                webView.loadUrl(TapKnetPay.threeDsResponseCardPayButtons.threeDsUrl)
+
+            }
+        }
+
         threeDsBottomsheet = ThreeDsBottomSheetFragmentButton(webView, onCancel = {
-            TapKnetPay.cancel()
+            when(paymentFlow){
+                PaymentFlow.PAYMENTBUTTON.name->{
+                    TapKnetPay.cancel()
+                }
+                PaymentFlow.CARDPAY.name ->{
+                        tapKnetPay.init(KnetConfiguration.MapConfigruation,
+                            TapKnetPay.buttonTypeConfigured
+                        )
+
+                }
+            }
             DataConfiguration.getTapKnetListener()?.cancel()
         })
 
@@ -55,37 +85,49 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
             webView: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            webView?.loadUrl(request?.url.toString())
-            Log.e("3dsurl", request?.url.toString())
-            val Redirect =
-                DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
-            val redirect = Redirect.get(urlKey)
-            Log.e("redirect", redirect.toString())
-
-            when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
-                true -> {
-                    threeDsBottomsheet.dialog?.dismiss()
-                    val splittiedString = request.url.toString().split(redirect.toString() + "?", ignoreCase = true)
-                    Log.e("splitted", splittiedString.toString())
-                    try {
-                        TapKnetPay.retrieve(splittiedString[1])
-                    } catch (e: Exception) {
-                        DataConfiguration.getTapKnetListener()?.onError(e.message.toString())
+            when(paymentFlow){
+                PaymentFlow.PAYMENTBUTTON.name->{
+                    webView?.loadUrl(request?.url.toString())
+                    val Redirect = DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+                    val redirect = Redirect.get(urlKey)
+                    when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
+                        true -> {
+                            threeDsBottomsheet.dialog?.dismiss()
+                            val splittiedString = request.url.toString().split(redirect.toString() + "?", ignoreCase = true)
+                            try {
+                                TapKnetPay.retrieve(splittiedString[1])
+                            } catch (e: Exception) {
+                                DataConfiguration.getTapKnetListener()?.onError(e.message.toString())
+                            }
+                        }
+                        false -> {}
+                        else -> {}
                     }
                 }
-                false -> {}
-                else -> {}
+                PaymentFlow.CARDPAY.name ->{
+                    when (request?.url?.toString()?.contains(TapKnetPay.threeDsResponseCardPayButtons.keyword)) {
+                        true -> {
+                            threeDsBottomsheet.dialog?.dismiss()
+                            val splittiedString = request.url.toString().split("?")
+
+                            Log.e("splitted",splittiedString.toString())
+                            TapKnetPay.generateTapAuthenticate(request.url?.toString()?:"")
+                        }
+                        false -> {}
+                        else -> {}
+                    }
+                }
             }
+
             return true
 
         }
 
         override fun onPageFinished(view: WebView, url: String) {
             if (loadedBottomSheet) {
-
                 return
             } else {
-                doAfterSpecificTime(time = 5000) {
+                doAfterSpecificTime(time = delayTime) {
                     threeDsBottomsheet.show(supportFragmentManager, "")
                 }
             }

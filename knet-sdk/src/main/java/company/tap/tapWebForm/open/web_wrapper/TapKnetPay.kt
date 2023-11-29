@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.webkit.*
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -19,6 +20,7 @@ import company.tap.tapWebForm.*
 import company.tap.tapWebForm.open.DataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
+import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponseCardPayButtons
 import company.tap.tapWebForm.open.web_wrapper.pop_up_window.WebChrome
 import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivityButton
 import company.tap.tapuilibrary.themekit.ThemeManager
@@ -36,15 +38,23 @@ class TapKnetPay : LinearLayout {
 
     companion object {
         lateinit var threeDsResponse: ThreeDsResponse
+        lateinit var threeDsResponseCardPayButtons: ThreeDsResponseCardPayButtons
+
         private lateinit var knetWebView: WebView
         private lateinit var knetConfiguration: KnetConfiguration
+        lateinit var buttonTypeConfigured:ThreeDsPayButtonType
         fun cancel() {
             knetWebView.loadUrl("javascript:window.cancel()")
+        }
+
+        fun generateTapAuthenticate(authIdPayerUrl: String) {
+            knetWebView.loadUrl("javascript:window.loadAuthentication('$authIdPayerUrl')")
         }
 
         fun retrieve(value: String) {
             knetWebView.loadUrl("javascript:window.retrieve('$value')")
         }
+
 
 
     }
@@ -98,6 +108,9 @@ class TapKnetPay : LinearLayout {
 
     fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
         initializePaymentData(buttonType)
+        if (buttonType != null) {
+            buttonTypeConfigured= buttonType
+        }
         knetConfiguration = configuraton
         applyTheme()
         when (configuraton) {
@@ -217,7 +230,7 @@ class TapKnetPay : LinearLayout {
                     val gson = Gson()
                     threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
                     when (threeDsResponse.stopRedirection) {
-                        false -> navigateTo3dsActivity()
+                        false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
                         else -> {}
                     }
                     DataConfiguration.getTapKnetListener()?.onChargeCreated(
@@ -235,6 +248,27 @@ class TapKnetPay : LinearLayout {
                 }
                 if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
                     DataConfiguration.getTapKnetListener()?.cancel()
+                }
+                if (request?.url.toString().contains(KnetStatusDelegate.onHeightChange.name)) {
+                    val newHeight = request?.url?.getQueryParameter(keyValueName)
+                        val params: ViewGroup.LayoutParams? = webViewFrame.layoutParams
+                        params?.height = webViewFrame.context.getDimensionsInDp(newHeight?.toInt() ?: 95)
+                        webViewFrame.layoutParams = params
+                        DataConfiguration.getTapKnetListener()?.onHeightChange(newHeight.toString())
+
+                }
+                if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
+                    /**
+                     * navigate to 3ds Activity
+                     */
+                    val queryParams = request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                    Log.e("data", queryParams.toString())
+
+                    threeDsResponseCardPayButtons = queryParams.getModelFromJson()
+                    navigateTo3dsActivity(PaymentFlow.CARDPAY.name)
+                    Log.e("data", threeDsResponseCardPayButtons.toString())
+
+
                 }
                 /**
                  * for google button
@@ -262,8 +296,10 @@ class TapKnetPay : LinearLayout {
 
         }
 
-        fun navigateTo3dsActivity() {
+        fun navigateTo3dsActivity(paymentbutton: String) {
             val intent = Intent(context, ThreeDsWebViewActivityButton()::class.java)
+            ThreeDsWebViewActivityButton.tapKnetPay = this@TapKnetPay
+            intent.putExtra("flow",paymentbutton)
             (context).startActivity(intent)
         }
 
@@ -289,6 +325,9 @@ class TapKnetPay : LinearLayout {
 
 enum class KnetConfiguration() {
     MapConfigruation
+}
+enum class PaymentFlow{
+    CARDPAY,PAYMENTBUTTON
 }
 
 

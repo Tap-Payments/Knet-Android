@@ -17,7 +17,7 @@ const val redirectKey = "redirect"
 const val urlKey = "url"
 
 enum class KnetStatusDelegate {
-    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup
+    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect
 }
 
 enum class SCHEMES(var value: Pair<String, String>) {

@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import company.tap.tapWebForm.open.web_wrapper.enums.rawFolderRefrence
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
+import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponseCardPayButtons
 import company.tap.tapuilibrary.R
 import company.tap.tapuilibrary.themekit.ThemeManager
 import jp.wasabeef.blurry.Blurry
@@ -75,8 +76,8 @@ fun Context.getAssetFile(filename: String): Int {
     )
 }
 
-fun String.getModelFromJson(): ThreeDsResponse {
-    return Gson().fromJson(this, ThreeDsResponse::class.java)
+fun String.getModelFromJson(): ThreeDsResponseCardPayButtons {
+    return Gson().fromJson(this, ThreeDsResponseCardPayButtons::class.java)
 }
 
 fun getRandomNumbers(length: Int): String {

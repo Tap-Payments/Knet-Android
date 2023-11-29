@@ -2,6 +2,7 @@ package com.example.knet_android
 
 import android.app.Dialog
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.Window
 import android.widget.LinearLayout
@@ -281,6 +282,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val transactionAuthroizeTimeKey = intent.getStringExtra("transactionAuthroizeTimeKey")
         val transactionSourceId = intent.getStringExtra("transactionSourceId")
         val transactionAuthenticationId = intent.getStringExtra("transactionAuthenticationId")
+        this.authenticatedToken = transactionAuthenticationId
+        this.sourceId = transactionSourceId
 
         Log.e("scope","scope is : " + scopeKey.toString() + " transactionRefrenceKey : " +  " " + transactionRefrenceKey.toString() +  " transactionAuthroizeTypeKey : " + transactionAuthroizeTypeKey.toString() + " transactionAuthroizeTimeKey : " + transactionAuthroizeTimeKey.toString())
         val authorize = HashMap<String,Any>()
@@ -360,6 +363,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
     }
 
     override fun onReady() {
+        findViewById<TextView>(R.id.text).text = ""
+        findViewById<TextView>(R.id.text).text = "onReady"
         Toast.makeText(this, "onReady", Toast.LENGTH_SHORT).show()
     }
 
@@ -367,6 +372,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         Log.i("onSuccess",data)
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onSuccess $data"
+        findViewById<TextView>(R.id.text).movementMethod = ScrollingMovementMethod()
 
         Toast.makeText(this, "onSuccess $data", Toast.LENGTH_SHORT).show()
 
@@ -374,15 +380,22 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     override fun onClick() {
         Toast.makeText(this, "onClick", Toast.LENGTH_SHORT).show()
+        findViewById<TextView>(R.id.text).text = ""
+        findViewById<TextView>(R.id.text).text = "onClick "
+
     }
 
     override fun onChargeCreated(data: String) {
         Log.e("data",data.toString())
+        findViewById<TextView>(R.id.text).text = ""
+        findViewById<TextView>(R.id.text).text = "onChargeCreated $data"
         Toast.makeText(this, "onChargeCreated $data", Toast.LENGTH_SHORT).show()
 
     }
 
     override fun onOrderCreated(data: String) {
+        findViewById<TextView>(R.id.text).text = ""
+        findViewById<TextView>(R.id.text).text = "onOrderCreated $data"
         Toast.makeText(this, "onOrderCreated $data", Toast.LENGTH_SHORT).show()
     }
 
@@ -392,6 +405,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     override fun onError(error: String) {
         Log.e("error",error.toString())
+        findViewById<TextView>(R.id.text).text = ""
+        findViewById<TextView>(R.id.text).text = "onError $error"
         Toast.makeText(this, "onError $error ", Toast.LENGTH_SHORT).show()
 
     }

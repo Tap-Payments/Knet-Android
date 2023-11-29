@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_200sdp"
-        android:id="@+id/text"
-        android:gravity="center"
-        tools:text="Hello guys"
-        />
-
-
     <company.tap.tapWebForm.open.web_wrapper.TapKnetPay
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="@dimen/_20sdp"
-        android:gravity="center"
         android:id="@+id/knet_pay"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:scrollbars="vertical"
+        tools:text="Hello guys"
         />
 
     <TextView
@@ -34,6 +31,7 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:text="@string/generate_authenticate_token"
         android:id="@+id/auth_token"
+        android:visibility="gone"
         />
 
 
