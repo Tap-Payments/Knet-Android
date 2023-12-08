@@ -17,7 +17,7 @@ const val redirectKey = "redirect"
 const val urlKey = "url"
 
 enum class KnetStatusDelegate {
-    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect
+    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect,onBinIdentification
 }
 
 enum class SCHEMES(var value: Pair<String, String>) {
@@ -81,10 +81,14 @@ enum class SCHEMES(var value: Pair<String, String>) {
             urlWebStarter.replace("{url}", "card/MASTERCARD"),
             cardPrefix
         )
-    )
+    ),
+    CARD(    Pair(
+        urlWebStarter.replace("{url}", "card"),
+        cardPrefix
+    ))
 
 }
 
 enum class ThreeDsPayButtonType {
-    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY, CAREEMPAY, VISA, AMERICANEXPRESS, MADA, MASTERCARD
+    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY, CAREEMPAY, VISA, AMERICANEXPRESS, MADA, MASTERCARD,CARD
 }

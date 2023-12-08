@@ -148,6 +148,7 @@ interface KnetPayStatusDelegate {
     fun onError(error: String)
     fun cancel(){}
     fun onHeightChange(heightChange:String){}
+    fun onBindIdentification(data: String){}
 
 }
 

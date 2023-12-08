@@ -68,6 +68,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                     TapKnetPay.cancel()
                 }
                 PaymentFlow.CARDPAY.name ->{
+                    TapKnetPay.cancel()
                         tapKnetPay.init(KnetConfiguration.MapConfigruation,
                             TapKnetPay.buttonTypeConfigured
                         )
@@ -94,6 +95,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                         true -> {
                             threeDsBottomsheet.dialog?.dismiss()
                             val splittiedString = request.url.toString().split(redirect.toString() + "?", ignoreCase = true)
+                            Log.e("splittedString",splittiedString.toString())
                             try {
                                 TapKnetPay.retrieve(splittiedString[1])
                             } catch (e: Exception) {

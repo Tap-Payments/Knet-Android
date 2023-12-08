@@ -105,8 +105,7 @@ fun <T> List<T>?.jointToStringForUrl(): String? {
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun Uri.getQueryParameterFromUri(keyValue: String): String {
-    val decodedBytes =
-        String(Base64.getDecoder().decode(this.getQueryParameter(keyValue).toString()))
+    val decodedBytes = String(Base64.getDecoder().decode(this.getQueryParameter(keyValue).toString()))
 
     return decodedBytes
 }
@@ -115,7 +114,6 @@ fun Uri.getQueryParameterFromUri(keyValue: String): String {
  fun encodeConfigurationMapToUrl(configuraton: HashMap<String,Any>?): String? {
     val gson = Gson()
     val json: String = gson.toJson(configuraton)
-
     val encodedUrl = URLEncoder.encode(json, "UTF-8")
     return encodedUrl
 

@@ -136,6 +136,7 @@ class TapKnetPay : LinearLayout {
             ThreeDsPayButtonType.AMERICANEXPRESS -> applySchemes(SCHEMES.AMERICANEXPRESS)
             ThreeDsPayButtonType.MADA -> applySchemes(SCHEMES.MADA)
             ThreeDsPayButtonType.MASTERCARD -> applySchemes(SCHEMES.MASTERCARD)
+            ThreeDsPayButtonType.CARD -> applySchemes(SCHEMES.CARD)
 
 
             else -> {}
@@ -222,8 +223,7 @@ class TapKnetPay : LinearLayout {
                 }
 
                 if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
-                    DataConfiguration.getTapKnetListener()
-                        ?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                    DataConfiguration.getTapKnetListener()?.onSuccess(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                 }
                 if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
                     val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
@@ -249,6 +249,12 @@ class TapKnetPay : LinearLayout {
                 if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
                     DataConfiguration.getTapKnetListener()?.cancel()
                 }
+                if (request?.url.toString().contains(KnetStatusDelegate.onBinIdentification.name)) {
+                    DataConfiguration.getTapKnetListener()
+                        ?.onBindIdentification(
+                            request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                        )
+                }
                 if (request?.url.toString().contains(KnetStatusDelegate.onHeightChange.name)) {
                     val newHeight = request?.url?.getQueryParameter(keyValueName)
                         val params: ViewGroup.LayoutParams? = webViewFrame.layoutParams
@@ -271,7 +277,7 @@ class TapKnetPay : LinearLayout {
 
                 }
                 /**
-                 * for google button
+                 * for google button specifically
                  */
                 if (request?.url.toString().contains(KnetStatusDelegate.onClosePopup.name)) {
                     webChrome.getdialog()?.dismiss()
