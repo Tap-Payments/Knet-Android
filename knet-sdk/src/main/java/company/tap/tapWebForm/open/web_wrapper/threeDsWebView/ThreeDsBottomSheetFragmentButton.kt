@@ -45,7 +45,7 @@ class ThreeDsBottomSheetFragmentButton(var webView: WebView?, var onCancel:()->U
         }catch (e:java.lang.Exception){
             Log.e("excption",e.toString())
         }
-        ( dialog as BottomSheetDialog).behavior.isFitToContents = false
+        ( dialog as BottomSheetDialog).behavior.isFitToContents = true
         ( dialog as BottomSheetDialog).behavior.peekHeight = (context?.getDeviceSpecs()?.first?: 950) - 250
 
 

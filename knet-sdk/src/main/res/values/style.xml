@@ -72,7 +72,7 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:layoutDirection">locale</item>
         <item name="colorPrimary">@color/white</item>
@@ -101,6 +101,7 @@
     <style name="CustomBottomSheetDialogFragment" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetDialogFr</item>
         <item name="android:windowAnimationStyle">@style/DialogAnimations</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="shapeAppearanceOverlay">@style/CustomBottomSheetDialogFrCustomBottomSheetDialog</item>
     </style>
 
