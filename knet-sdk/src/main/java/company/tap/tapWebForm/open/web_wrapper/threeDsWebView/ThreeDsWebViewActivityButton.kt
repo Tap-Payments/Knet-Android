@@ -24,7 +24,7 @@ import java.util.*
 
 const val delayTime=5000L
 class ThreeDsWebViewActivityButton : AppCompatActivity() {
-    lateinit var threeDsBottomsheet: BottomSheetDialogFragment
+    lateinit var  threeDsBottomsheet: BottomSheetDialogFragment
     lateinit var paymentFlow: String
     var loadedBottomSheet = false
 

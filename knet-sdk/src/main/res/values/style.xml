@@ -95,9 +95,6 @@
 
     </style>
 
-
-
-
     <style name="CustomBottomSheetDialogFragment" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetDialogFr</item>
         <item name="android:windowAnimationStyle">@style/DialogAnimations</item>
