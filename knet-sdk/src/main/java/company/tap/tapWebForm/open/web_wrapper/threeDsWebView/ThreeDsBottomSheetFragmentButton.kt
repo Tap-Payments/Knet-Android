@@ -61,6 +61,7 @@ class ThreeDsBottomSheetFragmentButton(var webView: WebView?, var onCancel:()->U
         isCancelable = false
         tapBrandView.backButtonLinearLayout.setOnClickListener {
             this.dialog?.dismiss()
+            webView?.loadUrl("javascript:window.cancel()")
             onCancel.invoke()
 
         }
