@@ -6,7 +6,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.http.SslError
 import android.os.Build
+import android.os.Handler
+import android.os.Message
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -87,21 +90,21 @@ class TapKnetPay : LinearLayout {
     private fun initWebView() {
         knetWebView = findViewById(R.id.webview)
         webViewFrame = findViewById(R.id.webViewFrame)
-
-        with(knetWebView.settings) {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-            domStorageEnabled = true
-            setSupportMultipleWindows(true)
-
+        with(knetWebView) {
+            with(settings) {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                domStorageEnabled = true
+                setSupportMultipleWindows(true)
 
 
-            javaScriptCanOpenWindowsAutomatically = true
+
+                javaScriptCanOpenWindowsAutomatically = true
+            }
         }
         knetWebView.setBackgroundColor(Color.TRANSPARENT)
         knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
-        webChrome = WebChrome(context, reinitialize = {
+       webChrome = WebChrome(context, reinitialize = {
             webChrome.getdialog()?.dismiss()
             knetWebView.reload()
         })
@@ -122,7 +125,7 @@ class TapKnetPay : LinearLayout {
             KnetConfiguration.MapConfigruation -> {
                 val url =
                     "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
-                Log.e("url", url)
+                Log.e("url here", url)
                 knetWebView.loadUrl(url)
             }
         }
@@ -207,6 +210,9 @@ class TapKnetPay : LinearLayout {
 
 
     inner class MyWebViewClient : WebViewClient() {
+
+
+
         @RequiresApi(Build.VERSION_CODES.O)
         override fun shouldOverrideUrlLoading(
             webView: WebView?,
@@ -219,24 +225,36 @@ class TapKnetPay : LinearLayout {
             Log.e("url", request?.url.toString())
 
             if (request?.url.toString().startsWith(webViewScheme, ignoreCase = true)) {
-                Log.e("url", request?.url.toString())
+                Log.e("url are", request?.url.toString())
                 /**
                  * listen for states of cardWebStatus of onReady , onValidInput .. etc
                  */
 
-                 if (request?.url.toString().contains(KnetStatusDelegate.onReady.name) && buttonTypeConfigured == ThreeDsPayButtonType.CARD) {
+                 if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
 
-                            val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
-                            if (isFirstTime == "true") {
-                                initializePaymentData()
-                                Pref.setValue(context, "firstRun", "false")
-                            }
+                     //todo check
+                     if(buttonTypeConfigured ==ThreeDsPayButtonType.CARD) {
+                         val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
+                         if (isFirstTime == "true") {
+                             MainScope().launch {
+                                 knetWebView.run { clearView()  }
+                                 knetWebView.run { clearCache(true)  }
+                                 knetWebView.run { clearHistory()  }
+                                 run{
+                                     init(knetConfiguration,ThreeDsPayButtonType.CARD)
+                                 }
 
+                             }
+                             Pref.setValue(context, "firstRun", "false")
+                         }
 
+                     }else{
+                         DataConfiguration.getTapKnetListener()?.onReady()
+                     }
 
-                        DataConfiguration.getTapKnetListener()?.onReady()
 
                     }
+
 
                     if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
                         DataConfiguration.getTapKnetListener()?.onSuccess(
@@ -286,7 +304,7 @@ class TapKnetPay : LinearLayout {
 
                         DataConfiguration.getTapKnetListener()?.onHeightChange(newHeight.toString())
 
-                    }else
+                    }
                     if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
                         /**
                          * navigate to 3ds Activity
@@ -318,11 +336,15 @@ class TapKnetPay : LinearLayout {
 
                     return true
 
-                }
+                } else {
+                return false
+            }
 
-            return false
+
 
         }
+
+
 
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)
@@ -351,9 +373,23 @@ class TapKnetPay : LinearLayout {
             error: WebResourceError
         ) {
             super.onReceivedError(view, request, error)
+
         }
     }
 
+    private fun initWeb() {
+
+        MainScope().launch {
+            val url =
+                "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
+            Log.e("url here", url)
+            knetWebView.post {
+                knetWebView.stopLoading()
+                knetWebView.loadUrl(url)
+            }
+
+        }
+    }
 
 
 }
