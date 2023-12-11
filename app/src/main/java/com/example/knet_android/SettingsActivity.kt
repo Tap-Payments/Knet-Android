@@ -95,6 +95,18 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
         intent.putExtra("supportedFundSourceKey", getPrefStringSetValue("supportedFundSourceKey", emptySet()).toHashSet())
         intent.putExtra("supportedPaymentAuthenticationsKey", getPrefStringSetValue("supportedPaymentAuthenticationsKey", emptySet()).toHashSet())
         intent.putExtra("supportedSchemesKey", getPrefStringSetValue("supportedSchemesKey", emptySet()).toHashSet())
+        /**
+         * Fields Visibility
+         ***/
+        intent.putExtra("cardHolder",  getPrefBooleanValue("displayHoldernameKey",true))
+        intent.putExtra("cvv",getPrefBooleanValue("displayCVVKey",true))
+
+        /**
+         * Features
+         ***/
+        intent.putExtra("selectedCardBrand", getPrefBooleanValue("displayPymtBrndKey",true))
+        intent.putExtra("saveCard", getPrefBooleanValue("displaySaveCardKey",true))
+        intent.putExtra("autoSaveCard", getPrefBooleanValue("displayAutosaveCardKey",true))
 
         finish()
         startActivity(intent)

@@ -333,6 +333,39 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
        acceptance.put("supportedFundSource",supportedFund)
         acceptance.put("supportedPaymentAuthentications",supportedPaymentAuthentications)
         acceptance.put("supportedSchemes",supportedSchemes)
+        /**
+         * fields
+         */
+        val fieldVisibility = HashMap<String,Any>()
+
+        /**
+         * Fields visibility **/
+        val cardHolder =  intent.getBooleanExtra("cardHolder",true)
+        val cvv =  intent.getBooleanExtra("cvv",true)
+        /**
+         * card
+         */
+        val card = HashMap<String,Any>()
+        card.put("cvv",cvv)
+        card.put("cardHolder",cardHolder)
+        fieldVisibility.put("card",card)
+        /**
+         * customerCards
+         */
+        val customerCards = HashMap<String,Any>()
+        val saveCard =  intent.getBooleanExtra("saveCard",true)
+        val autoSaveCard =  intent.getBooleanExtra("autoSaveCard",true)
+        customerCards.put("saveCard",saveCard)
+        customerCards.put("autoSaveCard",autoSaveCard)
+
+        /**
+         * features
+         */
+        val features = HashMap<String,Any>()
+        val showCardBrands: Boolean = intent.getBooleanExtra("selectedCardBrand", true)
+        features.put("acceptanceBadge",showCardBrands)
+        features.put("customerCards",customerCards)
+
 
         /**
          * configuration
@@ -349,7 +382,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         configuration.put("scope",scopeKey.toString())
         configuration.put("transaction",transaction)
         configuration.put("acceptance",acceptance)
-
+        configuration.put("fieldVisibility",fieldVisibility)
+        configuration.put("features",features)
 
 
 
