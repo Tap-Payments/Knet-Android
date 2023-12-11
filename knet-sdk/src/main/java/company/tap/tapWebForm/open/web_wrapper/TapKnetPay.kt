@@ -9,10 +9,12 @@ import android.graphics.Color
 import android.net.http.SslError
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.*
@@ -232,19 +234,15 @@ class TapKnetPay : LinearLayout {
 
                  if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
 
-                     //todo check
+                     //todo check how to
                      if(buttonTypeConfigured ==ThreeDsPayButtonType.CARD) {
+                        webView?.clearView()
+                         webView?.removeAllViews()
                          val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
                          if (isFirstTime == "true") {
-                             MainScope().launch {
-                                 knetWebView.run { clearView()  }
-                                 knetWebView.run { clearCache(true)  }
-                                 knetWebView.run { clearHistory()  }
-                                 run{
-                                     init(knetConfiguration,ThreeDsPayButtonType.CARD)
-                                 }
+                             Handler(Looper.getMainLooper()).postDelayed({
 
-                             }
+                                 init(knetConfiguration,ThreeDsPayButtonType.CARD) },5000)
                              Pref.setValue(context, "firstRun", "false")
                          }
 
