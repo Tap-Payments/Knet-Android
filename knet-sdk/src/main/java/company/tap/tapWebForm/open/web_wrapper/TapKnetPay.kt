@@ -234,13 +234,12 @@ class TapKnetPay : LinearLayout {
 
                  if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
 
-                     //todo check how to
+                     //todo enhance in a better way
                      if(buttonTypeConfigured ==ThreeDsPayButtonType.CARD) {
-
                          val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
                          if (isFirstTime == "true") {
                              webView?.clearView()
-                             webView?.removeAllViews()
+                           //  webView?.removeAllViews()
                              Handler(Looper.getMainLooper()).postDelayed({
                                  init(knetConfiguration,ThreeDsPayButtonType.CARD) },5000)
                              Pref.setValue(context, "firstRun", "false")
