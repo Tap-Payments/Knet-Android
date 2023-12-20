@@ -129,6 +129,10 @@ class TapKnetPay : LinearLayout {
                     "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
                 Log.e("url here", url)
                 knetWebView.loadUrl(url)
+              /*  val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
+                if (isFirstTime == "true") {
+                knetWebView?.visibility= View.GONE
+                }else knetWebView?.visibility= View.VISIBLE*/
             }
         }
     }
@@ -235,10 +239,11 @@ class TapKnetPay : LinearLayout {
                  if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
 
                      //todo enhance in a better way
-                     if(buttonTypeConfigured ==ThreeDsPayButtonType.CARD) {
+                 /*    if(buttonTypeConfigured ==ThreeDsPayButtonType.CARD) {
                          val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
                          if (isFirstTime == "true") {
                              webView?.clearView()
+                            // knetWebView?.visibility= View.GONE
                            //  webView?.removeAllViews()
                              Handler(Looper.getMainLooper()).postDelayed({
                                  init(knetConfiguration,ThreeDsPayButtonType.CARD) },5000)
@@ -247,8 +252,8 @@ class TapKnetPay : LinearLayout {
 
                      }else{
                          DataConfiguration.getTapKnetListener()?.onReady()
-                     }
-
+                     }*/
+                     DataConfiguration.getTapKnetListener()?.onReady()
 
                     }
 
