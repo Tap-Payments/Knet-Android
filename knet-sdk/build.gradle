@@ -81,7 +81,7 @@ dependencies {
     implementation 'com.github.Tap-Payments:TapNFCCardReaderKit-Android:0.0.1.7'
     api 'com.github.Tap-Payments:TapCardScannerKit-Android:0.0.2'
     implementation 'company.tap:PayCards-Tap-Android:0.1.6.4'
-    api 'com.github.Tap-Payments:CommonDataModelsWeb-Andriod:0.0.13'
+    api 'com.github.Tap-Payments:CommonDataModelsWeb-Andriod:0.0.14'
     implementation 'com.github.Tap-Payments:TapUIKit-Android:2.0.4'
     implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

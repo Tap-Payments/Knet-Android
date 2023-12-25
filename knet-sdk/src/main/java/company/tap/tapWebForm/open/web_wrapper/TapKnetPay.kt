@@ -195,6 +195,13 @@ class TapKnetPay : LinearLayout {
                 )
                 ThemeManager.currentThemeName = TapTheme.light.name
             }
+            TapTheme.dynamic -> {
+                DataConfiguration.setTheme(
+                    context, context.resources, null,
+                    R.raw.defaultlighttheme, TapTheme.light.name
+                )
+                ThemeManager.currentThemeName = TapTheme.light.name
+            }
             TapTheme.dark -> {
                 DataConfiguration.setTheme(
                     context, context.resources, null,
@@ -204,13 +211,30 @@ class TapKnetPay : LinearLayout {
             }
             else -> {}
         }
-        DataConfiguration.setLocale(
-            this.context,
-            language?.name ?: "en",
-            null,
-            this@TapKnetPay.context.resources,
-            R.raw.lang
-        )
+        when(language){
+            TapLocal.dynamic ->{
+                /**
+                 * needed to be dynamic
+                 */
+                DataConfiguration.setLocale(
+                    this.context,
+                    Locale.getDefault().language,
+                    null,
+                    this@TapKnetPay.context.resources,
+                    R.raw.lang
+                )
+            }
+            else ->{
+                DataConfiguration.setLocale(
+                    this.context,
+                    language?.name ?: "en",
+                    null,
+                    this@TapKnetPay.context.resources,
+                    R.raw.lang
+                )
+            }
+        }
+
 
     }
 
