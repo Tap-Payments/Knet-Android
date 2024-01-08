@@ -26,6 +26,8 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
          with(newWebView.settings){
              javaScriptEnabled = true
              domStorageEnabled = true
+             javaScriptCanOpenWindowsAutomatically=true
+
          }
          with(newWebView){
              requestFocus(LinearLayout.FOCUS_DOWN)
@@ -34,16 +36,19 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
          }
 
 
+
+
         val wrapper = LinearLayout(view?.context)
         val keyboardHack = EditText(view?.context)
-
         keyboardHack.visibility = LinearLayout.GONE
         wrapper.orientation = LinearLayout.VERTICAL
         wrapper.addView(newWebView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
-        wrapper.addView(keyboardHack, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+       wrapper.addView(keyboardHack, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
          val alert = AlertDialog.Builder(view?.context)
-        alert.setView(wrapper)
-         alert.setNegativeButton("Exit", DialogInterface.OnClickListener { dialogInterface, i ->
+         val transports = resultMsg?.obj as WebView.WebViewTransport
+
+         alert.setView(wrapper)
+         alert.setNegativeButton("Exit", { dialogInterface, i ->
              reinitialize.invoke()
          })
 
@@ -59,7 +64,7 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
              dialog = null
          }
 
-        val transports = resultMsg?.obj as WebView.WebViewTransport
+       // val transports = resultMsg?.obj as WebView.WebViewTransport
         transports.webView = newWebView
         resultMsg.sendToTarget()
         newWebView.webViewClient = object : WebViewClient() {
@@ -67,14 +72,11 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
                 view: WebView,
                 request: WebResourceRequest
             ): Boolean {
-                Log.e("should overide url", request.url.toString())
                 view.loadUrl(request.url.toString())
                 return true
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                Log.e("closing url", url.toString())
-
                 super.onPageFinished(view, url)
             }
 
@@ -82,7 +84,6 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
                 view: WebView,
                 request: WebResourceRequest
             ): WebResourceResponse? {
-                Log.e("request url", request.url.toString())
                 return super.shouldInterceptRequest(view, request)
             }
         }
@@ -100,13 +101,51 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
 
     fun getdialog() = dialog
 
+    override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+        Log.e("javascript", consoleMessage?.message().toString())
+        return true
+    }
+
     override fun onJsAlert(
         view: WebView?,
         url: String?,
         message: String?,
         result: JsResult?
     ): Boolean {
+        Log.e("javascript 2", result.toString())
+        Log.e("javascript 2", message.toString())
+
         return super.onJsAlert(view, url, message, result)
+    }
+
+    override fun onJsConfirm(
+        view: WebView?,
+        url: String?,
+        message: String?,
+        result: JsResult?
+    ): Boolean {
+        return super.onJsConfirm(view, url, message, result)
+    }
+
+    override fun onJsPrompt(
+        view: WebView?,
+        url: String?,
+        message: String?,
+        defaultValue: String?,
+        result: JsPromptResult?
+    ): Boolean {
+        return super.onJsPrompt(view, url, message, defaultValue, result)
+    }
+
+    override fun onJsBeforeUnload(
+        view: WebView?,
+        url: String?,
+        message: String?,
+        result: JsResult?
+    ): Boolean {
+        Log.e("javascript beforeUnload", url.toString())
+
+        return super.onJsBeforeUnload(view, url, message, result)
     }
 
     override fun onCloseWindow(window: WebView?) {
