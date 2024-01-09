@@ -120,10 +120,7 @@ class TapKnetPay : LinearLayout {
 
 
         knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
-        webChrome = WebChrome(context, reinitialize = {
-            webChrome.getdialog()?.dismiss()
-            knetWebView.reload()
-        })
+        webChrome = WebChrome(context)
         knetWebView.webChromeClient = webChrome
         knetWebView.webViewClient = MyWebViewClient()
 

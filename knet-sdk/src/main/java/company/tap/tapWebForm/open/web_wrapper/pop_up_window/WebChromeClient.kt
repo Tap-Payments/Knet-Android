@@ -2,20 +2,30 @@ package company.tap.tapWebForm.open.web_wrapper.pop_up_window
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Message
 import android.util.Log
 import android.view.WindowManager
-import android.webkit.*
+import android.webkit.ConsoleMessage
+import android.webkit.JsPromptResult
+import android.webkit.JsResult
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.LinearLayout
+import company.tap.tapWebForm.R
+import company.tap.tapWebForm.doAfterSpecificTime
 
-
-class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClient(){
+const val dismissDialogTime = 3500L
+class WebChrome(var context: Context) :WebChromeClient(){
      private  var dialog: Dialog?=null
+    private var working_dialog: ProgressDialog? = null
 
-     override fun onCreateWindow(
+    override fun onCreateWindow(
         view: WebView?,
         isDialog: Boolean,
         isUserGesture: Boolean,
@@ -48,11 +58,16 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
          val transports = resultMsg?.obj as WebView.WebViewTransport
 
          alert.setView(wrapper)
-         alert.setNegativeButton("Exit", { dialogInterface, i ->
-             reinitialize.invoke()
-         })
+         alert.setNegativeButton(context.resources.getString(R.string.exit)) { dialogInterface, i ->
+             showWorkingDialog()
+             destroyNewWebView(wrapper, newWebView)
+             doAfterSpecificTime(time = dismissDialogTime){
+                 removeWorkingDialog()
+             }
 
-         if (dialog ==null){
+         }
+
+        if (dialog ==null){
              dialog = alert.create()
              dialog?.setCanceledOnTouchOutside(false)
              dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -80,6 +95,7 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
                 super.onPageFinished(view, url)
             }
 
+
             override fun shouldInterceptRequest(
                 view: WebView,
                 request: WebResourceRequest
@@ -91,12 +107,21 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
 
          newWebView.webChromeClient = object : WebChromeClient() {
              override fun onCloseWindow(window: WebView?) {
+                 window?.destroy()
                  super.onCloseWindow(window)
              }
          }
 
 
         return true
+    }
+
+    private fun destroyNewWebView(wrapper: LinearLayout, newWebView: WebView) {
+        wrapper.removeAllViews()
+        newWebView.removeAllViews()
+        newWebView.destroy()
+        newWebView.clearHistory()
+        dialog?.dismiss()
     }
 
     fun getdialog() = dialog
@@ -112,9 +137,6 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
         message: String?,
         result: JsResult?
     ): Boolean {
-        Log.e("javascript 2", result.toString())
-        Log.e("javascript 2", message.toString())
-
         return super.onJsAlert(view, url, message, result)
     }
 
@@ -143,8 +165,6 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
         message: String?,
         result: JsResult?
     ): Boolean {
-        Log.e("javascript beforeUnload", url.toString())
-
         return super.onJsBeforeUnload(view, url, message, result)
     }
 
@@ -157,6 +177,15 @@ class WebChrome(var context : Context,var reinitialize:()->Unit) :WebChromeClien
         }
         super.onCloseWindow(window)
 
+    }
+    private fun showWorkingDialog() {
+        working_dialog = ProgressDialog.show(context, "", context.resources.getString(R.string.dismissing), true)
+    }
+    private fun removeWorkingDialog() {
+        if (working_dialog != null) {
+            working_dialog?.dismiss()
+            working_dialog = null
+        }
     }
 
 }
