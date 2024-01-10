@@ -90,7 +90,7 @@ class TapKnetConfiguration {
                     hashMapHeader[HeadersMdn] = headers.mdn.toString()
                     hashMapHeader[HeadersApplication] = headers.application.toString()
                     val redirect = HashMap<String,Any>()
-                    redirect.put("url","onTapRedirect://")
+                    redirect.put(urlKey, redirectValue)
                     configurationsAsHashMap?.put(headersKey, hashMapHeader)
                     configurationsAsHashMap?.put(redirectKey, redirect)
 

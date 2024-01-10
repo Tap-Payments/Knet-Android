@@ -98,15 +98,12 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
             when (paymentFlow) {
                 PaymentFlow.PAYMENTBUTTON.name -> {
                     webView?.loadUrl(request?.url.toString())
-                    val Redirect =
-                        DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+                    val Redirect = DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
                     val redirect = Redirect.get(urlKey)
-                    when (request?.url?.toString()
-                        ?.contains(redirect.toString(), ignoreCase = true)) {
+                    when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
                         true -> {
                             threeDsBottomsheet.dialog?.dismiss()
-                            val splittiedString = request.url.toString()
-                                .split(redirect.toString() + "?", ignoreCase = true)
+                            val splittiedString = request.url.toString().split("?", ignoreCase = true)
                             Log.e("splittedString", splittiedString.toString())
                             try {
                                 TapKnetPay.retrieve(splittiedString[1])
@@ -147,7 +144,9 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                 return
             } else {
                 doAfterSpecificTime(time = delayTime) {
-                    threeDsBottomsheet.show(supportFragmentManager, "")
+                    if (!supportFragmentManager.isDestroyed){
+                        threeDsBottomsheet.show(supportFragmentManager, "")
+                    }
                 }
             }
             loadedBottomSheet = true

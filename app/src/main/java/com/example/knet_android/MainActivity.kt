@@ -261,8 +261,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val post = HashMap<String,Any>()
         post.put("url",posturl?: "")
 
-        val redirect = HashMap<String,Any>()
-        redirect.put("url","onTapKnetRedirect://")
+//        val redirect = HashMap<String,Any>()
+//        redirect.put("url","onTapKnetRedirect://")
         val configuration = LinkedHashMap<String,Any>()
 
 
@@ -378,7 +378,6 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         configuration.put("invoice",invoice)
         configuration.put("interface",interfacee)
         configuration.put("post",post)
-        configuration.put("redirect",redirect)
         configuration.put("scope",scopeKey.toString())
         configuration.put("transaction",transaction)
         configuration.put("acceptance",acceptance)

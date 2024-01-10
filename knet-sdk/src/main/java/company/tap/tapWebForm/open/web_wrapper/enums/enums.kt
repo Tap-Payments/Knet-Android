@@ -14,6 +14,8 @@ const val operatorKey = "operator"
 const val headersKey = "headers"
 
 const val redirectKey = "redirect"
+const val redirectValue = "onTapRedirect://"
+
 const val urlKey = "url"
 const val careemPayUrlHandler ="https://checkout"
 

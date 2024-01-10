@@ -10,6 +10,7 @@ import android.net.http.SslError
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.*
@@ -98,27 +99,14 @@ class TapKnetPay : LinearLayout {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 javaScriptCanOpenWindowsAutomatically = true
-                allowUniversalAccessFromFileURLs = true
-                allowFileAccessFromFileURLs = true
-                allowContentAccess = true
-                allowFileAccess = true
                 setSupportMultipleWindows(true)
                 cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-                mixedContentMode = 0
                 useWideViewPort = true
                 loadWithOverviewMode = true
-                builtInZoomControls = true
-                displayZoomControls = true
-                setSupportZoom(true)
-                defaultTextEncodingName = "utf-8"
-                databaseEnabled = true
 
-                pluginState = WebSettings.PluginState.ON
             }
         }
         knetWebView.setBackgroundColor(Color.TRANSPARENT)
-
-
         knetWebView.setLayerType(LAYER_TYPE_SOFTWARE, null)
         webChrome = WebChrome(context)
         knetWebView.webChromeClient = webChrome
@@ -141,6 +129,8 @@ class TapKnetPay : LinearLayout {
                 knetWebView.loadUrl(urlToBeloaded)
             }
         }
+
+
     }
 
     private fun initializePaymentData(buttonType: ThreeDsPayButtonType?) {
@@ -166,16 +156,6 @@ class TapKnetPay : LinearLayout {
     private fun applySchemes(scheme: SCHEMES) {
         webviewStarterUrl = scheme.value.first
         webViewScheme = scheme.value.second
-    }
-
-    private fun getHeaders(): Headers {
-        val extraHeaders: MutableMap<String, String> = HashMap()
-        extraHeaders["Cache-Control"] = "no-cache"
-        extraHeaders["Pragma"] = "no-cache"
-        extraHeaders["Accept-Encoding"] = "gzip, deflate, br"
-        extraHeaders["Accept"] = "application/json, text/plain, */*"
-
-        return extraHeaders.toHeaders()
     }
 
 
@@ -321,14 +301,14 @@ class TapKnetPay : LinearLayout {
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
 
-//                    val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
-//                    Log.e("chargedData",data.toString())
-//                    val gson = Gson()
-//                    threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
-//                    when (threeDsResponse.stopRedirection) {
-//                        false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
-//                        else -> {}
-//                    }
+                        val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                        Log.e("chargedData", data.toString())
+                        val gson = Gson()
+                        threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
+                        when (threeDsResponse.stopRedirection) {
+                            false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
+                            else -> {}
+                        }
                         DataConfiguration.getTapKnetListener()?.onChargeCreated(
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
                         )
@@ -434,12 +414,7 @@ class TapKnetPay : LinearLayout {
             view: WebView?,
             request: WebResourceRequest?
         ): WebResourceResponse? {
-            val webResourceResponse = super.shouldInterceptRequest(view, request)
-            Log.e("request", request?.method.toString())
-            Log.e("request", request?.requestHeaders.toString())
-            Log.e("request", request?.url.toString())
-
-            return webResourceResponse
+            return super.shouldInterceptRequest(view, request)
         }
 
         override fun onReceivedError(
@@ -452,21 +427,12 @@ class TapKnetPay : LinearLayout {
         }
     }
 
-    private fun initWeb() {
 
-        MainScope().launch {
-            val url =
-                "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
-            Log.e("url here", url)
-            knetWebView.post {
-                knetWebView.stopLoading()
-                knetWebView.loadUrl(url)
-            }
-
-        }
+    override fun onDetachedFromWindow() {
+        Log.e("detached","here")
+        knetWebView.destroy()
+        super.onDetachedFromWindow()
     }
-
-
 }
 
 
