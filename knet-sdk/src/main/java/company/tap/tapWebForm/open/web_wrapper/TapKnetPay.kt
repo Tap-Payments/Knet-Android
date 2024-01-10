@@ -41,7 +41,7 @@ class TapKnetPay : LinearLayout {
 
     lateinit var webViewFrame: FrameLayout
     lateinit var urlToBeloaded: String
-     var firstTimeOnReadyCallback = true
+    var firstTimeOnReadyCallback = true
 
     companion object {
         lateinit var threeDsResponse: ThreeDsResponse
@@ -97,11 +97,11 @@ class TapKnetPay : LinearLayout {
             with(settings) {
                 javaScriptEnabled = true
                 domStorageEnabled = true
-                javaScriptCanOpenWindowsAutomatically  =true
+                javaScriptCanOpenWindowsAutomatically = true
                 allowUniversalAccessFromFileURLs = true
                 allowFileAccessFromFileURLs = true
                 allowContentAccess = true
-                allowFileAccess= true
+                allowFileAccess = true
                 setSupportMultipleWindows(true)
                 cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
                 mixedContentMode = 0
@@ -110,7 +110,7 @@ class TapKnetPay : LinearLayout {
                 builtInZoomControls = true
                 displayZoomControls = true
                 setSupportZoom(true)
-                defaultTextEncodingName ="utf-8"
+                defaultTextEncodingName = "utf-8"
                 databaseEnabled = true
 
                 pluginState = WebSettings.PluginState.ON
@@ -273,136 +273,138 @@ class TapKnetPay : LinearLayout {
              */
             Log.e("url", request?.url.toString())
 
-            if (request?.url.toString().startsWith(webViewScheme, ignoreCase = true)) {
-                if (request != null) {
-//                    handleIntercept(request)
 
-                    // Log.e("url headers", request.requestHeaders.toString())
+            if (request?.url.toString().startsWith(careemPayUrlHandler)) {
+                threeDsResponse = ThreeDsResponse(
+                    id = "",
+                    url = request?.url.toString(),
+                    powered = true,
+                    stopRedirection = false
+                )
+                navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
+                return true
+            } else {
+                if (request?.url.toString().startsWith(webViewScheme, ignoreCase = true)) {
+                    if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
 
-                }
-                Log.e("url are", request?.url.toString())
-                /**
-                 * listen for states of cardWebStatus of onReady , onValidInput .. etc
-                 */
 
-                if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
+                        if (buttonTypeConfigured == ThreeDsPayButtonType.CARD) {
+                            if (firstTimeOnReadyCallback) {
+                                Thread.sleep(1500)
+                                firstTimeOnReadyCallback = false
+                            }
+                            /**
+                             *
+                             *  todo enhance in a better way
+                             */
 
-
-                       if(buttonTypeConfigured ==ThreeDsPayButtonType.CARD) {
-                           if (firstTimeOnReadyCallback){
-                               Thread.sleep(1500)
-                               firstTimeOnReadyCallback = false
-                           }
-                           /**
-                            *
-                            *  todo enhance in a better way
-                            */
-
-                           //   val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
-                           // if (isFirstTime == "true") {
-                             //   webView?.clearView()
-                               // knetWebView?.visibility= View.GONE
-                              //  webView?.removeAllViews()
+                            //   val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
+                            // if (isFirstTime == "true") {
+                            //   webView?.clearView()
+                            // knetWebView?.visibility= View.GONE
+                            //  webView?.removeAllViews()
 //                                Handler(Looper.getMainLooper()).postDelayed({
 //                                    init(knetConfiguration,ThreeDsPayButtonType.CARD)
 //                                                                            },
 //                                    5000)
-                              //  Pref.setValue(context, "firstRun", "false")
-                            }
+                            //  Pref.setValue(context, "firstRun", "false")
+                        }
 
 
-                    DataConfiguration.getTapKnetListener()?.onReady()
+                        DataConfiguration.getTapKnetListener()?.onReady()
 
-                }
-
-
-
-                if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
-                    DataConfiguration.getTapKnetListener()?.onSuccess(
-                        request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                    )
-                }
-                if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
-                    val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                    Log.e("data",data.toString())
-                    val gson = Gson()
-                    threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
-                    when (threeDsResponse.stopRedirection) {
-                        false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
-                        else -> {}
                     }
-                    DataConfiguration.getTapKnetListener()?.onChargeCreated(
-                        request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                    )
-                }
-
-                if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
-                    DataConfiguration.getTapKnetListener()
-                        ?.onOrderCreated(
-                            request?.url?.getQueryParameter(keyValueName).toString()
-                        )
-                }
-                if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
-                    DataConfiguration.getTapKnetListener()?.onClick()
-
-                }
-                if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
-                    DataConfiguration.getTapKnetListener()?.cancel()
-                }
-                if (request?.url.toString()
-                        .contains(KnetStatusDelegate.onBinIdentification.name)
-                ) {
-                    DataConfiguration.getTapKnetListener()
-                        ?.onBindIdentification(
+                    if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
+                        DataConfiguration.getTapKnetListener()?.onSuccess(
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
                         )
-                }
-                if (request?.url.toString().contains(KnetStatusDelegate.onHeightChange.name)) {
-                    val newHeight = request?.url?.getQueryParameter(keyValueName)
-                    val params: ViewGroup.LayoutParams? = webViewFrame.layoutParams
-                    params?.height =
-                        webViewFrame.context.getDimensionsInDp(newHeight?.toInt() ?: 95)
-                    webViewFrame.layoutParams = params
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
 
-                    DataConfiguration.getTapKnetListener()?.onHeightChange(newHeight.toString())
+//                    val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
+//                    Log.e("chargedData",data.toString())
+//                    val gson = Gson()
+//                    threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
+//                    when (threeDsResponse.stopRedirection) {
+//                        false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
+//                        else -> {}
+//                    }
+                        DataConfiguration.getTapKnetListener()?.onChargeCreated(
+                            request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                        )
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
+                        DataConfiguration.getTapKnetListener()
+                            ?.onOrderCreated(
+                                request?.url?.getQueryParameter(keyValueName).toString()
+                            )
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
+                        DataConfiguration.getTapKnetListener()?.onClick()
 
-                }
-                if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
+                        DataConfiguration.getTapKnetListener()?.cancel()
+                    }
+                    if (request?.url.toString()
+                            .contains(KnetStatusDelegate.onBinIdentification.name)
+                    ) {
+                        DataConfiguration.getTapKnetListener()
+                            ?.onBindIdentification(
+                                request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                            )
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.onHeightChange.name)) {
+                        val newHeight = request?.url?.getQueryParameter(keyValueName)
+                        val params: ViewGroup.LayoutParams? = webViewFrame.layoutParams
+                        params?.height =
+                            webViewFrame.context.getDimensionsInDp(newHeight?.toInt() ?: 95)
+                        webViewFrame.layoutParams = params
+
+                        DataConfiguration.getTapKnetListener()?.onHeightChange(newHeight.toString())
+
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
+                        /**
+                         * navigate to 3ds Activity
+                         */
+                        val queryParams =
+                            request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                        Log.e("data", queryParams.toString())
+
+                        threeDsResponseCardPayButtons = queryParams.getModelFromJson()
+                        navigateTo3dsActivity(PaymentFlow.CARDPAY.name)
+                        Log.e("data", threeDsResponseCardPayButtons.toString())
+
+
+                    }
                     /**
-                     * navigate to 3ds Activity
+                     * for google button specifically
                      */
-                    val queryParams =
-                        request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                    Log.e("data", queryParams.toString())
+                    if (request?.url.toString().contains(KnetStatusDelegate.onClosePopup.name)) {
+                        webChrome.getdialog()?.dismiss()
 
-                    threeDsResponseCardPayButtons = queryParams.getModelFromJson()
-                    navigateTo3dsActivity(PaymentFlow.CARDPAY.name)
-                    Log.e("data", threeDsResponseCardPayButtons.toString())
+                    }
+
+                    if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
+                        DataConfiguration.getTapKnetListener()
+                            ?.onError(
+                                request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                            )
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
+                        DataConfiguration.getTapKnetListener()
+                            ?.onError(
+                                request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                            )
+                    }
 
 
+                    return true
+                } else {
+                    return false
                 }
-                /**
-                 * for google button specifically
-                 */
-                if (request?.url.toString().contains(KnetStatusDelegate.onClosePopup.name)) {
-                    webChrome.getdialog()?.dismiss()
-
-                }
-
-                if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
-                    DataConfiguration.getTapKnetListener()
-                        ?.onError(
-                            request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                        )
-                }
-
-                return true
-
-            } else {
-                return false
             }
-
-
         }
 
         override fun onReceivedSslError(
@@ -412,7 +414,6 @@ class TapKnetPay : LinearLayout {
         ) {
             super.onReceivedSslError(view, handler, error)
         }
-
 
 
         override fun onPageFinished(view: WebView, url: String) {
@@ -428,60 +429,15 @@ class TapKnetPay : LinearLayout {
             (context).startActivity(intent)
         }
 
-//        private fun handleIntercept(request: WebResourceRequest?): WebResourceResponse? {
-//            val okHttpClient = OkHttpClient()
-//            val call = okHttpClient.newCall(
-//                Request.Builder().url(request?.url.toString()).method(
-//                    request?.method.toString(), null
-//                ).headers(
-//                    getHeaders()
-//                ).build()
-//            )
-//
-//            return try {
-//                var webResourceResponse: WebResourceResponse? = null
-//                val response = call.enqueue(object : Callback {
-//                    override fun onFailure(call: Call, e: IOException) {
-//                        Log.e("headers error", e.toString())
-//
-//                    }
-//
-//                    override fun onResponse(call: Call, response: Response) {
-//                        response.run {
-//                            webResourceResponse = WebResourceResponse(
-//                                header(
-//                                    "content-type",
-//                                    "text/plain"
-//                                ), // You can set something other as default content-type
-//                                header(
-//                                    "content-encoding",
-//                                    "utf-8"
-//                                ),  // you can set another encoding as default
-//                              null
-//                            )
-//                        }
-//
-//                    }
-//
-//
-//                })
-//                webResourceResponse
-//
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//                null
-//            }
-//        }
-
 
         override fun shouldInterceptRequest(
             view: WebView?,
             request: WebResourceRequest?
         ): WebResourceResponse? {
             val webResourceResponse = super.shouldInterceptRequest(view, request)
-            Log.e("request",request?.method.toString())
-            Log.e("request",request?.requestHeaders.toString())
-            Log.e("request",request?.url.toString())
+            Log.e("request", request?.method.toString())
+            Log.e("request", request?.requestHeaders.toString())
+            Log.e("request", request?.url.toString())
 
             return webResourceResponse
         }

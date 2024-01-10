@@ -15,9 +15,11 @@ const val headersKey = "headers"
 
 const val redirectKey = "redirect"
 const val urlKey = "url"
+const val careemPayUrlHandler ="https://checkout"
 
 enum class KnetStatusDelegate {
-    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect,onBinIdentification
+    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect,onBinIdentification,
+
 }
 
 enum class SCHEMES(var value: Pair<String, String>) {
