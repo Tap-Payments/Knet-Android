@@ -429,7 +429,6 @@ class TapKnetPay : LinearLayout {
 
 
     override fun onDetachedFromWindow() {
-        Log.e("detached","here")
         knetWebView.destroy()
         super.onDetachedFromWindow()
     }
