@@ -43,6 +43,7 @@ class TapKnetPay : LinearLayout {
     lateinit var webViewFrame: FrameLayout
     lateinit var urlToBeloaded: String
     var firstTimeOnReadyCallback = true
+    var isCareemPayFirstEnterd = true
 
     companion object {
         lateinit var threeDsResponse: ThreeDsResponse
@@ -262,8 +263,7 @@ class TapKnetPay : LinearLayout {
                 threeDsResponse = ThreeDsResponse(
                     id = "",
                     url = request?.url.toString(),
-                    powered = true,
-                    stopRedirection = false
+                    powered = true
                 )
                 navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
                 return true
@@ -309,7 +309,13 @@ class TapKnetPay : LinearLayout {
                         Log.e("chargedData", data.toString())
                         val gson = Gson()
                         threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
-                        when (threeDsResponse.stopRedirection) {
+                        if (buttonTypeConfigured == ThreeDsPayButtonType.CAREEMPAY){
+                            threeDsResponse.stopRedirection = true
+                        }
+                        Log.e("threeDS", threeDsResponse.toString())
+
+
+                        when (threeDsResponse.stopRedirection  ) {
                             false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
                             else -> {}
                         }
