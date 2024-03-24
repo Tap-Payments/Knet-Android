@@ -124,8 +124,9 @@ class TapKnetPay : LinearLayout {
         applyTheme()
         when (configuraton) {
             KnetConfiguration.MapConfigruation -> {
-                urlToBeloaded =
-                    "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
+                urlToBeloaded = "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
+                Log.e("url",urlToBeloaded.toString())
+
                 knetWebView.loadUrl(urlToBeloaded)
             }
         }
@@ -253,6 +254,9 @@ class TapKnetPay : LinearLayout {
              */
             Log.e("url", request?.url.toString())
 
+            /**
+             * @TODO : make careempay open 3ds one time
+             */
 
             if (request?.url.toString().startsWith(careemPayUrlHandler)) {
                 threeDsResponse = ThreeDsResponse(

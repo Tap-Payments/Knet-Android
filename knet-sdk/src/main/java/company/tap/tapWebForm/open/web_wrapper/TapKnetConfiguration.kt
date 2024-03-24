@@ -21,7 +21,7 @@ class TapKnetConfiguration {
 
         fun configureWithKnetDictionary(
             context: Context,
-            tapCardInputViewWeb: TapKnetPay?,
+            tapKnetPay: TapKnetPay?,
             tapMapConfiguration: java.util.HashMap<String, Any>,
             knetPayStatusDelegate: KnetPayStatusDelegate? = null,
             buttonType: ThreeDsPayButtonType? = null
@@ -37,14 +37,14 @@ class TapKnetConfiguration {
                 ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
 
                 addOperatorHeaderField(
-                    tapCardInputViewWeb,
+                    tapKnetPay,
                     context,
                     KnetConfiguration.MapConfigruation,
                     publickKey.toString()
                 )
 
                 DataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
-                tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
+                tapKnetPay?.init(KnetConfiguration.MapConfigruation,buttonType)
 
             }
         }

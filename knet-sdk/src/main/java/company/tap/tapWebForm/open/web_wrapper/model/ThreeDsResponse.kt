@@ -8,7 +8,7 @@ data class ThreeDsResponse(var id: String, var url: String,var powered:Boolean,v
     Parcelable
 
 @Parcelize
-data class ThreeDsResponseCardPayButtons(var threeDsUrl: String, var redirectUrl: String,var powered:Boolean,var keyword:String) :
+data class ThreeDsResponseCardPayButtons(var threeDsUrl: String,var powered:Boolean,var keyword:String) :
     Parcelable
 
 

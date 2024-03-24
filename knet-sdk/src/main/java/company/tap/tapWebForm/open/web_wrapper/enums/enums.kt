@@ -29,13 +29,13 @@ enum class SCHEMES(var value: Pair<String, String>) {
     BENEFIT(
         Pair(
             urlWebStarter.replace("{url}", "benefit"),
-            webPrefix.replace("{buttonType}", "benefit")
+            webPrefix.replace("{buttonType}", "benefitButton")
         )
     ),
     FAWRY(
         Pair(
             urlWebStarter.replace("{url}", "fawry"),
-            webPrefix.replace("{buttonType}", "fawry")
+            webPrefix.replace("{buttonType}", "fawryButton")
         )
     ),
     PAYPAL(

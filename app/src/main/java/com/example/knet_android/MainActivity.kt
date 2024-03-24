@@ -49,106 +49,74 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val window: Window? = dialog.window
         window?.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
-        /**
-         * operator
-         */
-        val operator = HashMap<String, Any>()
-        operator.put("publicKey", "pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp")
-        /**
-         * order
-         */
-        val order = HashMap<String, Any>()
-        order.put("id", "")
-        order.put("amount", 1)
-        order.put("currency", "KWD")
-        order.put("description", "")
-        order.put("reference", "")
+//        /**
+//         * operator
+//         */
+//        val operator = HashMap<String, Any>()
+//        operator.put("publicKey", "pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp")
+//        /**
+//         * order
+//         */
+//        val order = HashMap<String, Any>()
+//        order.put("id", "")
+//        order.put("amount", 1)
+//        order.put("currency", "KWD")
+//        order.put("description", "")
+//        order.put("reference", "")
+//
+//
+//        /**
+//         * phone
+//         */
+//        val phone = HashMap<String, Any>()
+//        phone.put("countryCode", "+20")
+//        phone.put("number", "011")
+//
+//        /**
+//         * contact
+//         */
+//        val contact = HashMap<String, Any>()
+//        contact.put("email", "test@gmail.com")
+//        contact.put("phone", phone)
+//        /**
+//         * name
+//         */
+//        val name = HashMap<String, Any>()
+//        name.put("lang", "en")
+//        name.put("first", "Tap")
+//        name.put("middle", "")
+//        name.put("last", "Payment")
+//
+//        /**
+//         * customer
+//         */
+//        val customer = HashMap<String, Any>()
+//        customer.put("nameOnCard", "")
+//        customer.put("editable", true)
+//        customer.put("contact", contact)
+//        customer.put("name", listOf(name))
+//
+//        /**
+//         * features
+//         */
+//        val features = HashMap<String,Any>()
+//        features.put("acceptanceBadge",true)
+//
+//        /**
+//         * configuration
+//         */
+//        val configuration = LinkedHashMap<String, Any>()
+//
+//        configuration.put("operator", operator)
+//        configuration.put("scope", "AuthenticatedToken")
+//        configuration.put("order", order)
+//        configuration.put("customer", customer)
+//        configuration.put("features",features)
+//
 
 
-        /**
-         * phone
-         */
-        val phone = HashMap<String, Any>()
-        phone.put("countryCode", "+20")
-        phone.put("number", "011")
-
-        /**
-         * contact
-         */
-        val contact = HashMap<String, Any>()
-        contact.put("email", "test@gmail.com")
-        contact.put("phone", phone)
-        /**
-         * name
-         */
-        val name = HashMap<String, Any>()
-        name.put("lang", "en")
-        name.put("first", "Tap")
-        name.put("middle", "")
-        name.put("last", "Payment")
-
-        /**
-         * customer
-         */
-        val customer = HashMap<String, Any>()
-        customer.put("nameOnCard", "")
-        customer.put("editable", true)
-        customer.put("contact", contact)
-        customer.put("name", listOf(name))
-
-        /**
-         * features
-         */
-        val features = HashMap<String,Any>()
-        features.put("acceptanceBadge",true)
-
-        /**
-         * configuration
-         */
-        val configuration = LinkedHashMap<String, Any>()
-
-        configuration.put("operator", operator)
-        configuration.put("scope", "AuthenticatedToken")
-        configuration.put("order", order)
-        configuration.put("customer", customer)
-        configuration.put("features",features)
 
 
-
-
-
-        TapCardConfiguration.configureWithTapCardDictionaryConfiguration(
-            context = this,
-            cardNumber = "4111111111111111",
-            cardExpiry = "10/24",
-            tapCardInputViewWeb = tapCard,
-            tapMapConfiguration = configuration,
-            tapCardStatusDelegate = object : TapCardStatusDelegate {
-                override fun onError(error: String) {
-                    Log.e("error", error.toString())
-                }
-
-                override fun onSuccess(data: String) {
-                   // authenticateID = data
-                    val gson = Gson()
-                    val neededData = gson.fromJson(data, CardResponse::class.java)
-                    authenticatedToken = neededData.id
-                    sourceId = neededData.source.id
-                    Log.e("authToken", neededData.id.toString())
-                    Log.e("sourceID", sourceId.toString())
-                    dialog.dismiss()
-                    configureSdk(authenticatedToken,sourceId)
-
-
-                }
-
-                override fun onValidInput(isValid: String) {
-                    Log.e("isValid", isValid.toString())
-                   tapCard.generateTapToken()
-
-                }
-
-            })
     }
 
     fun configureSdk(authenticatedToken: String?="", sourceId: String?="") {
