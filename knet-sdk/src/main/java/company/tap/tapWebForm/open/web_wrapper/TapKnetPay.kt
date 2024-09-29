@@ -137,6 +137,7 @@ class TapKnetPay : LinearLayout {
             ThreeDsPayButtonType.TABBY -> applySchemes(SCHEMES.TABBY)
             ThreeDsPayButtonType.GOOGLEPAY -> applySchemes(SCHEMES.GOOGLE)
             ThreeDsPayButtonType.CAREEMPAY -> applySchemes(SCHEMES.CAREEMPAY)
+            ThreeDsPayButtonType.SAMSUNGPAY -> applySchemes(SCHEMES.SAMSUNGPAY)
             ThreeDsPayButtonType.VISA -> applySchemes(SCHEMES.VISA)
             ThreeDsPayButtonType.AMERICANEXPRESS -> applySchemes(SCHEMES.AMERICANEXPRESS)
             ThreeDsPayButtonType.MADA -> applySchemes(SCHEMES.MADA)

@@ -62,6 +62,12 @@ enum class SCHEMES(var value: Pair<String, String>) {
             webPrefix.replace("{buttonType}", "careempay")
         )
     ),
+    SAMSUNGPAY(
+        Pair(
+            urlWebStarter.replace("{url}", "samsungpay"),
+            webPrefix.replace("{buttonType}", "samsungpay")
+        )
+    ),
     VISA(
         Pair(
             urlWebStarter.replace("{url}", "card/VISA"),
@@ -94,5 +100,5 @@ enum class SCHEMES(var value: Pair<String, String>) {
 }
 
 enum class ThreeDsPayButtonType {
-    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY, CAREEMPAY, VISA, AMERICANEXPRESS, MADA, MASTERCARD,CARD
+    KNET, BENEFIT, BENEFITPAY, FAWRY, PAYPAL, TABBY, GOOGLEPAY, CAREEMPAY,SAMSUNGPAY, VISA, AMERICANEXPRESS, MADA, MASTERCARD,CARD
 }
