@@ -9,11 +9,11 @@ class AppLifecycleObserver : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onEnterForeground() {
-        DataConfiguration.getAppLifeCycle()?.onEnterForeground()
+        KnetDataConfiguration.getAppLifeCycle()?.onEnterForeground()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onEnterBackground() {
-        DataConfiguration.getAppLifeCycle()?.onEnterBackground()
+        KnetDataConfiguration.getAppLifeCycle()?.onEnterBackground()
     }
 }

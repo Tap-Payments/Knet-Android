@@ -2,7 +2,6 @@ package company.tap.tapWebForm.open
 
 import Customer
 import TapAuthentication
-import TapCardConfigurations
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -23,7 +22,7 @@ Copyright (c) 2022    Tap Payments.
 All rights reserved.
  **/
 @SuppressLint("StaticFieldLeak")
-object DataConfiguration {
+object KnetDataConfiguration {
 
     private var knetPayStatusDelegate: KnetPayStatusDelegate? = null
     private var applicationLifecycle: ApplicationLifecycle? = null
@@ -140,15 +139,15 @@ object DataConfiguration {
 }
 
 interface KnetPayStatusDelegate {
-    fun onSuccess(data: String)
-    fun onReady(){}
-    fun onClick(){}
-    fun onOrderCreated(data: String){}
-    fun onChargeCreated(data:String){}
-    fun onError(error: String)
-    fun cancel(){}
-    fun onHeightChange(heightChange:String){}
-    fun onBindIdentification(data: String){}
+    fun onKnetSuccess(data: String)
+    fun onKnetReady(){}
+    fun onKnetClick(){}
+    fun onKnetOrderCreated(data: String){}
+    fun onKnetChargeCreated(data:String){}
+    fun onKnetError(error: String)
+    fun onKnetcancel(){}
+    fun onKnetHeightChange(heightChange:String){}
+    fun onKnetBindIdentification(data: String){}
 
 }
 

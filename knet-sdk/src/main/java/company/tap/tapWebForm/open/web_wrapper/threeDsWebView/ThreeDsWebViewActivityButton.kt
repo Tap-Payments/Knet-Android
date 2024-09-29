@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapWebForm.R
 import company.tap.tapWebForm.doAfterSpecificTime
 import company.tap.tapWebForm.getDeviceSpecs
-import company.tap.tapWebForm.open.DataConfiguration
+import company.tap.tapWebForm.open.KnetDataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.*
 import company.tap.tapWebForm.open.web_wrapper.enums.redirectKey
 import company.tap.tapWebForm.open.web_wrapper.enums.urlKey
@@ -38,7 +38,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three_ds_web_view)
-        LocalizationManager.setLocale(this, Locale(DataConfiguration.lanuage.toString()))
+        LocalizationManager.setLocale(this, Locale(KnetDataConfiguration.lanuage.toString()))
         val webView = WebView(this)
         webView.layoutParams = this.getDeviceSpecs().first.let {
             LinearLayout.LayoutParams(
@@ -83,7 +83,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
 
                 }
             }
-            DataConfiguration.getTapKnetListener()?.cancel()
+            KnetDataConfiguration.getTapKnetListener()?.onKnetcancel()
         })
 
     }
@@ -98,7 +98,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
             when (paymentFlow) {
                 PaymentFlow.PAYMENTBUTTON.name -> {
                     webView?.loadUrl(request?.url.toString())
-                    val Redirect = DataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+                    val Redirect = KnetDataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
                     val redirect = Redirect.get(urlKey)
                     when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
                         true -> {
@@ -108,8 +108,8 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                             try {
                                 TapKnetPay.retrieve(splittiedString[1])
                             } catch (e: Exception) {
-                                DataConfiguration.getTapKnetListener()
-                                    ?.onError(e.message.toString())
+                                KnetDataConfiguration.getTapKnetListener()
+                                    ?.onKnetError(e.message.toString())
                             }
                         }
 

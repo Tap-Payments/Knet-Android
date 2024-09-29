@@ -124,11 +124,11 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
             tapCardInputViewWeb = tapCard,
             tapMapConfiguration = configuration,
             tapCardStatusDelegate = object : TapCardStatusDelegate {
-                override fun onError(error: String) {
+                override fun onCardError(error: String) {
                     Log.e("error", error.toString())
                 }
 
-                override fun onSuccess(data: String) {
+                override fun onCardSuccess(data: String) {
                    // authenticateID = data
                     val gson = Gson()
                     val neededData = gson.fromJson(data, CardResponse::class.java)
@@ -395,13 +395,13 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     }
 
-    override fun onReady() {
+    override fun onKnetReady() {
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onReady"
         Toast.makeText(this, "onReady", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onSuccess(data: String) {
+    override fun onKnetSuccess(data: String) {
         Log.i("onSuccess",data)
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onSuccess $data"
@@ -411,20 +411,20 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     }
 
-    override fun onClick() {
+    override fun onKnetClick() {
         Toast.makeText(this, "onClick", Toast.LENGTH_SHORT).show()
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onClick "
 
     }
 
-    override fun onBindIdentification(data: String) {
+    override fun onKnetBindIdentification(data: String) {
         Toast.makeText(this, "onBindIdentification", Toast.LENGTH_SHORT).show()
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onBindIdentification $data "
     }
 
-    override fun onChargeCreated(data: String) {
+    override fun onKnetChargeCreated(data: String) {
         Log.e("data",data.toString())
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onChargeCreated $data"
@@ -432,17 +432,17 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
     }
 
-    override fun onOrderCreated(data: String) {
+    override fun onKnetOrderCreated(data: String) {
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onOrderCreated $data"
         Toast.makeText(this, "onOrderCreated $data", Toast.LENGTH_SHORT).show()
     }
 
-    override fun cancel() {
+    override fun onKnetcancel() {
         Toast.makeText(this, "Cancel ", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onError(error: String) {
+    override fun onKnetError(error: String) {
         Log.e("error",error.toString())
         findViewById<TextView>(R.id.text).text = ""
         findViewById<TextView>(R.id.text).text = "onError $error"

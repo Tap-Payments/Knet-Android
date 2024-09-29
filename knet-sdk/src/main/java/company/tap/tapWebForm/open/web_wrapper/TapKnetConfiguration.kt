@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
 import company.tap.tapWebForm.R
 import company.tap.tapWebForm.open.AppLifecycleObserver
-import company.tap.tapWebForm.open.DataConfiguration
-import company.tap.tapWebForm.open.DataConfiguration.configurationsAsHashMap
+import company.tap.tapWebForm.open.KnetDataConfiguration
+import company.tap.tapWebForm.open.KnetDataConfiguration.configurationsAsHashMap
 import company.tap.tapWebForm.open.KnetPayStatusDelegate
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapnetworkkit.connection.NetworkApp
@@ -43,7 +43,7 @@ class TapKnetConfiguration {
                     publickKey.toString()
                 )
 
-                DataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
+                KnetDataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
                 tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
 
             }

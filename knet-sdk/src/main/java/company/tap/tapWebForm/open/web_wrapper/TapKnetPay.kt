@@ -10,7 +10,6 @@ import android.net.http.SslError
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.*
@@ -19,18 +18,14 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.*
 import com.google.gson.Gson
 import company.tap.tapWebForm.*
-import company.tap.tapWebForm.open.DataConfiguration
+import company.tap.tapWebForm.open.KnetDataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponseCardPayButtons
 import company.tap.tapWebForm.open.web_wrapper.pop_up_window.WebChrome
 import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivityButton
 import company.tap.tapuilibrary.themekit.ThemeManager
-import company.tap.tapuilibrary.uikit.atoms.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import okhttp3.Headers
-import okhttp3.Headers.Companion.toHeaders
+
 import java.util.*
 
 
@@ -125,7 +120,7 @@ class TapKnetPay : LinearLayout {
         when (configuraton) {
             KnetConfiguration.MapConfigruation -> {
                 urlToBeloaded =
-                    "${webviewStarterUrl}${encodeConfigurationMapToUrl(DataConfiguration.configurationsAsHashMap)}"
+                    "${webviewStarterUrl}${encodeConfigurationMapToUrl(KnetDataConfiguration.configurationsAsHashMap)}"
                 knetWebView.loadUrl(urlToBeloaded)
             }
         }
@@ -166,7 +161,7 @@ class TapKnetPay : LinearLayout {
         when (knetConfiguration) {
             KnetConfiguration.MapConfigruation -> {
                 val tapInterface =
-                    DataConfiguration.configurationsAsHashMap?.get("interface") as? Map<*, *>
+                    KnetDataConfiguration.configurationsAsHashMap?.get("interface") as? Map<*, *>
                 setTapThemeAndLanguage(
                     this.context,
                     TapLocal.valueOf(tapInterface?.get("locale")?.toString() ?: TapLocal.en.name),
@@ -185,7 +180,7 @@ class TapKnetPay : LinearLayout {
     ) {
         when (themeMode) {
             TapTheme.light -> {
-                DataConfiguration.setTheme(
+                KnetDataConfiguration.setTheme(
                     context, context.resources, null,
                     R.raw.defaultlighttheme, TapTheme.light.name
                 )
@@ -193,15 +188,15 @@ class TapKnetPay : LinearLayout {
             }
 
             TapTheme.dynamic -> {
-                DataConfiguration.setTheme(
+                KnetDataConfiguration.setTheme(
                     context, context.resources, null,
                     R.raw.defaultlighttheme, TapTheme.light.name
                 )
-                ThemeManager.currentThemeName = TapTheme.light.name
+                      ThemeManager.currentThemeName = TapTheme.light.name
             }
 
             TapTheme.dark -> {
-                DataConfiguration.setTheme(
+                KnetDataConfiguration.setTheme(
                     context, context.resources, null,
                     R.raw.defaultdarktheme, TapTheme.dark.name
                 )
@@ -215,7 +210,7 @@ class TapKnetPay : LinearLayout {
                 /**
                  * needed to be dynamic
                  */
-                DataConfiguration.setLocale(
+                KnetDataConfiguration.setLocale(
                     this.context,
                     Locale.getDefault().language,
                     null,
@@ -225,7 +220,7 @@ class TapKnetPay : LinearLayout {
             }
 
             else -> {
-                DataConfiguration.setLocale(
+                KnetDataConfiguration.setLocale(
                     this.context,
                     language?.name ?: "en",
                     null,
@@ -291,11 +286,11 @@ class TapKnetPay : LinearLayout {
                         }
 
 
-                        DataConfiguration.getTapKnetListener()?.onReady()
+                        KnetDataConfiguration.getTapKnetListener()?.onKnetReady()
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
-                        DataConfiguration.getTapKnetListener()?.onSuccess(
+                        KnetDataConfiguration.getTapKnetListener()?.onKnetSuccess(
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
                         )
                     }
@@ -309,28 +304,28 @@ class TapKnetPay : LinearLayout {
                             false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
                             else -> {}
                         }
-                        DataConfiguration.getTapKnetListener()?.onChargeCreated(
+                        KnetDataConfiguration.getTapKnetListener()?.onKnetChargeCreated(
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
                         )
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
-                        DataConfiguration.getTapKnetListener()
-                            ?.onOrderCreated(
+                        KnetDataConfiguration.getTapKnetListener()
+                            ?.onKnetOrderCreated(
                                 request?.url?.getQueryParameter(keyValueName).toString()
                             )
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
-                        DataConfiguration.getTapKnetListener()?.onClick()
+                        KnetDataConfiguration.getTapKnetListener()?.onKnetClick()
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
-                        DataConfiguration.getTapKnetListener()?.cancel()
+                        KnetDataConfiguration.getTapKnetListener()?.onKnetcancel()
                     }
                     if (request?.url.toString()
                             .contains(KnetStatusDelegate.onBinIdentification.name)
                     ) {
-                        DataConfiguration.getTapKnetListener()
-                            ?.onBindIdentification(
+                        KnetDataConfiguration.getTapKnetListener()
+                            ?.onKnetBindIdentification(
                                 request?.url?.getQueryParameterFromUri(keyValueName).toString()
                             )
                     }
@@ -341,7 +336,7 @@ class TapKnetPay : LinearLayout {
                             webViewFrame.context.getDimensionsInDp(newHeight?.toInt() ?: 95)
                         webViewFrame.layoutParams = params
 
-                        DataConfiguration.getTapKnetListener()?.onHeightChange(newHeight.toString())
+                        KnetDataConfiguration.getTapKnetListener()?.onKnetHeightChange(newHeight.toString())
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
@@ -367,14 +362,14 @@ class TapKnetPay : LinearLayout {
                     }
 
                     if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
-                        DataConfiguration.getTapKnetListener()
-                            ?.onError(
+                        KnetDataConfiguration.getTapKnetListener()
+                            ?.onKnetError(
                                 request?.url?.getQueryParameterFromUri(keyValueName).toString()
                             )
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
-                        DataConfiguration.getTapKnetListener()
-                            ?.onError(
+                        KnetDataConfiguration.getTapKnetListener()
+                            ?.onKnetError(
                                 request?.url?.getQueryParameterFromUri(keyValueName).toString()
                             )
                     }
