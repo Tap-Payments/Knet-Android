@@ -123,8 +123,10 @@ class TapKnetPay : LinearLayout {
                     "${webviewStarterUrl}${encodeConfigurationMapToUrl(KnetDataConfiguration.configurationsAsHashMap)}"
                 knetWebView.loadUrl(urlToBeloaded)
             }
-        }
 
+
+        }
+        Log.e("urlToBeloaded",urlToBeloaded)
 
     }
 

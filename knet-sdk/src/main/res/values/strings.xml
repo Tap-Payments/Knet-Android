@@ -1,12 +1,20 @@
 <resources>
     <string name="card_not_supported">Card not supported</string>
     <string name="user_cancell">User canceled 3ds</string>
-    <string name="enryptkeyTest" translatable="false">
-        -----BEGIN PUBLIC KEY-----
+ <!-- Dev environment key  <string name="enryptkeyTest" translatable="false">
+        -&#45;&#45;&#45;&#45;BEGIN PUBLIC KEY-&#45;&#45;&#45;&#45;
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8AX++RtxPZFtns4XzXFlDIxPB
 h0umN4qRXZaKDIlb6a3MknaB7psJWmf2l+e4Cfh9b5tey/+rZqpQ065eXTZfGCAu
 BLt+fYLQBhLfjRpk8S6hlIzc1Kdjg65uqzMwcTd0p7I4KLwHk1I0oXzuEu53fU1L
 SZhWp4Mnd6wjVgXAsQIDAQAB
+-&#45;&#45;&#45;&#45;END PUBLIC KEY-&#45;&#45;&#45;&#45;
+    </string>  -->
+    <string name="enryptkeyTest" translatable="false">
+      -----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCi9W5jyTvA4Iwv3V5sfNQ7VdSz
+7WqwBbnWFbIUL/GjaaE93mvDv4zbgRSznHaHQPH6pxrMhMh0tV58njkvjHvQ/tvg
+pwM8SemNPKEEAPl69tnMvCrJRPh2dWL3OHY8yCW4c38Hyx4fy56Zd5cdoVWfCReu
+jCsvASLGz+cfRrj2swIDAQAB
 -----END PUBLIC KEY-----
     </string>
 
