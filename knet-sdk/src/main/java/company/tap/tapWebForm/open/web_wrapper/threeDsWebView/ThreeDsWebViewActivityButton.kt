@@ -76,10 +76,10 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
 
                 PaymentFlow.CARDPAY.name -> {
                     TapKnetPay.cancel()
-                    tapKnetPay.init(
+                  /*  tapKnetPay.init(
                         KnetConfiguration.MapConfigruation,
                         TapKnetPay.buttonTypeConfigured
-                    )
+                    )*/ //SToped cardpay for now
 
                 }
             }

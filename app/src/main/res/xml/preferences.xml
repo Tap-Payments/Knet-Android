@@ -159,7 +159,12 @@
             app:useSimpleSummaryProvider="true"/>
 
 
-
+        <MultiSelectListPreference
+            app:key="supportedPaymentMethodKey"
+            app:title="supportedPaymentMethod"
+            android:entries="@array/SupportedPaymentMethods"
+            android:entryValues="@array/SupportedPaymentMethods"
+            app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>
 
@@ -294,6 +299,6 @@
     <Preference
         app:key="dialog_preference"
         android:title="Done"
-        app:summary="Tap to show Card" />
+        app:summary="Tap to show Button" />
 
 </PreferenceScreen>

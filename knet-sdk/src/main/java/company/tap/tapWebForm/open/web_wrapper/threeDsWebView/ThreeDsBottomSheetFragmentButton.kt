@@ -14,8 +14,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapWebForm.doAfterSpecificTime
 import company.tap.tapWebForm.getDeviceSpecs
 import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
-import company.tap.tapuilibrary.uikit.views.TapBrandView
+
 import company.tap.tapWebForm.R
+import company.tap.tapWebForm.open.TapBrandView
 
 class ThreeDsBottomSheetFragmentButton(var webView: WebView?, var onCancel:()->Unit): BottomSheetDialogFragment() {
 

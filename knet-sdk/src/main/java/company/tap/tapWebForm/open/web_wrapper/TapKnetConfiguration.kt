@@ -44,7 +44,8 @@ class TapKnetConfiguration {
                 )
 
                 KnetDataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
-                tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
+               // tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
+                tapCardInputViewWeb?.init(tapMapConfiguration,buttonType)
 
             }
         }

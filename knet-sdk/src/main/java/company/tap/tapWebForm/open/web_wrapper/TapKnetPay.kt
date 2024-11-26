@@ -8,6 +8,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.http.SslError
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,7 +27,20 @@ import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponseCardPayButto
 import company.tap.tapWebForm.open.web_wrapper.pop_up_window.WebChrome
 import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivityButton
 import company.tap.tapuilibrary.themekit.ThemeManager
-
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
 import java.util.*
 
 
@@ -110,23 +125,82 @@ class TapKnetPay : LinearLayout {
 
     }
 
-    fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
+    private fun callConfigAPI(configuraton: java.util.HashMap<String, Any>) {
+        try {
+            val baseURL = "https://mw-sdk.dev.tap.company/v2/button/config "
+            val builder: OkHttpClient.Builder = OkHttpClient().newBuilder()
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            builder.addInterceptor(interceptor)
+
+            val body = (configuraton as Map<*, *>?)?.let { JSONObject(it).toString().toRequestBody("application/json".toMediaTypeOrNull()) }
+            val okHttpClient: OkHttpClient = builder.build()
+            val request: Request = Request.Builder()
+                .url(baseURL )
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer sk_test_bNgRpokWMylX3CBJ6FOresTq")
+                .build()
+            okHttpClient.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        var responseBody: JSONObject? =
+                            response.body?.string()?.let { JSONObject(it) } // toString() is not the response body, it is a debug representation of the response body
+
+                       if(!responseBody.toString().contains("errors")){
+                           var redirectURL = responseBody?.getString("redirect_url")
+                            if (redirectURL != null) {
+                               // knetWebView.loadUrl(redirectURL)
+                                urlToBeloaded = redirectURL
+                                Handler(Looper.getMainLooper()).post {
+                                    knetWebView.loadUrl(redirectURL)
+
+                                }
+                            }
+                        }else{
+
+
+                        }
+
+                        } catch (ex: JSONException) {
+                            throw RuntimeException(ex)
+                        } catch (ex: IOException) {
+                            throw RuntimeException(ex)
+                        }
+
+                }
+
+                override fun onFailure(call: Call, e: IOException) {}
+            })
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+
+    }
+
+   // fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
+    fun init(configuraton: java.util.HashMap<String, Any>, buttonType: ThreeDsPayButtonType?) {
         initializePaymentData(buttonType)
         if (buttonType != null) {
             buttonTypeConfigured = buttonType
         }
-        knetConfiguration = configuraton
-        applyTheme()
+       // knetConfiguration = configuraton
+     //   applyTheme()
+       callConfigAPI(configuraton)
+
+
         when (configuraton) {
-            KnetConfiguration.MapConfigruation -> {
-                urlToBeloaded =
-                    "${webviewStarterUrl}${encodeConfigurationMapToUrl(KnetDataConfiguration.configurationsAsHashMap)}"
-                knetWebView.loadUrl(urlToBeloaded)
-            }
+
+           // KnetConfiguration.MapConfigruation -> {
+
+               /* urlToBeloaded =
+                    "${webviewStarterUrl}${encodeConfigurationMapToUrl(KnetDataConfiguration.configurationsAsHashMap)}"*/
+               // knetWebView.loadUrl(urlToBeloaded)
+           // }
 
 
         }
-        Log.e("urlToBeloaded",urlToBeloaded)
+    //    Log.e("urlToBeloaded",urlToBeloaded)
 
     }
 

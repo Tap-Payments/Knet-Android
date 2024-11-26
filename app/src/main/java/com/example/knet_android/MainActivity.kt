@@ -187,9 +187,9 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         order.put("id",ordrId.toString())
         order.put("amount",  if (orderAmount?.isEmpty() == true)"1" else orderAmount.toString() )
         order.put("currency",selectedCurrency)
-        order.put("description",orderDescription ?: "")
-        order.put("reference",orderRefrence ?: "")
-        order.put("metadata",metada)
+       // order.put("description",orderDescription ?: "")
+       // order.put("reference",orderRefrence ?: "")
+      //  order.put("metadata",metada)
         Log.e("orderData","id" + ordrId.toString() + "  \n dest" + orderDescription.toString() +" \n orderamount " + orderAmount.toString() +"  \n orderRef" + orderRefrence.toString() + "  \n currency " + selectedCurrency.toString())
 
         /**
@@ -209,8 +209,8 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
          * phone
          */
         val phone = java.util.HashMap<String,Any>()
-        phone.put("countryCode","+20")
-        phone.put("number","011")
+        phone.put("countryCode","+965")
+        phone.put("number","6617")
 
 
         /**
@@ -248,9 +248,9 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
         Log.e("interfaceData",selectedTheme.toString() + "language" + selectedLanguage.toString() + "cardedge " + selectedCardEdge.toString() +" loader" + loader.toString() + "selectedColorStylee " + selectedColorStylee.toString())
         val interfacee = HashMap<String,Any>()
+        interfacee.put("edges",selectedCardEdge ?: "curved")
         interfacee.put("locale",selectedLanguage ?: "en")
         interfacee.put("theme",selectedTheme ?: "light")
-        interfacee.put("edges",selectedCardEdge ?: "curved")
         interfacee.put("colorStyle",selectedColorStylee ?:"colored")
         interfacee.put("loader",loader)
 
@@ -307,13 +307,14 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         val source = HashMap<String,Any>()
         source.put("id", this.sourceId ?: "")
 
-        transaction.put("reference",transactionRefrenceKey?: "")
-        transaction.put("authorize",authorize?: "")
-        transaction.put("authentication",true)
+     //   transaction.put("reference",transactionRefrenceKey?: "")  NOT FOR NOW
+      //  transaction.put("authorize",authorize?: "")  NOT FOR NOW
+
        // transaction.put("paymentAgreement",paymentAgreement)
-        transaction.put("metadata",metada)
+      //  transaction.put("metadata",metada) NOT FOR NOW
         transaction.put("authenticate",authenticate)
         transaction.put("source",source)
+        transaction.put("authentication",true)
 
 
 
@@ -326,12 +327,16 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
         val supportedPaymentAuthentications =  intent.getSerializableExtra("supportedPaymentAuthenticationsKey") as HashSet<*>
         val supportedSchemes =  intent.getSerializableExtra("supportedSchemesKey") as HashSet<*>
+      //  val supportedPaymentMethods =  intent.getSerializableExtra("supportedPaymentMethodKey") as HashSet<*>
         Log.e("acceptance",
             "suppored fund is : $supportedFund supportedPaymentAuthentications :  $supportedPaymentAuthentications supportedSchemes : $supportedSchemes"
         )
         val acceptance = HashMap<String,Any>()
-       acceptance.put("supportedFundSource",supportedFund)
+      /* acceptance.put("supportedFundSource",supportedFund)
         acceptance.put("supportedPaymentAuthentications",supportedPaymentAuthentications)
+        acceptance.put("supportedSchemes",supportedSchemes) */
+
+        acceptance.put("supportedPaymentMethod",buttonKey?.toLowerCase().toString()) //TODO check what has to be passed dynamic
         acceptance.put("supportedSchemes",supportedSchemes)
         /**
          * fields
@@ -371,18 +376,36 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
          * configuration
          */
 
-        configuration.put("operator",operator)
-        configuration.put("order",order)
-        configuration.put("customer",customer)
-        configuration.put("merchant",merchant)
-        configuration.put("invoice",invoice)
-        configuration.put("interface",interfacee)
-        configuration.put("post",post)
+
+
+
         configuration.put("scope",scopeKey.toString())
-        configuration.put("transaction",transaction)
+        configuration.put("operator",operator)
         configuration.put("acceptance",acceptance)
-        configuration.put("fieldVisibility",fieldVisibility)
+        configuration.put("debug",true)
+        configuration.put("merchant",merchant)
+        configuration.put("order",order)
+        configuration.put("transaction",transaction)
+        configuration.put("customer",customer)
+        configuration.put("interface",interfacee)
         configuration.put("features",features)
+        configuration.put("redirect_url","https://demo.dev.tap.company/v2/sdk/button?paymentMethod=knet") // TODO what will be in this
+        configuration.put("data-testid","TapButton")
+        configuration.put("platform","mobile")
+        configuration.put("language",selectedLanguage ?: "dynamic")
+        configuration.put("themeMode",selectedTheme ?:"dynamic")
+        configuration.put("edges",selectedCardEdge ?:"dynamic")
+        configuration.put("paymentMethod",buttonKey?.toLowerCase().toString()) //TODO what has to be sent here
+
+      //  configuration.put("invoice",invoice)
+
+      //  configuration.put("post",post)
+
+
+
+       // configuration.put("fieldVisibility",fieldVisibility)
+
+
 
 
 

@@ -173,6 +173,9 @@
 
     </string-array>
 
+
+
+
     <string-array name="Lanugages">
         <item>English</item>
         <item>Arabic</item>
@@ -225,4 +228,14 @@
         <item>1</item>
     </string-array>
 
+
+    <string-array  name ="SupportedPaymentMethods">
+        <item>MADA</item>
+        <item>VISA</item>
+        <item>MASTERCARD</item>
+        <item>AMERICAN_EXPRESS</item>
+        <item>OMANNET</item>
+        <item>MEEZA</item>
+
+    </string-array>
 </resources>
