@@ -95,6 +95,7 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
         intent.putExtra("supportedFundSourceKey", getPrefStringSetValue("supportedFundSourceKey", emptySet()).toHashSet())
         intent.putExtra("supportedPaymentAuthenticationsKey", getPrefStringSetValue("supportedPaymentAuthenticationsKey", emptySet()).toHashSet())
         intent.putExtra("supportedSchemesKey", getPrefStringSetValue("supportedSchemesKey", emptySet()).toHashSet())
+        intent.putExtra("supportedPaymentMethodKey", getPrefStringSetValue("supportedPaymentMethodKey", emptySet()).toHashSet())
         /**
          * Fields Visibility
          ***/

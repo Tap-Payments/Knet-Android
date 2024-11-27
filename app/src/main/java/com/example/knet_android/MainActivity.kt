@@ -327,7 +327,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
 
         val supportedPaymentAuthentications =  intent.getSerializableExtra("supportedPaymentAuthenticationsKey") as HashSet<*>
         val supportedSchemes =  intent.getSerializableExtra("supportedSchemesKey") as HashSet<*>
-      //  val supportedPaymentMethods =  intent.getSerializableExtra("supportedPaymentMethodKey") as HashSet<*>
+        val supportedPaymentMethods =  intent.getSerializableExtra("supportedPaymentMethodKey") as HashSet<*>
         Log.e("acceptance",
             "suppored fund is : $supportedFund supportedPaymentAuthentications :  $supportedPaymentAuthentications supportedSchemes : $supportedSchemes"
         )
