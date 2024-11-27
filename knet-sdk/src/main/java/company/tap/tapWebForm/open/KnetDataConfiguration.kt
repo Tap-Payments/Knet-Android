@@ -131,7 +131,7 @@ object KnetDataConfiguration {
         return knetPayStatusDelegate
     }
 
-    fun initializeSDK(activity: Activity, configurations: HashMap<String,Any>, tapKnetPay: TapKnetPay){
+    fun initializeSDK(activity: Activity, configurations:  java.util.HashMap<String, Any>, tapKnetPay: TapKnetPay){
         TapKnetConfiguration.configureWithKnetDictionary(activity,tapKnetPay,configurations)
     }
 
