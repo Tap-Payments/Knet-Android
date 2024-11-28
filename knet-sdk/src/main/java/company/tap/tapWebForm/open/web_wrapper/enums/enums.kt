@@ -21,7 +21,7 @@ const val urlKey = "url"
 const val careemPayUrlHandler ="https://checkout"
 
 enum class KnetStatusDelegate {
-    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect,onBinIdentification,
+    onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel, onClosePopup,onHeightChange,on3dsRedirect,onBinIdentification, launch
 
 }
 

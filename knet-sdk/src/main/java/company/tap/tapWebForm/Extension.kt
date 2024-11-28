@@ -164,7 +164,7 @@ fun Context.twoThirdHeightView(): Double {
 fun Context.getDeviceSpecs(): Pair<Int, Int> {
     val displayMetrics = DisplayMetrics()
     (this.getActivity())?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-    val height = displayMetrics.heightPixels
+    val height = Resources.getSystem().displayMetrics.heightPixels
     val width = displayMetrics.widthPixels
     val pair: Pair<Int, Int> = Pair(height, width)
     return pair

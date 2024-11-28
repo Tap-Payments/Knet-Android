@@ -40,19 +40,22 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
         setContentView(R.layout.activity_three_ds_web_view)
         LocalizationManager.setLocale(this, Locale(KnetDataConfiguration.lanuage.toString()))
         val webView = WebView(this)
+        val linearLayout : LinearLayout = findViewById(R.id.linear)
         webView.layoutParams = this.getDeviceSpecs().first.let {
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 it
             )
         }
+        //linearLayout.addView(we)
 
         with(webView.settings) {
             javaScriptEnabled = true
             domStorageEnabled = true
 
         }
-        webView.isVerticalScrollBarEnabled = true
+
+       // webView.isVerticalScrollBarEnabled = true
         webView.requestFocus()
         webView.webViewClient = threeDsWebViewClient()
         val data = intent.extras
@@ -104,7 +107,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                         true -> {
                             threeDsBottomsheet.dialog?.dismiss()
                             val splittiedString = request.url.toString().split("?", ignoreCase = true)
-                            Log.e("splittedString", splittiedString.toString())
+                            if(splittiedString!=null)Log.e("splittedString", splittiedString.toString())
                             try {
                                 TapKnetPay.retrieve(splittiedString[1])
                             } catch (e: Exception) {

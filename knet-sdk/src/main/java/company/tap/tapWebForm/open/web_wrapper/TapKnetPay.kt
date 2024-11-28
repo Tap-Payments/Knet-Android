@@ -103,6 +103,7 @@ class TapKnetPay : LinearLayout {
         knetWebView = findViewById(R.id.webview)
         webViewFrame = findViewById(R.id.webViewFrame)
 
+
         with(knetWebView) {
 
             with(settings) {
@@ -327,6 +328,7 @@ class TapKnetPay : LinearLayout {
 
 
             if (request?.url.toString().startsWith(careemPayUrlHandler)) {
+                webViewFrame.layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
                 threeDsResponse = ThreeDsResponse(
                     id = "",
                     url = request?.url.toString(),
@@ -454,6 +456,7 @@ class TapKnetPay : LinearLayout {
 
                     return true
                 } else {
+
                     return false
                 }
             }
