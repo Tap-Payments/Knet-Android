@@ -8,8 +8,8 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import company.tap.tapWebForm.R
-import company.tap.tapWebForm.open.web_wrapper.TapKnetConfiguration
-import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
+import company.tap.tapWebForm.open.web_wrapper.TapRedirectConfiguration
+import company.tap.tapWebForm.open.web_wrapper.TapRedirectPay
 import company.tap.taplocalizationkit.LocalizationManager
 import company.tap.tapuilibrary.themekit.ThemeManager
 import java.util.*
@@ -22,9 +22,9 @@ Copyright (c) 2022    Tap Payments.
 All rights reserved.
  **/
 @SuppressLint("StaticFieldLeak")
-object KnetDataConfiguration {
+object RedirectDataConfiguration {
 
-    private var knetPayStatusDelegate: KnetPayStatusDelegate? = null
+    private var redirectPayStatusDelegate: RedirectPayStatusDelegate? = null
     private var applicationLifecycle: ApplicationLifecycle? = null
 
     var customerExample: Customer? = null
@@ -116,8 +116,8 @@ object KnetDataConfiguration {
         authenticationExample = tapAuthentication
     }
 
-    fun addTapBenefitPayStatusDelegate(_tapCardStatuDelegate: KnetPayStatusDelegate?) {
-        this.knetPayStatusDelegate = _tapCardStatuDelegate
+    fun addTapBenefitPayStatusDelegate(_tapCardStatuDelegate: RedirectPayStatusDelegate?) {
+        this.redirectPayStatusDelegate = _tapCardStatuDelegate
 
     }
     fun addAppLifeCycle(appLifeCycle: ApplicationLifecycle?) {
@@ -127,27 +127,27 @@ object KnetDataConfiguration {
     fun getAppLifeCycle(): ApplicationLifecycle? {
         return this.applicationLifecycle
     }
-    fun getTapKnetListener(): KnetPayStatusDelegate? {
-        return knetPayStatusDelegate
+    fun getTapKnetListener(): RedirectPayStatusDelegate? {
+        return redirectPayStatusDelegate
     }
 
-    fun initializeSDK(activity: Activity, configurations:  java.util.HashMap<String, Any>, tapKnetPay: TapKnetPay){
-        TapKnetConfiguration.configureWithKnetDictionary(activity,tapKnetPay,configurations)
+    fun initializeSDK(activity: Activity, configurations:  java.util.HashMap<String, Any>, tapRedirectPay: TapRedirectPay){
+        TapRedirectConfiguration.configureWithRedirectDictionary(activity,tapRedirectPay,configurations)
     }
 
 
 }
 
-interface KnetPayStatusDelegate {
-    fun onKnetSuccess(data: String)
-    fun onKnetReady(){}
-    fun onKnetClick(){}
-    fun onKnetOrderCreated(data: String){}
-    fun onKnetChargeCreated(data:String){}
-    fun onKnetError(error: String)
-    fun onKnetcancel(){}
-    fun onKnetHeightChange(heightChange:String){}
-    fun onKnetBindIdentification(data: String){}
+interface RedirectPayStatusDelegate {
+    fun onRedirectSuccess(data: String)
+    fun onRedirectReady(){}
+    fun onRedirectClick(){}
+    fun onRedirectOrderCreated(data: String){}
+    fun onRedirectChargeCreated(data:String){}
+    fun onRedirectError(error: String)
+    fun onRedirectcancel(){}
+    fun onRedirectHeightChange(heightChange:String){}
+    fun onRedirectBindIdentification(data: String){}
 
 }
 

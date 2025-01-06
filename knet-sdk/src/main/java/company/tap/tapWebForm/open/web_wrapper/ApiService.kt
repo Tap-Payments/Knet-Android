@@ -22,7 +22,7 @@ object ApiService {
    var BASE_URL_1 = "https://mw-sdk.dev.tap.company/v2/checkout/"
 
   interface TapButtonSDKConfigUrls {
-    @GET("/mobile/card/1.0.0/base_url.json")
+    @GET("/mobile/paybutton/1.0.0/base_url.json")
     suspend fun getButtonSDKConfigUrl(): TapButtonSDKConfigUrlResponse
 
 
@@ -41,7 +41,7 @@ object ApiService {
     fun getClient(): Retrofit =
       Retrofit.Builder()
         .client(okHttpClient)
-        .baseUrl(BASE_URL_1)
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

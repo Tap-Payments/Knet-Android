@@ -6,10 +6,9 @@ import android.util.Log
 import androidx.lifecycle.ProcessLifecycleOwner
 import company.tap.tapWebForm.R
 import company.tap.tapWebForm.open.AppLifecycleObserver
-import company.tap.tapWebForm.open.KnetDataConfiguration
-import company.tap.tapWebForm.open.KnetDataConfiguration.configurationsAsHashMap
-import company.tap.tapWebForm.open.KnetPayStatusDelegate
-import company.tap.tapWebForm.open.web_wrapper.ApiService.BASE_URL
+import company.tap.tapWebForm.open.RedirectDataConfiguration
+import company.tap.tapWebForm.open.RedirectDataConfiguration.configurationsAsHashMap
+import company.tap.tapWebForm.open.RedirectPayStatusDelegate
 import company.tap.tapWebForm.open.web_wrapper.ApiService.BASE_URL_1
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapnetworkkit.connection.NetworkApp
@@ -18,56 +17,37 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 
-class TapKnetConfiguration {
+class TapRedirectConfiguration {
 
     companion object {
         private val retrofit = ApiService.RetrofitClient.getClient()
         private val tapSDKConfigsUrl = retrofit.create(ApiService.TapButtonSDKConfigUrls::class.java)
         private var testEncKey: String? = null
         private var prodEncKey: String? = null
+        private var  encodedeky: String? = null
+        private var   headers: Headers? = null
 
-        fun configureWithKnetDictionary(
+        fun configureWithRedirectDictionary(
             context: Context,
-            tapCardInputViewWeb: TapKnetPay?,
+            tapRedirectViewWeb: TapRedirectPay?,
             tapMapConfiguration: java.util.HashMap<String, Any>,
-            knetPayStatusDelegate: KnetPayStatusDelegate? = null,
-            buttonType: ThreeDsPayButtonType? = null
+            redirectPayStatusDelegate: RedirectPayStatusDelegate? = null
 
         ) {
 //ToDO test when cdn url ready
-          /*  MainScope().launch {
+           MainScope().launch {
                 getTapButtonSDKConfigUrls(
                     tapMapConfiguration,
-                    tapCardInputViewWeb,
+                    tapRedirectViewWeb,
                     context,
-                    knetPayStatusDelegate,
-                    buttonType
+                    redirectPayStatusDelegate
+
                 )
-            }*/
-            with(tapMapConfiguration) {
-                Log.e("map", tapMapConfiguration.toString())
-                configurationsAsHashMap = tapMapConfiguration
-                val operator = configurationsAsHashMap?.get(operatorKey) as HashMap<*, *>
-                val publickKey = operator.get(publicKeyToGet)
-
-                val appLifecycleObserver = AppLifecycleObserver()
-                ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
-
-                addOperatorHeaderField(
-                    tapCardInputViewWeb,
-                    context,
-                    KnetConfiguration.MapConfigruation,
-                    publickKey.toString()
-                )
-
-                KnetDataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
-               // tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
-                tapCardInputViewWeb?.init(tapMapConfiguration,buttonType)
-
             }
+
         }
 
-        private suspend fun getTapButtonSDKConfigUrls(tapMapConfiguration: HashMap<String, Any>, tapCardInputViewWeb: TapKnetPay?, context: Context, knetPayStatusDelegate: KnetPayStatusDelegate?, buttonType: ThreeDsPayButtonType?) {
+        private suspend fun getTapButtonSDKConfigUrls(tapMapConfiguration: HashMap<String, Any>, tapCardInputViewWeb: TapRedirectPay?, context: Context, redirectPayStatusDelegate: RedirectPayStatusDelegate?) {
             try {
                 /**
                  * request to get Tap configs
@@ -84,8 +64,7 @@ class TapKnetConfiguration {
                     context,
                     tapCardInputViewWeb,
                     tapMapConfiguration,
-                   knetPayStatusDelegate,
-                    buttonType
+                   redirectPayStatusDelegate
 
                 )
 
@@ -98,8 +77,7 @@ class TapKnetConfiguration {
                     context,
                     tapCardInputViewWeb,
                     tapMapConfiguration,
-                    knetPayStatusDelegate,
-                    buttonType
+                    redirectPayStatusDelegate
 
                 )
                 Log.e("error Config", e.message.toString())
@@ -107,22 +85,25 @@ class TapKnetConfiguration {
         }
 
         fun addOperatorHeaderField(
-            tapCardInputViewWeb: TapKnetPay?,
+            tapCardInputViewWeb: TapRedirectPay?,
             context: Context,
             modelConfiguration: KnetConfiguration,
             publicKey: String?
         ) {
-         val encodedeky = when(publicKey.toString().contains("test")){
+          encodedeky = when(publicKey.toString().contains("test")){
                 true->{
-                    tapCardInputViewWeb?.context?.resources?.getString(R.string.enryptkeyTest)
+                  //  tapCardInputViewWeb?.context?.resources?.getString(R.string.enryptkeyTest)
+                    testEncKey
                 }
                 false->{
-                    tapCardInputViewWeb?.context?.resources?.getString(R.string.enryptkeyProduction)
+                  //  tapCardInputViewWeb?.context?.resources?.getString(R.string.enryptkeyProduction)
+                    prodEncKey
 
                 }
             }
 
             Log.e("packagedname",context.packageName.toString())
+            Log.e("encodedeky",encodedeky.toString())
             NetworkApp.initNetwork(
                 tapCardInputViewWeb?.context ,
                 publicKey ?: "",
@@ -133,19 +114,25 @@ class TapKnetConfiguration {
                 encodedeky,
                 null
             )
-            val headers = Headers(
+             headers = Headers(
                 application = NetworkApp.getApplicationInfo(),
                 mdn = CryptoUtil.encryptJsonString(
-                    context.packageName.toString(),
+                   // context.packageName.toString(),
+                    "demo.tap.PayButtonSDK",
                     encodedeky,
                 )
             )
+            Log.e("mdn encr",CryptoUtil.encryptJsonString(
+                // context.packageName.toString(),
+                "demo.tap.PayButtonSDK",
+                encodedeky,
+            ))
 
             when (modelConfiguration) {
                 KnetConfiguration.MapConfigruation -> {
                     val hashMapHeader = HashMap<String, Any>()
-                    hashMapHeader[HeadersMdn] = headers.mdn.toString()
-                    hashMapHeader[HeadersApplication] = headers.application.toString()
+                    hashMapHeader[HeadersMdn] = headers?.mdn.toString()
+                    hashMapHeader[HeadersApplication] = headers?.application.toString()
                     val redirect = HashMap<String,Any>()
                     redirect.put(urlKey, redirectValue)
                     configurationsAsHashMap?.put(headersKey, hashMapHeader)
@@ -159,14 +146,13 @@ class TapKnetConfiguration {
 
         }
         private fun startWithSDKConfigs(context: Context,
-                                        tapCardInputViewWeb: TapKnetPay?,
+                                        tapRedirectViewWeb: TapRedirectPay?,
                                         tapMapConfiguration: java.util.HashMap<String, Any>,
-                                        knetPayStatusDelegate: KnetPayStatusDelegate? = null,
-                                        buttonType: ThreeDsPayButtonType? = null){
+                                        redirectPayStatusDelegate: RedirectPayStatusDelegate? = null){
             with(tapMapConfiguration) {
                 android.util.Log.e("map", tapMapConfiguration.toString())
-                company.tap.tapWebForm.open.KnetDataConfiguration.configurationsAsHashMap = tapMapConfiguration
-                val operator = company.tap.tapWebForm.open.KnetDataConfiguration.configurationsAsHashMap?.get(
+                company.tap.tapWebForm.open.RedirectDataConfiguration.configurationsAsHashMap = tapMapConfiguration
+                val operator = company.tap.tapWebForm.open.RedirectDataConfiguration.configurationsAsHashMap?.get(
                     company.tap.tapWebForm.open.web_wrapper.enums.operatorKey
                 ) as HashMap<*, *>
                 val publickKey = operator.get(company.tap.tapWebForm.open.web_wrapper.enums.publicKeyToGet)
@@ -175,15 +161,15 @@ class TapKnetConfiguration {
                 androidx.lifecycle.ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleObserver)
 
                 addOperatorHeaderField(
-                    tapCardInputViewWeb,
+                    tapRedirectViewWeb,
                     context,
-                    company.tap.tapWebForm.open.web_wrapper.KnetConfiguration.MapConfigruation,
+                   KnetConfiguration.MapConfigruation,
                     publickKey.toString()
                 )
 
-                company.tap.tapWebForm.open.KnetDataConfiguration.addTapBenefitPayStatusDelegate(knetPayStatusDelegate)
-                // tapCardInputViewWeb?.init(KnetConfiguration.MapConfigruation,buttonType)
-                tapCardInputViewWeb?.init(tapMapConfiguration,buttonType)
+               RedirectDataConfiguration.addTapBenefitPayStatusDelegate(redirectPayStatusDelegate)
+
+                headers?.let { tapRedirectViewWeb?.init(tapMapConfiguration, it) }
 
             }
         }

@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapWebForm.R
 import company.tap.tapWebForm.doAfterSpecificTime
 import company.tap.tapWebForm.getDeviceSpecs
-import company.tap.tapWebForm.open.KnetDataConfiguration
+import company.tap.tapWebForm.open.RedirectDataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.*
 import company.tap.tapWebForm.open.web_wrapper.enums.redirectKey
 import company.tap.tapWebForm.open.web_wrapper.enums.urlKey
@@ -31,14 +31,14 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
-        lateinit var tapKnetPay: TapKnetPay
+        lateinit var tapRedirectPay: TapRedirectPay
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_three_ds_web_view)
-        LocalizationManager.setLocale(this, Locale(KnetDataConfiguration.lanuage.toString()))
+        LocalizationManager.setLocale(this, Locale(RedirectDataConfiguration.lanuage.toString()))
         val webView = WebView(this)
         val linearLayout : LinearLayout = findViewById(R.id.linear)
         webView.layoutParams = this.getDeviceSpecs().first.let {
@@ -62,11 +62,11 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
         paymentFlow = data?.getString("flow") ?: PaymentFlow.PAYMENTBUTTON.name
         when (paymentFlow) {
             PaymentFlow.PAYMENTBUTTON.name -> {
-                webView.loadUrl(TapKnetPay.threeDsResponse.url)
+                webView.loadUrl(TapRedirectPay.threeDsResponse.url)
             }
 
             PaymentFlow.CARDPAY.name -> {
-                webView.loadUrl(TapKnetPay.threeDsResponseCardPayButtons.threeDsUrl)
+                webView.loadUrl(TapRedirectPay.threeDsResponseCardPayButtons.threeDsUrl)
 
             }
         }
@@ -74,11 +74,11 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
         threeDsBottomsheet = ThreeDsBottomSheetFragmentButton(webView, onCancel = {
             when (paymentFlow) {
                 PaymentFlow.PAYMENTBUTTON.name -> {
-                    TapKnetPay.cancel()
+                    TapRedirectPay.cancel()
                 }
 
                 PaymentFlow.CARDPAY.name -> {
-                    TapKnetPay.cancel()
+                    TapRedirectPay.cancel()
                   /*  tapKnetPay.init(
                         KnetConfiguration.MapConfigruation,
                         TapKnetPay.buttonTypeConfigured
@@ -86,7 +86,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
 
                 }
             }
-            KnetDataConfiguration.getTapKnetListener()?.onKnetcancel()
+            RedirectDataConfiguration.getTapKnetListener()?.onRedirectcancel()
         })
 
     }
@@ -101,7 +101,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
             when (paymentFlow) {
                 PaymentFlow.PAYMENTBUTTON.name -> {
                     webView?.loadUrl(request?.url.toString())
-                    val Redirect = KnetDataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+                    val Redirect = RedirectDataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
                     val redirect = Redirect.get(urlKey)
                     when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
                         true -> {
@@ -109,10 +109,10 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                             val splittiedString = request.url.toString().split("?", ignoreCase = true)
                             if(splittiedString!=null)Log.e("splittedString", splittiedString.toString())
                             try {
-                                TapKnetPay.retrieve(splittiedString[1])
+                                TapRedirectPay.retrieve(splittiedString[1])
                             } catch (e: Exception) {
-                                KnetDataConfiguration.getTapKnetListener()
-                                    ?.onKnetError(e.message.toString())
+                                RedirectDataConfiguration.getTapKnetListener()
+                                    ?.onRedirectError(e.message.toString())
                             }
                         }
 
@@ -123,13 +123,13 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
 
                 PaymentFlow.CARDPAY.name -> {
                     when (request?.url?.toString()
-                        ?.contains(TapKnetPay.threeDsResponseCardPayButtons.keyword)) {
+                        ?.contains(TapRedirectPay.threeDsResponseCardPayButtons.keyword)) {
                         true -> {
                             threeDsBottomsheet.dialog?.dismiss()
                             val splittiedString = request.url.toString().split("?")
 
                             Log.e("splitted", splittiedString.toString())
-                            TapKnetPay.generateTapAuthenticate(request.url?.toString() ?: "")
+                            TapRedirectPay.generateTapAuthenticate(request.url?.toString() ?: "")
                         }
 
                         false -> {}

@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import company.tap.tapWebForm.doAfterSpecificTime
 import company.tap.tapWebForm.getDeviceSpecs
-import company.tap.tapWebForm.open.web_wrapper.TapKnetPay
+import company.tap.tapWebForm.open.web_wrapper.TapRedirectPay
 
 import company.tap.tapWebForm.R
 import company.tap.tapWebForm.open.TapBrandView
@@ -38,7 +38,7 @@ class ThreeDsBottomSheetFragmentButton(var webView: WebView?, var onCancel:()->U
         val tapBrandView = view.findViewById<TapBrandView>(R.id.tab_brand_view)
 
         try {
-            val powerd  = TapKnetPay.threeDsResponse.powered
+            val powerd  = TapRedirectPay.threeDsResponse.powered
             when(powerd){
                 false ->tapBrandView.poweredByImage.visibility = View.INVISIBLE
                 else -> {}

@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
 
-    <company.tap.tapWebForm.open.web_wrapper.TapKnetPay
+    <company.tap.tapWebForm.open.web_wrapper.TapRedirectPay
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
-        android:id="@+id/knet_pay"
+        android:id="@+id/redirect_pay"
         />
 
     <TextView

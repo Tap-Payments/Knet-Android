@@ -182,3 +182,4 @@ fun doAfterSpecificTime(time: Long = 1000L, execute: () -> Unit) =
     Handler(Looper.getMainLooper()).postDelayed(time) {
         execute.invoke()
     }
+
