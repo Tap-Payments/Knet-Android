@@ -144,10 +144,10 @@ class TapRedirectConfiguration {
                     val hashMapHeader = HashMap<String, Any>()
                     hashMapHeader[HeadersMdn] = headers?.mdn.toString()
                     hashMapHeader[HeadersApplication] = headers?.application.toString()
-                    val redirect = HashMap<String,Any>()
-                    redirect.put(urlKey, redirectValue)
+                    //val redirect = HashMap<String,Any>()
+                   // redirect.put(urlKey, redirectValue)
                     configurationsAsHashMap?.put(headersKey, hashMapHeader)
-                    configurationsAsHashMap?.put(redirectKey, redirect)
+                  //  configurationsAsHashMap?.put(redirectKey, redirect)
 
 
                 }

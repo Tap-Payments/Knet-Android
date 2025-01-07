@@ -97,13 +97,13 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
             webView: WebView?,
             request: WebResourceRequest?
         ): Boolean {
-            Log.e("3dsUrl", request?.url.toString())
+            Log.e("3dsUrl View", request?.url.toString())
             when (paymentFlow) {
                 PaymentFlow.PAYMENTBUTTON.name -> {
                     webView?.loadUrl(request?.url.toString())
-                    val Redirect = RedirectDataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
-                    val redirect = Redirect.get(urlKey)
-                    when (request?.url?.toString()?.contains(redirect.toString(), ignoreCase = true)) {
+                 //   val Redirect = RedirectDataConfiguration.configurationsAsHashMap?.get(redirectKey) as HashMap<*, *>
+                  //  val redirect = Redirect.get(urlKey)
+                    when (request?.url?.toString()?.contains("tap_id", ignoreCase = true)) {
                         true -> {
                             threeDsBottomsheet.dialog?.dismiss()
                             val splittiedString = request.url.toString().split("?", ignoreCase = true)

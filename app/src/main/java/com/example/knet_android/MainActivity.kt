@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
        // val hashStringKey = intent.getStringExtra("hashStringKey")
         val publicKey = "pk_test_J2OSkKAFxu4jghc9zeRfQ0da"
 
-        val hashStringKey = "intent_YuE025251036VX097Mt0H729"
+        val hashStringKey = "intent_PJ4l925129XLYf77g0H27" // googlepay
 
 
 
@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
     override fun onRedirectSuccess(data: String) {
         Log.i("onSuccess",data)
         findViewById<TextView>(R.id.text).text = ""
-        findViewById<TextView>(R.id.text).text = "onSuccess $data"
+        findViewById<TextView>(R.id.text).text = "onSuccess>>>> $data"
         findViewById<TextView>(R.id.text).movementMethod = ScrollingMovementMethod()
 
         Toast.makeText(this, "onSuccess $data", Toast.LENGTH_SHORT).show()
@@ -233,7 +233,8 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
 
     override fun onRedirectOrderCreated(data: String) {
         findViewById<TextView>(R.id.text).text = ""
-        findViewById<TextView>(R.id.text).text = "onOrderCreated $data"
+        findViewById<TextView>(R.id.text).text = "onOrderCreated >> $data"
+        Log.e("mainactv", "onRedirectOrderCreated: "+data )
         Toast.makeText(this, "onOrderCreated $data", Toast.LENGTH_SHORT).show()
     }
 

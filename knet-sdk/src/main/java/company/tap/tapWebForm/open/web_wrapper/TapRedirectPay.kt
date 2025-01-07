@@ -184,7 +184,7 @@ class TapRedirectPay : LinearLayout {
                                 }
                             }
 
-                            Log.e("TapRedirectURL", urlToBeloaded)
+                            println("ButtonURL >>"+urlToBeloaded)
                         } else {
 
 
@@ -282,7 +282,7 @@ class TapRedirectPay : LinearLayout {
             /**
              * main checker if url start with "tapCardWebSDK://"
              */
-            Log.e("url", request?.url.toString())
+            Log.e("url Here", request?.url.toString())
 
 
             if (request?.url.toString().startsWith(careemPayUrlHandler)) {
@@ -319,13 +319,19 @@ class TapRedirectPay : LinearLayout {
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
-                        RedirectDataConfiguration.getTapKnetListener()?.onRedirectSuccess(
-                            request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                        )
+                        var datafromUrl = request?.url?.getQueryParameter(keyValueName).toString()
+                        println("datafromUrl>>"+datafromUrl)
+                        var decoded = decodeBase64(datafromUrl)
+                        println("decoded>>"+decoded)
+                        if (decoded != null) {
+                            RedirectDataConfiguration.getTapKnetListener()?.onRedirectSuccess(
+                                decoded
+                            )
+                        }
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
 
-                        val data = decodeBase64(request?.url?.getQueryParameterFromUri(keyValueName).toString())
+                        val data = decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())
                         Log.e("chargedData", data.toString())
                         val gson = Gson()
                         threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
@@ -338,12 +344,16 @@ class TapRedirectPay : LinearLayout {
                         )
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
-                        decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())?.let {
-                            RedirectDataConfiguration.getTapKnetListener()
-                                ?.onRedirectOrderCreated(
-                                    it
-                                )
-                        }
+                        val orderResponse = request?.url?.getQueryParameter(keyValueName).toString()
+                        println("orderResponse>>"+orderResponse)
+                        //TODO check if decode required
+                        RedirectDataConfiguration.getTapKnetListener()
+                                    ?.onRedirectOrderCreated(
+                                        orderResponse
+                                    )
+
+
+
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectClick()
@@ -377,11 +387,11 @@ class TapRedirectPay : LinearLayout {
                          */
                         val queryParams =
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                        Log.e("data", queryParams.toString())
+                        Log.e("data card", queryParams.toString())
 
                         threeDsResponseCardPayButtons = queryParams.getModelFromJson()
                         navigateTo3dsActivity(PaymentFlow.CARDPAY.name)
-                        Log.e("data", threeDsResponseCardPayButtons.toString())
+                        Log.e("data card", threeDsResponseCardPayButtons.toString())
 
 
                     }

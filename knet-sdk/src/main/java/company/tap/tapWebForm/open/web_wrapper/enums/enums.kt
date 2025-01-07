@@ -16,6 +16,7 @@ const val headersKey = "headers"
 const val intentKey = "intent"
 
 const val redirectKey = "redirect"
+const val tapID = "tap_id"
 const val redirectValue = "onTapRedirect://"
 
 const val urlKey = "url"
