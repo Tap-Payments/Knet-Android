@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class TapRedirectConfiguration {
 
     companion object {
-        private val retrofit = ApiService.RetrofitClient.getClient()
+        private val retrofit = ApiService.RetrofitClient.getClient1()
         private val tapSDKConfigsUrl = retrofit.create(ApiService.TapButtonSDKConfigUrls::class.java)
         private var testEncKey: String? = null
         private var prodEncKey: String? = null
@@ -54,9 +54,12 @@ class TapRedirectConfiguration {
                  */
 
                 val tapButtonSDKConfigUrlResponse = tapSDKConfigsUrl.getButtonSDKConfigUrl()
+                println("tapButtonSDKConfigUrlResponse>>>>"+tapButtonSDKConfigUrlResponse)
+
                 BASE_URL_1 = tapButtonSDKConfigUrlResponse.baseURL
                 prodEncKey = tapButtonSDKConfigUrlResponse.prodEncKey
-                testEncKey = tapButtonSDKConfigUrlResponse.testEncKey
+                //testEncKey = tapButtonSDKConfigUrlResponse.testEncKey
+                testEncKey = context.resources.getString(R.string.enryptkeyTest)
               //  urlWebStarter = tapButtonSDKConfigUrlResponse.baseURL
 
 
@@ -81,6 +84,7 @@ class TapRedirectConfiguration {
 
                 )
                 Log.e("error Config", e.message.toString())
+                e.printStackTrace()
             }
         }
 
@@ -92,7 +96,7 @@ class TapRedirectConfiguration {
         ) {
           encodedeky = when(publicKey.toString().contains("test")){
                 true->{
-                  //  tapCardInputViewWeb?.context?.resources?.getString(R.string.enryptkeyTest)
+                   // context.resources?.getString(R.string.enryptkeyTest)
                     testEncKey
                 }
                 false->{
@@ -107,11 +111,17 @@ class TapRedirectConfiguration {
             NetworkApp.initNetwork(
                 tapCardInputViewWeb?.context ,
                 publicKey ?: "",
-                context.packageName,
+               // context.packageName,
+               "demo.tap.PayButtonSDK",
                 ApiService.BASE_URL,
                 "android-knet",
                 true,
-                encodedeky,
+             /*   "-----BEGIN PUBLIC KEY-----\n" +
+                        "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8AX++RtxPZFtns4XzXFlDIxPB\n" +
+                        "h0umN4qRXZaKDIlb6a3MknaB7psJWmf2l+e4Cfh9b5tey/+rZqpQ065eXTZfGCAu\n" +
+                        "BLt+fYLQBhLfjRpk8S6hlIzc1Kdjg65uqzMwcTd0p7I4KLwHk1I0oXzuEu53fU1L\n" +
+                        "SZhWp4Mnd6wjVgXAsQIDAQAB\n" +
+                        "-----END PUBLIC KEY-----",*/encodedeky,
                 null
             )
              headers = Headers(
@@ -119,14 +129,15 @@ class TapRedirectConfiguration {
                 mdn = CryptoUtil.encryptJsonString(
                    // context.packageName.toString(),
                     "demo.tap.PayButtonSDK",
-                    encodedeky,
+                    /*"-----BEGIN PUBLIC KEY-----\n" +
+                            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8AX++RtxPZFtns4XzXFlDIxPB\n" +
+                            "h0umN4qRXZaKDIlb6a3MknaB7psJWmf2l+e4Cfh9b5tey/+rZqpQ065eXTZfGCAu\n" +
+                            "BLt+fYLQBhLfjRpk8S6hlIzc1Kdjg65uqzMwcTd0p7I4KLwHk1I0oXzuEu53fU1L\n" +
+                            "SZhWp4Mnd6wjVgXAsQIDAQAB\n" +
+                            "-----END PUBLIC KEY-----",*/encodedeky
                 )
             )
-            Log.e("mdn encr",CryptoUtil.encryptJsonString(
-                // context.packageName.toString(),
-                "demo.tap.PayButtonSDK",
-                encodedeky,
-            ))
+
 
             when (modelConfiguration) {
                 KnetConfiguration.MapConfigruation -> {

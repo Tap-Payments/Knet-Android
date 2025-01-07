@@ -152,7 +152,10 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
 
        // val hashStringKey = intent.getStringExtra("hashStringKey")
         val publicKey = "pk_test_J2OSkKAFxu4jghc9zeRfQ0da"
-        val hashStringKey = "intent_JW4N112510639EE6YT0t40"
+
+        val hashStringKey = "intent_YuE025251036VX097Mt0H729"
+
+
 
 
         /**

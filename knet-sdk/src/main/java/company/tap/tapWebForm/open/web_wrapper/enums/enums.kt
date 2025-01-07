@@ -13,6 +13,7 @@ const val HeadersApplication = "application"
 const val HeadersMdn = "mdn"
 const val operatorKey = "operator"
 const val headersKey = "headers"
+const val intentKey = "intent"
 
 const val redirectKey = "redirect"
 const val redirectValue = "onTapRedirect://"

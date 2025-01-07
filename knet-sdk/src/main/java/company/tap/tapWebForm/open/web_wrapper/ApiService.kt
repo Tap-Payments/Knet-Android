@@ -20,10 +20,10 @@ All rights reserved.
 object ApiService {
   const val BASE_URL = "https://mw-sdk.dev.tap.company/v2/checkout/"
    var BASE_URL_1 = "https://mw-sdk.dev.tap.company/v2/checkout/"
-
+  var BASE_URL_11 = "https://tap-sdks.b-cdn.net/"
   interface TapButtonSDKConfigUrls {
     @GET("/mobile/paybutton/1.0.0/base_url.json")
-    suspend fun getButtonSDKConfigUrl(): TapButtonSDKConfigUrlResponse
+  suspend   fun getButtonSDKConfigUrl(): TapButtonSDKConfigUrlResponse
 
 
   }
@@ -42,6 +42,13 @@ object ApiService {
       Retrofit.Builder()
         .client(okHttpClient)
         .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    fun getClient1(): Retrofit =
+      Retrofit.Builder()
+        .client(okHttpClient)
+        .baseUrl(BASE_URL_11)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

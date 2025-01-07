@@ -1,8 +1,6 @@
 package company.tap.tapWebForm.open.web_wrapper
 
 import Headers
-import TapLocal
-import TapTheme
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -28,13 +26,9 @@ import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponseCardPayButtons
 import company.tap.tapWebForm.open.web_wrapper.pop_up_window.WebChrome
 import company.tap.tapWebForm.open.web_wrapper.threeDsWebView.ThreeDsWebViewActivityButton
-import company.tap.tapnetworkkit.connection.NetworkApp
-import company.tap.tapnetworkkit.utils.CryptoUtil
-import company.tap.tapuilibrary.themekit.ThemeManager
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -49,8 +43,9 @@ import java.util.*
 @SuppressLint("ViewConstructor")
 class TapRedirectPay : LinearLayout {
     lateinit var webviewStarterUrl: String
-   // lateinit var webViewScheme: String
-     var webViewScheme: String ="tapbuttonsdk://"
+
+    // lateinit var webViewScheme: String
+    var webViewScheme: String = "tapbuttonsdk://"
     private lateinit var webChrome: WebChrome
 
     lateinit var webViewFrame: FrameLayout
@@ -102,6 +97,7 @@ class TapRedirectPay : LinearLayout {
     }
 
 
+    @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
         redirectWebView = findViewById(R.id.webview)
         webViewFrame = findViewById(R.id.webViewFrame)
@@ -130,65 +126,66 @@ class TapRedirectPay : LinearLayout {
     }
 
 
-
     private fun callIntentAPI(configuraton: java.util.HashMap<String, Any>, headers: Headers) {
         try {
-            val intentObj =configuraton?.get("intent") as HashMap<*, *>
-            val intentID =intentObj?.get("intent")
+            val intentObj = configuraton?.get("intent") as HashMap<*, *>
+            val intentID = intentObj?.get("intent")
 
 
-            val baseURL = "https://mw-sdk.dev.tap.company/v2/intent/"+intentID+"/sdk"
+            val baseURL = "https://mw-sdk.dev.tap.company/v2/intent/" + intentID + "/sdk"
             val builder: OkHttpClient.Builder = OkHttpClient().newBuilder()
             val interceptor = HttpLoggingInterceptor()
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
             builder.addInterceptor(interceptor)
-            val operator =configuraton?.get(operatorKey) as HashMap<*, *>
+            val operator = configuraton?.get(operatorKey) as HashMap<*, *>
             val publickKey = operator.get(publicKeyToGet)
 
-            println("publickKey>>"+publickKey)
+            println("publickKey>>" + publickKey)
 
 
-            val jsonObject : JSONObject = JSONObject()
+            val jsonObject: JSONObject = JSONObject()
             try {
-            jsonObject.put("type","button-android")
-            jsonObject.put("version","2.0.0")
-            jsonObject.put("mdn", headers.mdn.toString())
-            jsonObject.put("application", headers.application.toString())
-            } catch (e :JSONException ) {
+                jsonObject.put("type", "button-android")
+                jsonObject.put("version", "2.0.0")
+                jsonObject.put("mdn", headers.mdn.toString())
+                jsonObject.put("application", headers.application.toString())
+            } catch (e: JSONException) {
                 e.printStackTrace();
             }
-             // encrypted app
+
 
             val mediaType = "application/json; charset=utf-8".toMediaType()
             val body = jsonObject.toString().toRequestBody(mediaType)
             val okHttpClient: OkHttpClient = builder.build()
             val request: Request = Request.Builder()
-                .url(baseURL )
+                .url(baseURL)
                 .method("PUT", body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", publickKey.toString())
-                .addHeader("mdn",headers.mdn.toString())
+                .addHeader("mdn", headers.mdn.toString().trim())
                 .build()
             okHttpClient.newCall(request).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
                     try {
                         var responseBody: JSONObject? =
-                            response.body?.string()?.let { JSONObject(it) } // toString() is not the response body, it is a debug representation of the response body
+                            response.body?.string()
+                                ?.let { JSONObject(it) } // toString() is not the response body, it is a debug representation of the response body
 
-                        Log.e("MDN", headers.mdn.toString() )
-                        if(!responseBody.toString().contains("errors")){
+                        if (!responseBody.toString().contains("errors")) {
                             var intentIdResponse = responseBody?.getString("id")
                             if (intentIdResponse != null) {
                                 // knetWebView.loadUrl(redirectURL)
-                                urlToBeloaded = "https://button.dev.tap.company/?intentId="+intentIdResponse+"&publicKey="+publickKey.toString()+"&mdn="+headers.mdn.toString()+"&platform=mobile"
+                                urlToBeloaded =
+                                    "https://button.dev.tap.company/?intentId=" + intentIdResponse + "&publicKey=" + publickKey.toString() + "&mdn=" + toBase64(headers.mdn.toString()) + "&platform=mobile"
+
                                 Handler(Looper.getMainLooper()).post {
                                     redirectWebView.loadUrl(urlToBeloaded)
 
                                 }
                             }
 
-                            Log.e("TapRedirectURL", urlToBeloaded )
-                        }else{
+                            Log.e("TapRedirectURL", urlToBeloaded)
+                        } else {
 
 
                         }
@@ -209,33 +206,40 @@ class TapRedirectPay : LinearLayout {
 
     }
 
-   // fun init(configuraton: KnetConfiguration, buttonType: ThreeDsPayButtonType?) {
     fun init(configuraton: java.util.HashMap<String, Any>, headers: Headers) {
-      //  initializePaymentData(buttonType)
+        //  initializePaymentData(buttonType)
+        /**
+         * Check for data in configuration has operator and intent id
+         * else sends error
+         * */
 
+        val intentObj = configuraton?.get(intentKey) as HashMap<*, *>
+        val intentID = intentObj?.get(intentKey)
 
+        val operator = configuraton?.get(operatorKey) as HashMap<*, *>
+        val publickKey = operator.get(publicKeyToGet)
 
-       /**
-        * Check for data in configuration has operator and intent id
-        * else sends error
-        * */
+        if (intentID.toString().isNullOrBlank() || publickKey.toString().isNullOrBlank()) {
+            RedirectDataConfiguration.getTapKnetListener()
+                ?.onRedirectError("public key and intent id are required")
+        } else {
+            callIntentAPI(configuraton, headers)
+        }
 
-
-       callIntentAPI(configuraton,headers)
 
 
         when (configuraton) {
 
-           // KnetConfiguration.MapConfigruation -> {
+            // KnetConfiguration.MapConfigruation -> {
 
-               /* urlToBeloaded =
+            /* urlToBeloaded =
                     "${webviewStarterUrl}${encodeConfigurationMapToUrl(KnetDataConfiguration.configurationsAsHashMap)}"*/
-               // knetWebView.loadUrl(urlToBeloaded)
-           // }
+            // knetWebView.loadUrl(urlToBeloaded)
+            // }
 
 
         }
-    //    Log.e("urlToBeloaded",urlToBeloaded)
+        //    Log.e("urlToBeloaded",urlToBeloaded)
 
     }
 
@@ -266,8 +270,6 @@ class TapRedirectPay : LinearLayout {
     }
 
 
-
-
     inner class MyWebViewClient : WebViewClient() {
 
 
@@ -284,7 +286,8 @@ class TapRedirectPay : LinearLayout {
 
 
             if (request?.url.toString().startsWith(careemPayUrlHandler)) {
-                webViewFrame.layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
+                webViewFrame.layoutParams =
+                    LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
                 threeDsResponse = ThreeDsResponse(
                     id = "",
                     url = request?.url.toString(),
@@ -298,27 +301,18 @@ class TapRedirectPay : LinearLayout {
                     if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
 
 
-                        if (buttonTypeConfigured == ThreeDsPayButtonType.CARD) {
+                       /* if (buttonTypeConfigured == ThreeDsPayButtonType.CARD) {
                             if (firstTimeOnReadyCallback) {
                                 Thread.sleep(1500)
                                 firstTimeOnReadyCallback = false
                             }
-                            /**
+                            *//**
                              *
                              *  todo enhance in a better way
-                             */
+                             *//*
 
-                            //   val isFirstTime = Pref.getValue(context, "firstRun", "true").toString()
-                            // if (isFirstTime == "true") {
-                            //   webView?.clearView()
-                            // knetWebView?.visibility= View.GONE
-                            //  webView?.removeAllViews()
-//                                Handler(Looper.getMainLooper()).postDelayed({
-//                                    init(knetConfiguration,ThreeDsPayButtonType.CARD)
-//                                                                            },
-//                                    5000)
-                            //  Pref.setValue(context, "firstRun", "false")
-                        }
+
+                        }*/
 
 
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectReady()
@@ -331,7 +325,7 @@ class TapRedirectPay : LinearLayout {
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
 
-                        val data = request?.url?.getQueryParameterFromUri(keyValueName).toString()
+                        val data = decodeBase64(request?.url?.getQueryParameterFromUri(keyValueName).toString())
                         Log.e("chargedData", data.toString())
                         val gson = Gson()
                         threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
@@ -344,10 +338,12 @@ class TapRedirectPay : LinearLayout {
                         )
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
-                        RedirectDataConfiguration.getTapKnetListener()
-                            ?.onRedirectOrderCreated(
-                                request?.url?.getQueryParameter(keyValueName).toString()
-                            )
+                        decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())?.let {
+                            RedirectDataConfiguration.getTapKnetListener()
+                                ?.onRedirectOrderCreated(
+                                    it
+                                )
+                        }
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectClick()
@@ -371,7 +367,8 @@ class TapRedirectPay : LinearLayout {
                             webViewFrame.context.getDimensionsInDp(newHeight?.toInt() ?: 95)
                         webViewFrame.layoutParams = params
 
-                        RedirectDataConfiguration.getTapKnetListener()?.onRedirectHeightChange(newHeight.toString())
+                        RedirectDataConfiguration.getTapKnetListener()
+                            ?.onRedirectHeightChange(newHeight.toString())
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
@@ -396,18 +393,22 @@ class TapRedirectPay : LinearLayout {
 
                     }
 
-                    if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
+                   /* if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
 
                         RedirectDataConfiguration.getTapKnetListener()
                             ?.onRedirectError(
                                 request?.url?.getQueryParameterFromUri(keyValueName).toString()
                             )
-                    }
+                    }*/
                     if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
-                        RedirectDataConfiguration.getTapKnetListener()
-                            ?.onRedirectError(
-                                request?.url?.getQueryParameterFromUri(keyValueName).toString()
-                            )
+                        decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())?.let {
+                            RedirectDataConfiguration.getTapKnetListener()
+                                ?.onRedirectError(
+                                    it
+                                )
+                        }
+
+
                     }
 
 
@@ -465,9 +466,23 @@ class TapRedirectPay : LinearLayout {
         super.onDetachedFromWindow()
     }
 
+
+
+    fun toBase64(value: String?): String? {
+        var value = value
+        if (value == null) value = ""
+        return Base64.encodeToString(value.trim { it <= ' ' }.toByteArray(), Base64.DEFAULT)
+    }
+    fun decodeBase64(base64String: String): String? {
+        return try {
+            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+            String(decodedBytes, Charsets.UTF_8) // Convert bytes to string using UTF-8
+        } catch (e: IllegalArgumentException) {
+            println("Invalid Base64 input: ${e.message}")
+            null
+        }
+    }
 }
-
-
 enum class KnetConfiguration() {
     MapConfigruation
 }
