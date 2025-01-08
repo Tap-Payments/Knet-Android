@@ -51,8 +51,10 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
         intent.putExtra("orderIdKey", getPrefStringValue("orderIdKey",""))
         intent.putExtra("orderDescKey", getPrefStringValue("orderDescKey","test"))
         intent.putExtra("amountKey", getPrefStringValue("amountKey","1"))
-        intent.putExtra("orderTransactionRefrence", getPrefStringValue("orderTransactionRefrence","test"))
+        intent.putExtra("orderCurrencyKey", getPrefStringValue("orderCurrencyKey","KWD"))
+        intent.putExtra("orderRefrenceKey", getPrefStringValue("orderRefrenceKey","test"))
         intent.putExtra("selectedCurrencyKey", getPrefStringValue("selectedCurrencyKey","test"))
+        intent.putExtra("customerIdKey", getPrefStringValue("customerIdKey",""))
 
 
         /**
