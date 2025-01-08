@@ -1,6 +1,10 @@
 package company.tap.tapWebForm.open.web_wrapper.threeDsWebView
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +24,7 @@ import company.tap.tapWebForm.open.web_wrapper.*
 import company.tap.tapWebForm.open.web_wrapper.enums.redirectKey
 import company.tap.tapWebForm.open.web_wrapper.enums.urlKey
 import company.tap.taplocalizationkit.LocalizationManager
+import java.net.URISyntaxException
 import java.util.*
 
 const val delayTime = 5000L
@@ -119,6 +124,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
                         false -> {}
                         else -> {}
                     }
+
                 }
 
                 PaymentFlow.CARDPAY.name -> {

@@ -2,8 +2,11 @@ package company.tap.tapWebForm.open.web_wrapper
 
 import Headers
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.ResolveInfo
 import android.graphics.Color
 import android.net.http.SslError
 import android.os.Build
@@ -12,14 +15,17 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.util.Base64
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.core.os.postDelayed
 import androidx.core.view.*
 import com.google.gson.Gson
 import company.tap.tapWebForm.*
+import company.tap.tapWebForm.open.ApplicationLifecycle
 import company.tap.tapWebForm.open.RedirectDataConfiguration
 import company.tap.tapWebForm.open.web_wrapper.enums.*
 import company.tap.tapWebForm.open.web_wrapper.model.ThreeDsResponse
@@ -37,13 +43,14 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import java.net.URISyntaxException
 import java.util.*
 
 
 @SuppressLint("ViewConstructor")
-class TapRedirectPay : LinearLayout {
+class TapRedirectPay : LinearLayout , ApplicationLifecycle {
     lateinit var webviewStarterUrl: String
-
+    private var isBenefitPayUrlIntercepted =false
     // lateinit var webViewScheme: String
     var webViewScheme: String = "tapbuttonsdk://"
     private lateinit var webChrome: WebChrome
@@ -51,6 +58,13 @@ class TapRedirectPay : LinearLayout {
     lateinit var webViewFrame: FrameLayout
     lateinit var urlToBeloaded: String
     var firstTimeOnReadyCallback = true
+    lateinit var linearLayout: LinearLayout
+    lateinit var dialog: Dialog
+    lateinit var redirectConfiguration: java.util.HashMap<String, Any>
+    lateinit var headersVal: Headers
+    var iSAppInForeground = true
+    var onSuccessCalled = false
+    var pair =  Pair("",false)
 
     companion object {
         lateinit var threeDsResponse: ThreeDsResponse
@@ -109,8 +123,9 @@ class TapRedirectPay : LinearLayout {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 javaScriptCanOpenWindowsAutomatically = true
+                allowContentAccess = true
                 setSupportMultipleWindows(true)
-                cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                cacheMode = WebSettings.LOAD_NO_CACHE
                 useWideViewPort = true
                 loadWithOverviewMode = true
 
@@ -207,6 +222,9 @@ class TapRedirectPay : LinearLayout {
     }
 
     fun init(configuraton: java.util.HashMap<String, Any>, headers: Headers) {
+
+        redirectConfiguration = configuraton
+        headersVal = Headers(headers.mdn,headers.application)
         //  initializePaymentData(buttonType)
         /**
          * Check for data in configuration has operator and intent id
@@ -282,7 +300,7 @@ class TapRedirectPay : LinearLayout {
             /**
              * main checker if url start with "tapCardWebSDK://"
              */
-            Log.e("url Here", request?.url.toString())
+            Log.e("url Here>>>>", request?.url.toString())
 
 
             if (request?.url.toString().startsWith(careemPayUrlHandler)) {
@@ -319,6 +337,7 @@ class TapRedirectPay : LinearLayout {
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
+                        onSuccessCalled = true
                         var datafromUrl = request?.url?.getQueryParameter(keyValueName).toString()
                         println("datafromUrl>>"+datafromUrl)
                         var decoded = decodeBase64(datafromUrl)
@@ -327,17 +346,39 @@ class TapRedirectPay : LinearLayout {
                             RedirectDataConfiguration.getTapKnetListener()?.onRedirectSuccess(
                                 decoded
                             )
+
+                        }
+                        pair = Pair(request?.url?.getQueryParameterFromUri(keyValueName).toString(),true)
+
+                        when(iSAppInForeground) {
+
+                            true ->{//closePayment()
+                                dismissDialog()
+                                Log.e("success","one")
+                            }
+                            false ->{}
                         }
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
 
                         val data = decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())
                         Log.e("chargedData", data.toString())
+                       val jsonObject = JSONObject(data);
+                        var jsonObject1 = JSONObject()
+                        if(jsonObject.has("gateway_response")){
+                        jsonObject1 = jsonObject.getJSONObject("gateway_response")
+                       // println("jsonObject1"+jsonObject1.get("name"))
+                        }
                         val gson = Gson()
-                        threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
+                        /**Check added for benefitpay ***/
+                        if(jsonObject1!=null && jsonObject1.has("name") &&jsonObject1.get("name").toString().equals("BENEFITPAY")){
+
+                        }else {
+                             threeDsResponse = gson.fromJson(data, ThreeDsResponse::class.java)
                         when (threeDsResponse.stopRedirection) {
                             false -> navigateTo3dsActivity(PaymentFlow.PAYMENTBUTTON.name)
                             else -> {}
+                        }
                         }
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectChargeCreated(
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
@@ -356,11 +397,32 @@ class TapRedirectPay : LinearLayout {
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
+                        isBenefitPayUrlIntercepted=false
+                        onSuccessCalled = false
+                        pair = Pair("",false)
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectClick()
 
                     }
                     if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
-                        RedirectDataConfiguration.getTapKnetListener()?.onRedirectcancel()
+
+                                RedirectDataConfiguration.getTapKnetListener()?.onRedirectcancel()
+
+
+
+                    }
+                    if (request?.url.toString().contains(KnetStatusDelegate.onCancel.name)) {
+                        android.os.Handler(Looper.getMainLooper()).postDelayed(3000) {
+                            if(!onSuccessCalled){
+                                RedirectDataConfiguration.getTapKnetListener()?.onRedirectcancel()
+                            }
+
+
+                        }
+
+                        if (!(pair.first.isNotEmpty() and pair.second)) {
+                            dismissDialog()
+                        }
+
                     }
                     if (request?.url.toString()
                             .contains(KnetStatusDelegate.onBinIdentification.name)
@@ -417,26 +479,71 @@ class TapRedirectPay : LinearLayout {
                                     it
                                 )
                         }
-
+                        pair = Pair(request?.url?.getQueryParameterFromUri(keyValueName).toString(),true)
 
                     }
+                    if (request?.url.toString().startsWith("intent://")) {
+                        try {
+                            val context: Context = context
+                            val intent: Intent = Intent.parseUri(request?.url.toString(), Intent.URI_INTENT_SCHEME)
+                            if (intent != null) {
+//                            view.stopLoading()
+                                val packageManager: PackageManager = context.packageManager
+                                val info: ResolveInfo? = packageManager.resolveActivity(
+                                    intent,
+                                    PackageManager.MATCH_DEFAULT_ONLY
+                                )
+                                if (info != null) {
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent)
+                                } else {
+                                    return false
+                                }
+                                return true
+                            }
+                        } catch (e: URISyntaxException) {
+                            Log.e("error", "Can't resolve intent://", e)
 
+                        }
+                        //   progressBar.visibility = GONE
+                    }
+                    if (request?.url.toString().startsWith("intent://")) {
+                        try {
+                            val context: Context = context
+                            val intent: Intent = Intent.parseUri(request?.url.toString(), Intent.URI_INTENT_SCHEME)
+                            if (intent != null) {
+//                            view.stopLoading()
+                                val packageManager: PackageManager = context.packageManager
+                                val info: ResolveInfo? = packageManager.resolveActivity(
+                                    intent,
+                                    PackageManager.MATCH_DEFAULT_ONLY
+                                )
+                                if (info != null) {
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent)
+                                } else {
+                                    return false
+                                }
+                                return true
+                            }
+                        } catch (e: URISyntaxException) {
+                            Log.e("error", "Can't resolve intent://", e)
+
+                        }
+                        //   progressBar.visibility = GONE
+                    }
 
                     return true
-                } else {
+                }
+
+                else {
 
                     return false
                 }
             }
         }
 
-        override fun onReceivedSslError(
-            view: WebView?,
-            handler: SslErrorHandler?,
-            error: SslError?
-        ) {
-            super.onReceivedSslError(view, handler, error)
-        }
+
 
 
         override fun onPageFinished(view: WebView, url: String) {
@@ -457,6 +564,52 @@ class TapRedirectPay : LinearLayout {
             view: WebView?,
             request: WebResourceRequest?
         ): WebResourceResponse? {
+            Log.e("intercepted",request?.url.toString())
+
+            when(request?.url?.toString()?.contains("https://benefit-checkout")?.and((!isBenefitPayUrlIntercepted))) {
+
+                true ->{
+                    view?.post{
+                        (webViewFrame as ViewGroup).removeView(redirectWebView)
+
+
+                        dialog= Dialog(context,android.R.style.Theme_Translucent_NoTitleBar)
+                        //Create LinearLayout Dynamically
+                        linearLayout = LinearLayout(context)
+                        //Setup Layout Attributes
+                        val params = LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                        linearLayout.layoutParams = params
+                        linearLayout.orientation = VERTICAL
+
+                        /**
+                         * onBackPressed in Dialog
+                         */
+                        dialog.setOnKeyListener { view, keyCode, keyEvent ->
+                            if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                                dismissDialog()
+                                 init(redirectConfiguration,headersVal)
+                                return@setOnKeyListener  true
+                            }
+                            return@setOnKeyListener false
+                        }
+
+
+                        if (redirectWebView.parent == null){
+                            linearLayout.addView(redirectWebView)
+                        }
+
+                        dialog.setContentView(linearLayout)
+                        dialog.show()
+                    }
+
+                    isBenefitPayUrlIntercepted = true
+                }
+                else -> {}
+            }
+
             return super.shouldInterceptRequest(view, request)
         }
 
@@ -465,6 +618,10 @@ class TapRedirectPay : LinearLayout {
             request: WebResourceRequest,
             error: WebResourceError
         ) {
+            Log.e("error code",error.errorCode.toString())
+            Log.e("error description ",error.description.toString())
+
+            Log.e("request header ",request.requestHeaders.toString())
             super.onReceivedError(view, request, error)
 
         }
@@ -491,6 +648,41 @@ class TapRedirectPay : LinearLayout {
             println("Invalid Base64 input: ${e.message}")
             null
         }
+    }
+    private fun dismissDialog() {
+        if (::dialog.isInitialized) {
+            linearLayout.removeView(redirectWebView)
+            dialog.dismiss()
+            if (redirectWebView.parent == null){
+                (webViewFrame as ViewGroup).addView(redirectWebView)
+            }
+        }
+    }
+
+    private fun closePayment() {
+
+        if (pair.second) {
+            Log.e("app","one")
+            dismissDialog()
+
+            RedirectDataConfiguration.getTapKnetListener()?.onRedirectSuccess(pair.first)
+
+        }
+    }
+    override fun onEnterForeground() {
+        iSAppInForeground = true
+        Log.e("applifeCycle","onEnterForeground")
+        //  closePayment()
+
+
+
+
+
+    }
+    override fun onEnterBackground() {
+        iSAppInForeground = false
+        Log.e("applifeCycle","onEnterBackground")
+
     }
 }
 enum class KnetConfiguration() {

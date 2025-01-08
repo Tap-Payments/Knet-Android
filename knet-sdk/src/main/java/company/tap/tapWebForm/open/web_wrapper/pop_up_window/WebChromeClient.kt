@@ -1,5 +1,6 @@
 package company.tap.tapWebForm.open.web_wrapper.pop_up_window
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -25,6 +26,7 @@ class WebChrome(var context: Context) :WebChromeClient(){
      private  var dialog: Dialog?=null
     private var working_dialog: ProgressDialog? = null
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateWindow(
         view: WebView?,
         isDialog: Boolean,
@@ -100,6 +102,7 @@ class WebChrome(var context: Context) :WebChromeClient(){
                 view: WebView,
                 request: WebResourceRequest
             ): WebResourceResponse? {
+                Log.e("intercepted webchrom",request?.url.toString())
                 return super.shouldInterceptRequest(view, request)
             }
         }

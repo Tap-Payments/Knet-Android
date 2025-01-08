@@ -153,7 +153,9 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
        // val hashStringKey = intent.getStringExtra("hashStringKey")
         val publicKey = "pk_test_J2OSkKAFxu4jghc9zeRfQ0da"
 
-        val hashStringKey = "intent_PJ4l925129XLYf77g0H27" // googlepay
+        //val hashStringKey = "intent_PJ4l925129XLYf77g0H27" // googlepay
+       // val hashStringKey = "intent_6VIv5325653R81D8Pa0p703" // benefitpay
+        val hashStringKey = "intent_oDrk56251043pfkS72G0l934" // knet
 
 
 
