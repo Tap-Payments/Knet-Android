@@ -28,7 +28,7 @@
     <string name="production">Production</string>
     <string name="sandbox_key">Public Key</string>
     <string name="transaction">Transaction</string>
-    <string name="amount">Amount</string>
+    <string name="amount">Order Amount</string>
     <string name="acceptance">Acceptance</string>
     <string name="supported_brands">Supported scheme</string>
     <string name="supported_scheme">Supported scheme</string>
@@ -69,8 +69,10 @@
     <string name="Authenticate">AuthenticatedToken</string>
     <string name="Token">Token</string>
     <string name="currency">Currency</string>
-    <string name="order_id">Order id</string>
+    <string name="order_id">Tap Order id</string>
     <string name="order_desc">Order Description</string>
+    <string name="order_curr">Order Currency</string>
+    <string name="order_refrence">Order Reference</string>
     <string name="trans_refrence">Reference</string>
     <string name="invoice">Invoice</string>
     <string name="invoice_id">Invoice id</string>
@@ -96,7 +98,8 @@
     <string name="payment_agreement_id">Payment agreement id </string>
     <string name="payment_agreement_contract">Payment agreement contract </string>
     <string name="generate_authenticate_token">generate authenticate Token</string>
-
+    <string name="merchantTitle">Merchant</string>
+    <string name="customerTitle">Customer</string>
     <string-array name="ScopeList">
         <item>charge</item>
         <item>authorize</item>

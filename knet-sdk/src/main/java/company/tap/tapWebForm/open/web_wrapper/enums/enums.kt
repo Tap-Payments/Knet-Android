@@ -22,7 +22,7 @@ const val redirectValue = "onTapRedirect://"
 const val urlKey = "url"
 const val careemPayUrlHandler ="https://checkout"
 
-enum class KnetStatusDelegate {
+enum class TapRedirectStatusDelegate {
     onReady, onClick, onOrderCreated, onChargeCreated, onError, onSuccess, cancel,onCancel, onClosePopup,onHeightChange,on3dsRedirect,onBinIdentification, launch
 
 }

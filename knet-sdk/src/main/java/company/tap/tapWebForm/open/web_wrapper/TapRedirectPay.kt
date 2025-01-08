@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.Color
-import android.net.http.SslError
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -316,7 +315,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                 return true
             } else {
                 if (request?.url.toString().startsWith(webViewScheme, ignoreCase = true)) {
-                    if (request?.url.toString().contains(KnetStatusDelegate.onReady.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onReady.name)) {
 
 
                        /* if (buttonTypeConfigured == ThreeDsPayButtonType.CARD) {
@@ -336,7 +335,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectReady()
 
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.onSuccess.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onSuccess.name)) {
                         onSuccessCalled = true
                         var datafromUrl = request?.url?.getQueryParameter(keyValueName).toString()
                         println("datafromUrl>>"+datafromUrl)
@@ -359,7 +358,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                             false ->{}
                         }
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.onChargeCreated.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onChargeCreated.name)) {
 
                         val data = decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())
                         Log.e("chargedData", data.toString())
@@ -384,7 +383,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                             request?.url?.getQueryParameterFromUri(keyValueName).toString()
                         )
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.onOrderCreated.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onOrderCreated.name)) {
                         val orderResponse = request?.url?.getQueryParameter(keyValueName).toString()
                         println("orderResponse>>"+orderResponse)
                         //TODO check if decode required
@@ -396,21 +395,21 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
 
 
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.onClick.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onClick.name)) {
                         isBenefitPayUrlIntercepted=false
                         onSuccessCalled = false
                         pair = Pair("",false)
                         RedirectDataConfiguration.getTapKnetListener()?.onRedirectClick()
 
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.cancel.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.cancel.name)) {
 
                                 RedirectDataConfiguration.getTapKnetListener()?.onRedirectcancel()
 
 
 
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.onCancel.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onCancel.name)) {
                         android.os.Handler(Looper.getMainLooper()).postDelayed(3000) {
                             if(!onSuccessCalled){
                                 RedirectDataConfiguration.getTapKnetListener()?.onRedirectcancel()
@@ -425,14 +424,14 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
 
                     }
                     if (request?.url.toString()
-                            .contains(KnetStatusDelegate.onBinIdentification.name)
+                            .contains(TapRedirectStatusDelegate.onBinIdentification.name)
                     ) {
                         RedirectDataConfiguration.getTapKnetListener()
                             ?.onRedirectBindIdentification(
                                 request?.url?.getQueryParameterFromUri(keyValueName).toString()
                             )
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.onHeightChange.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onHeightChange.name)) {
                         val newHeight = request?.url?.getQueryParameter(keyValueName)
                         val params: ViewGroup.LayoutParams? = webViewFrame.layoutParams
                         params?.height =
@@ -443,7 +442,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                             ?.onRedirectHeightChange(newHeight.toString())
 
                     }
-                    if (request?.url.toString().contains(KnetStatusDelegate.on3dsRedirect.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.on3dsRedirect.name)) {
                         /**
                          * navigate to 3ds Activity
                          */
@@ -460,7 +459,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                     /**
                      * for google button specifically
                      */
-                    if (request?.url.toString().contains(KnetStatusDelegate.onClosePopup.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onClosePopup.name)) {
                         webChrome.getdialog()?.dismiss()
 
                     }
@@ -472,7 +471,7 @@ class TapRedirectPay : LinearLayout , ApplicationLifecycle {
                                 request?.url?.getQueryParameterFromUri(keyValueName).toString()
                             )
                     }*/
-                    if (request?.url.toString().contains(KnetStatusDelegate.onError.name)) {
+                    if (request?.url.toString().contains(TapRedirectStatusDelegate.onError.name)) {
                         decodeBase64(request?.url?.getQueryParameter(keyValueName).toString())?.let {
                             RedirectDataConfiguration.getTapKnetListener()
                                 ?.onRedirectError(
