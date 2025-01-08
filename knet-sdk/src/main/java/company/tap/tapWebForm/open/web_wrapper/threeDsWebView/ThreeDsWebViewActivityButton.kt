@@ -67,6 +67,7 @@ class ThreeDsWebViewActivityButton : AppCompatActivity() {
         paymentFlow = data?.getString("flow") ?: PaymentFlow.PAYMENTBUTTON.name
         when (paymentFlow) {
             PaymentFlow.PAYMENTBUTTON.name -> {
+                println("threeDsResponse>>"+TapRedirectPay.threeDsResponse.url)
                 webView.loadUrl(TapRedirectPay.threeDsResponse.url)
             }
 
