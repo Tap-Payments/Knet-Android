@@ -159,8 +159,8 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         jsonObject.put("idempotent", "")
 
 
-      val merchant = JSONObject()
-      val terminal = JSONObject()
+        val merchant = JSONObject()
+        val terminal = JSONObject()
         terminal.put("id","")
         val terminaldevice = JSONObject()
         terminaldevice.put("id","")
@@ -230,7 +230,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         jsonObject.put("invoice", invoice)
 
 
-        val descriptiom =JSONObject()
+        val descriptiom = JSONObject()
         descriptiom.put("text", "name ")
         descriptiom.put( "lang", "en ")
 
@@ -246,7 +246,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
 
         val product = JSONObject()
         product.put("id","")
-        product.put("amount",2)
+        product.put("amount",intent.getStringExtra("amountKey")?.toDouble())
         product.put("name",descArray)
         product.put("description",descArray)
         product.put("metadata",medata)
@@ -268,7 +268,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
 
         val order = JSONObject()
         order.put("amount",(intent.getStringExtra("amountKey")?.toDouble()))
-       // order.put("amount",3)
+        // order.put("amount",3)
         order.put("currency",intent.getStringExtra("orderCurrencyKey"))
         order.put("description",descArray)
         order.put("reference",intent.getStringExtra("orderRefrenceKey"))
@@ -319,9 +319,9 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         shippigobject.put("provider",provider)
         shippigobject.put("metadata",medata)
 
-       // order.put("tax",taxarry)
-       // order.put("discount",discount)
-        order.put("shipping",shippigobject)
+        // order.put("tax",taxarry)
+        // order.put("discount",discount)
+        //  order.put("shipping",shippigobject)
         order.put("metadata",medata)
 
 
@@ -398,7 +398,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         payments.put("bnpl", true)
         payments.put("mobile", true)
         payments.put("cash", true)
-       payments.put("redirect", true)
+        payments.put("redirect", true)
 
         features.put("currency_conversions",currency_conversions)
         features.put("payments",payments)
@@ -436,12 +436,12 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         supported_payment_methods.put("BENEFITPAY")
 
         val supported_payment_types = JSONArray()
-           // supported_payment_methods.put ("CARD")
+        // supported_payment_methods.put ("CARD")
         supported_payment_types.put("DEVICE")
         supported_payment_types.put("WEB")
 
         val supported_schemes = JSONArray()
-       // supported_schemes.put("CARD")
+        // supported_schemes.put("CARD")
         supported_schemes.put( "MADA")
         supported_schemes.put("OMANNET")
         supported_schemes.put("VISA")
@@ -454,7 +454,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         println("defaultHash"+defaultHash)
 
         val supported_fund_source = JSONArray()
-       // supported_fund_source.put("CARD")
+        // supported_fund_source.put("CARD")
         supported_fund_source.put("DEBIT")
         supported_fund_source.put("CREDIT")
         val supported_payment_flows = JSONArray()
@@ -480,8 +480,12 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         acceptance.put("supported_payment_methods",arry)
 
 
-        acceptance.put("supported_schemes",JSONArray(getPrefs().getStringSet("supportedSchemesKey", defaultHash.toHashSet())))
-        acceptance.put("supported_fund_source",JSONArray(getPrefs().getStringSet("supportedFundSourceKey", defaultFundHash.toHashSet())))
+        acceptance.put("supported_schemes",
+            JSONArray(getPrefs().getStringSet("supportedSchemesKey", defaultHash.toHashSet()))
+        )
+        acceptance.put("supported_fund_source",
+            JSONArray(getPrefs().getStringSet("supportedFundSourceKey", defaultFundHash.toHashSet()))
+        )
         acceptance.put("supported_payment_authentications",supported_payment_authentications)
         acceptance.put("supported_payment_flows",supported_payment_flows)
 
@@ -500,7 +504,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
 
         val card  = JSONObject()
         card.put( "number",true)
-       card.put("expiry",true)
+        card.put("expiry",true)
         card.put("cvv",true)
         card.put("cardholder", true)
 
@@ -514,7 +518,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
         fieldvisibility.put("name",true)
         fieldvisibility.put("card",card)
         fieldvisibility.put("contact",conatct)
-        fieldvisibility.put("shipping",shipping)
+        //  fieldvisibility.put("shipping",shipping)
 
         configOb.put("features",features)
         configOb.put("acceptance",acceptance)
@@ -550,7 +554,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
             .addHeader("Content-Type", "application/json")
             .addHeader("Authorization", "Bearer sk_test_NSln5js3fIeq0QU1MuKRXAkD")
             .build()
-       okHttpClient.newCall(request).enqueue(object : Callback{
+        okHttpClient.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
             }
