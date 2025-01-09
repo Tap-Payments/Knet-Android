@@ -2,6 +2,7 @@ package com.example.knet_android
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +10,12 @@ import androidx.preference.Preference
 import com.chillibits.simplesettings.core.SimpleSettings
 import com.chillibits.simplesettings.core.SimpleSettingsConfig
 import com.chillibits.simplesettings.tool.getPrefBooleanValue
+import com.chillibits.simplesettings.tool.getPrefFloatValue
+import com.chillibits.simplesettings.tool.getPrefLongValue
 import com.chillibits.simplesettings.tool.getPrefStringSetValue
 import com.chillibits.simplesettings.tool.getPrefStringValue
+import com.chillibits.simplesettings.tool.getPrefs
+import java.util.HashSet
 
 class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCallback  {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +49,14 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
          */
         intent.putExtra("publicKey", getPrefStringValue("publicKey","pk_test_YhUjg9PNT8oDlKJ1aE2fMRz7"))
         intent.putExtra("hashStringKey", getPrefStringValue("hashStringKey","pk_test_YhUjg9PNT8oDlKJ1aE2fMRz7"))
+        intent.putExtra("merchantId", getPrefStringValue("merchantId",""))
 
         /**
          * order
          */
         intent.putExtra("orderIdKey", getPrefStringValue("orderIdKey",""))
         intent.putExtra("orderDescKey", getPrefStringValue("orderDescKey","test"))
-        intent.putExtra("amountKey", getPrefStringValue("amountKey","1"))
+        intent.putExtra("amountKey", getPrefStringValue("amountKey","3"))
         intent.putExtra("orderCurrencyKey", getPrefStringValue("orderCurrencyKey","KWD"))
         intent.putExtra("orderRefrenceKey", getPrefStringValue("orderRefrenceKey","test"))
         intent.putExtra("selectedCurrencyKey", getPrefStringValue("selectedCurrencyKey","test"))
@@ -82,21 +88,25 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
          * scope && transaction
          */
 
-        intent.putExtra("scopeKey", getPrefStringValue("scopeKey","Token"))
+        intent.putExtra("scopeKey", getPrefStringValue("scopeKey","CHARGE"))
         intent.putExtra("transactionRefrenceKey", getPrefStringValue("transactionRefrenceKey",""))
         intent.putExtra("transactionAuthroizeTypeKey", getPrefStringValue("transactionAuthroizeTypeKey",""))
         intent.putExtra("transactionAuthroizeTimeKey", getPrefStringValue("transactionAuthroizeTimeKey",""))
-        intent.putExtra("buttonKey", getPrefStringValue("buttonKey",""))
+        intent.putExtra("buttonKey", getPrefStringValue("buttonKey","KNET"))
 
         intent.putExtra("transactionSourceId", getPrefStringValue("transactionSourceId",""))
         intent.putExtra("transactionAuthenticationId", getPrefStringValue("transactionAuthenticationId",""))
 
+        val defaultHash = hashSetOf("VISA","AMEX","MASTERCARD","BENEFIT_CARD")
+
+
         /**
          * acceptance
          */
-        intent.putExtra("supportedFundSourceKey", getPrefStringSetValue("supportedFundSourceKey", emptySet()).toHashSet())
+        intent.putExtra("supportedFundSourceKey", getPrefStringSetAsArray(getPrefs(),"supportedFundSourceKey"))
         intent.putExtra("supportedPaymentAuthenticationsKey", getPrefStringSetValue("supportedPaymentAuthenticationsKey", emptySet()).toHashSet())
-        intent.putExtra("supportedSchemesKey", getPrefStringSetValue("supportedSchemesKey", emptySet()).toHashSet())
+      //  intent.putExtra("supportedSchemesKey", getPrefStringSetValue("supportedSchemesKey", defaultHash).toHashSet())
+        intent.putExtra("supportedSchemesKey", getPrefStringSetAsArray(getPrefs(),"supportedSchemesKey"))
         intent.putExtra("supportedPaymentMethodKey", getPrefStringSetValue("supportedPaymentMethodKey", emptySet()).toHashSet())
         /**
          * Fields Visibility
@@ -114,5 +124,34 @@ class SettingsActivity : AppCompatActivity(),SimpleSettingsConfig.PreferenceCall
         finish()
         startActivity(intent)
 
+    }
+    fun getPrefStringSetAsArray(sharedPreferences: SharedPreferences, key: String): Array<String>? {
+
+        val sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPreferences.edit()
+        var stringSet: Set<String>? = null
+        if(key.contains("supportedSchemesKey")) {
+            val defaultHash = hashSetOf("VISA", "AMEX", "MASTERCARD", "BENEFIT_CARD")
+// Save a HashSet to SharedPreferences
+            val hashSet = getPrefs().getStringSet("supportedSchemesKey", defaultHash)
+            editor.putStringSet("myKey", hashSet)
+            editor.apply()
+            // Retrieve the HashSet (stored as a Set<String>) from SharedPreferences
+             stringSet = hashSet
+        }else if (
+            key.contains("supportedFundSourceKey")
+
+        ) {
+
+            val defaultHash = hashSetOf("DEBIT", "CREDIT")
+// Save a HashSet to SharedPreferences
+            val hashSet = getPrefs().getStringSet("supportedSchemesKey", defaultHash)
+            editor.putStringSet("myKey", hashSet)
+            editor.apply()
+            // Retrieve the HashSet (stored as a Set<String>) from SharedPreferences
+            stringSet = hashSet
+        }
+        // Convert the Set<String> (HashSet) to Array<String>
+        return stringSet?.toTypedArray()
     }
 }
