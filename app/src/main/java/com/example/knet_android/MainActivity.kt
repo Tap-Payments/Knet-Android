@@ -561,8 +561,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
 
             override fun onResponse(call: Call, response: Response) {
                 try {
-                    var responseBody: JSONObject? =
-                        response.body?.string()?.let { JSONObject(it) } // toString() is not the response body, it is a debug representation of the response body
+                    var responseBody: JSONObject? = response.body?.string()?.let { JSONObject(it) } // toString() is not the response body, it is a debug representation of the response body
                     println("responseBody>>"+responseBody)
                     if(!responseBody.toString().contains("errors")){
                         /*
