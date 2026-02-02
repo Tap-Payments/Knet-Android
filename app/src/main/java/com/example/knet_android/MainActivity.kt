@@ -552,7 +552,7 @@ class MainActivity : AppCompatActivity() ,RedirectPayStatusDelegate{
             .url("https://api.tap.company/v2/intent")
             .method("POST", body)
             .addHeader("Content-Type", "application/json")
-            .addHeader("Authorization", "Bearer sk_test_NSln5js3fIeq0QU1MuKRXAkD")
+            .addHeader("Authorization", "Bearer XXXXXXXX")
             .build()
         okHttpClient.newCall(request).enqueue(object : Callback{
             override fun onFailure(call: Call, e: IOException) {
