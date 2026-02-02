@@ -17,11 +17,7 @@ class MainActivity : AppCompatActivity() ,KnetPayStatusDelegate{
         setContentView(R.layout.activity_main)
         configureSdk()
 
-//        Bundle ID	tap.KnetExample
-//        Prod - Public Key	pk_live_I8aWfZkiGtw9HYsRCcAgQzS6
-//        Test - Public Key	pk_test_6jdl4Qo0FYOSXmrZTR1U5EHp
-//        Prod - Secret Key	sk_live_462YewyxHlPsUGvSWOjckQAi
-//        Test - Secret Key	sk_test_bNgRpokWMylX3CBJ6FOresTq
+
     }
 
     fun configureSdk(){
