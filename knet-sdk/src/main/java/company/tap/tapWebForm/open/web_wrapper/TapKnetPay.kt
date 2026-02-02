@@ -140,7 +140,7 @@ class TapKnetPay : LinearLayout {
                 .url(baseURL )
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer sk_test_bNgRpokWMylX3CBJ6FOresTq")
+                .addHeader("Authorization", "Bearer XXXXXXXX")
                 .build()
             okHttpClient.newCall(request).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
